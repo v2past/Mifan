@@ -1,59 +1,105 @@
 ❤️ 项目简介:❤️
 
-充分利用 VPS 实现各种功能:
+    📌 项目环境: 搬瓦工、openVZ、CentOS 6 X86.
+    📌 项目作用: 通过VPS搭建SS服务器 方便自己以及他人登高远望; 还能学习各种技术. 
+
+
+
+
+
+❤️ 文件简介:❤️
+
+
+
+00-ssh.txt       免密码SSH连接vps
+
+VPS-Speed.txt   减少VPS延迟,极大改善体验.  Kcptun / 
+
+
+
+
+30-LNMP.txt      搭建LNMP环境
+31-Naginx.txt    
+
+
+
+
+
+
+
+
+4. 进行快照设置!! 以后重装系统 直接恢复到这步.
+
+
+2. 搭建 Nginx 网页()
 
 1. 搭建 ss
-2. 搭建 vpn
+
 3. 搭建 ngrok
 4. 搭建 数据库.
 5. 搭建认证系统
 
 
-📌帮瓦工密码:
-  一个是控制台的密码.
-  一个是ssh的密码. 不一样的..
-
-
-📌 ssh 密码修改
-
-  1. 查看ssh 初始登录密码
-    控制台 → root password modification 
-  2. 登录ssh
-    ssh -p 27401 root@23.105.192.96
-	3. 修改密码
-	  passwd → 输入两次密码 就改掉了.
 
 
 
-📌 ssh 免密码登录 (密钥登录)
-    1. 本地生成对密钥先.
-    2. 服务器用户目录建立 .ssh 文件夹, 并给700权限
-    3. 把本地公钥用scp传到服务器
-    4. 服务器上把公钥加到公钥验证列表.
-    5. 当你ssh服务器.服务器就可以自动连接了.
 
-    Mac OS 密钥默认生成路径:
-        cd /Users/v/.ssh/
-        有个 id_rsa.pub 就说明生成成功了.
 
-    上传文件:
-        1. 本地终端 cd /Users/v/.ssh/
 
-        ✘✘∙𝒗 .ssh scp -P 27401 -r id_rsa.pub root@23.105.192.96:~/.ssh/
-        root@23.105.192.96's password:
-        id_rsa.pub                         100%  742     4.2KB/s   00:00 
+❤️ VPS 基本信息.
+看内存:  free -m
 
-            P             必须大写.
-            27401         服务器的SSh端口
-            root          服务器的ssh用户名
-            23.105.192.96 服务器IP
+📌 磁盘IO测试: 
+    [root@localhost ~]🔅 dd if=/dev/zero of=test bs=64k count=4k oflag=dsync
+    记录了4096+0 的读入
+    记录了4096+0 的写出
+    268435456字节(268 MB)已复制，0.612572 秒，438 MB/秒
 
-    2.  注册公钥文件: 把你的公钥添加到公钥验证列表.
-        cat ~/.ssh/id_ecdsa.pub >> ~/.ssh/authorized_keys
-        // 就是把上传上去的文件里的内容 全部追加到authorized_keys这个文件 后面.
-        
-        也可以直接重命名上传的文件.  mv id_rsa.pub authorized_keys
-        这样的话 整个验证列表中 只有你的公钥. 这个服务器 只有你能ssh 秘钥免密码登录了.
+    [root@localhost ~]🔅 dd if=/dev/zero of=test bs=8k count=256k conv=fdatasync
+    记录了262144+0 的读入
+    记录了262144+0 的写出
+    2147483648字节(2.1 GB)已复制，8.78009 秒，245 MB/秒
+
+
+📌 网速: 上传/下载/ping
+
+服务器下载速度: 
+    或者用一键测试脚本来测试下载等速度,直接运行就可以了:
+    🔅 wget freevps.us/downloads/bench.sh -O - -o /dev/null | bash
+
+    下载个文件到服务器试试就能知道下载速度是多少.
+        [root@localhost ~]🔅 wget https://cachefly.cachefly.net/100mb.test
+        --2017-04-01 08:51:36--  https://cachefly.cachefly.net/100mb.test
+        正在解析主机 cachefly.cachefly.net... 205.234.175.175
+        正在连接 cachefly.cachefly.net|205.234.175.175|:443... 已连接。
+        已发出 HTTP 请求，正在等待回应... 200 OK
+        长度：104857600 (100M) [application/octet-stream]
+        正在保存至: “100mb.test”
+
+        100%[====================================>] 104,857,600 79.9M/s   in 1.3s
+
+        2017-04-01 08:51:37 (79.9 MB/s) - 已保存 “100mb.test” [104857600/104857600])
+
+
+📌 服务器出口速度: 也就是我们从服务器上下载文件的速度.
+
+
+
+
+
+
+
+
+📌 Ping 值
+
+
+
+
+
+
+
+
+
 
 
 
@@ -112,36 +158,33 @@
 
 
 
-❤️ 优化 SS 速度
-详细参考: https://github.com/phuslu/goproxy/issues/186
-大概步骤:
-
-1. 调整搬瓦工Shadowsocks的加密方式
-    rc4-md5 相对aes-256-cfb来说可能加密方式更弱，
-    但加密速度是后者的好几倍，
-    看你自己怎么取舍了....
-
-2. 服务器端口一定要使用默认的443端口（很重要）
-
-3. 增加系统文件描述符的最大限数
-    vi /etc/security/limits.conf
-    增加以下两行
-    soft nofile 51200
-    hard nofile 51200
 
 
-📌📌📌📌📌 巨大提速 📌📌📌📌📌
-    用了帮瓦工 网速慢. 丢包高.. 
-    其实是本地网络服务商坑.不怪帮瓦工. 
-    这个坑 可以解决.
-    用了下面的神器.ssh进去 延迟少了好几倍!!!!
+ss 免费服务网站. 流量用不掉. 那就分享出去.
+管理帐号 你需要一个 用户管理面板: ss panerl
 
-    Net-Speeder是一个linux软件，主要目的是为了解决丢包问题，
-    实现TCP双倍发送，也就是同一份数据包发送两份。
-    这样的话在服务器带宽充足情况下，
-    丢包率会平方级降低。网络传输速度也会有所提升。
-    详情参考:
-    http://banwagongvpn.lofter.com/post/1d541acc\_7b4bfc0
+
+
+
+ss 编辑PAC 网址规则.
+有时候访问某个网站. 用pac 发现打不开. 
+有懒得去开全局.
+这时候就可以 用pac了.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -149,8 +192,60 @@
 ❤️ 本地 SS 客户端
 可选值:
 Surge 神器. 收费几百块.但是确实是最好的.最稳定最快的.
-SpechLite: Surge阉割版本.免费,配置稍麻烦 比其他客户端快很多!!!!
+SpechtLite: Surge阉割版本.免费,配置稍麻烦 比其他客户端快很多!!!!
 Shadowsocks  最常见了. 不怎么好, 但是配置简单.
+
+
+
+📌 Spechtlite 教程: (Mac OS)
+
+    1. open profile folder 
+      .yaml后缀的文件就是配置文件.
+      你可以给一个配置文件 设置一个帐号.
+      也可以给一个配置文件下设置多个帐号.
+      我们选一对一的.
+
+    apdpter 建议一个文件一个帐号.没用的adapter删除. 
+    - id: adapter1
+        type: ss
+        host: hk02-14.ssv7.net
+        port: 23192
+        method: AES-256-CFB
+        password: subWfpPAbchP
+
+    2. Speed adapter 
+      指定的延迟时间可以指定用那个帐号
+    在设置的 delay （单位毫秒）后发送请求，
+    哪个节点率先响应，那网络请求就走哪个节点，
+
+    3. 重启软件  选择一个配置文件就可以了.也简单的.
+
+
+
+
+    软件使用:
+    Set as system proxy ：设置为系统代理，正常使用必须打开；
+    Allow Clients From Lan ：局域网内分享代理，别人也能用你电脑翻墙
+    Use dev channel ：接受测试版本推送；
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

@@ -1,0 +1,65 @@
+
+aes-256-cfb
+rc4-md5
+chacha20等
+
+不稳定，有的能上，有的不能上，有时能上，有时不能上，
+可能是加密方式的特征被识别，从而被干扰，方法是更换加密方式
+
+个人人推荐chacha20   可以说是目前性价比比较高的加密算法 .
+
+
+安装:
+
+很多人都知道安装 libsodium 就能用 Chacha20/Chacha20-ietf 加密方式了，
+
+
+
+
+
+
+
+
+    在选择加密方式时，
+    有的人喜欢加解密速度快的，但相应加密强度就会有点欠缺；
+    有的人喜欢加密强度高的，同样的相应的加解密速度就会慢一些，
+    下面这个是其他网友实测的速度对比：
+
+
+aes-128-cfb  0.368462085724s
+aes-192-cfb  0.452577829361s
+aes-256-cfb  0.418514966965s
+cast5-cfb    0.859935045242s
+cast5-ofb    0.911785125732s
+chacha20     0.429271936417s
+rc4          0.154517173767s
+rc4-md5      0.169504165649s
+salsa20      0.44139790535s
+
+一般比较推荐的是兼顾速度与强度，参照上面数据可知 chacha20 是首选的加密方式，
+但是系统默认是不支持 chacha20，需要额外安装 libsodium。
+
+
+下面是 CentOS 6的安装方式
+
+    yum install m2crypto gcc -y
+    wget -N --no-check-certificate https://download.libsodium.org/libsodium/releases/libsodium-1.0.10.tar.gz
+        下载链接如果失效去这里查下载地址: https://download.libsodium.org/libsodium/releases/
+        注意要选择 .tar.gz 结尾的
+
+    tar zfvx libsodium-1.0.10.tar.gz
+    cd libsodium-1.0.10
+    ./configure
+    make && make install
+    echo "include ld.so.conf.d/*.conf" > /etc/ld.so.conf
+    echo "/lib" >> /etc/ld.so.conf
+    echo "/usr/lib64" >> /etc/ld.so.conf
+    echo "/usr/local/lib" >> /etc/ld.so.conf
+    ldconfig
+
+
+
+3、修改 Shadowsocks 的配置文件。把加密方式（method）改为 "chacha20" 或着你想要的加密方式，
+记得客户端的加密方式也要一并改成一样的。
+
+

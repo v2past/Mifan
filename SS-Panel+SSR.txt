@@ -1,0 +1,504 @@
+❤️ 胡言乱语:
+
+    想要翻墙. 服务器上安装个 ShadowSocks 稍微配置下就能翻墙了.
+
+    服务器上的流量用不完,想分享给朋友使用.
+    那就需要进行帐号管理.最好还能看每个人用了多少流量等等功能.
+    这就需要一个前端的网页,来进行各种操作.这个网页就是前端. 已经有人帮我们写好这个网页了.这就是 SS-Panel.
+
+
+    🔵 主要目的: 
+        搭建一个ShadowSocks后端服务器: 可以提供很多帐号给别人翻墙用, 
+        搭建一个SS-Panel 前端网站! 可以注册帐号. 并进行各种管理.
+
+    🔵 前端+后端.
+        前端:  就是一个网页.
+        后端:  后端就是实现某个功能的. 这里就是翻墙功能.
+
+        后端有好几种. 最官方的是ShadowSocks项目.其他的还有SSR 等等....
+    
+    个人使用. 只需要几个帐号,不需要数据库.
+    多人使用. 这就需要用到数据库了.
+
+
+    其实 SS-panel 的前端和后端是可以分开的,前端安装在本地. 后端安装在服务器.
+    前端只要能连上后端的数据库就可以了,一般情况都是两者同时安装在服务器上的.我们教程的前后端都是安装在服务器上的.
+
+
+    📌 前端: SS-Panel 
+        是由Orvice写的一款前端网页。可以配合下面这些SS后端:
+            shadowsocks manyuser
+            shadowsocks-go mu
+            shadowsocksR
+        这货是用PHP写的，所以你需要一个php 环境,而且必须 ❗️PHP5.6❗️以上的版本。
+        这是个网页.你要访问网页就要有 web服务器. nginx/apache 随便选. 一般教程都是用❗️Nginx❗️ 就选这个吧.
+        当然为了存储用户数据还需要 ❗️MySQL5.5+❗️的版本
+        这三个环境加起来. 就是所谓的 LNMP/LAMP架构:  Linux、Nginx/Apache、MySQL、PHP
+        ❗️❗️LNMP 环境快速安装推荐1 LNMP.org  一键安装包.     https://lnmp.org/install.html    推荐. 本教程使用这个.具体看LNMP.txt教程.
+        ❗️❗️LNMP 环境快速安装推荐2 OneinStack 一键安装工具.  https://oneinstack.com/
+
+
+    📌 后端: shadowsocks-manyuser有许多版本:
+            ssr版:    git clone -b manyuser https://github.com/breakwa11/shadowsocks.git
+            rm版:     git clone -b manyuser https://github.com/mengskysama/shadowsocks-rm.git
+            普通版:   git clone -b manyuser https://github.com/mengskysama/shadowsocks.git
+            
+          ❗️我们用SSR❗️
+
+
+
+    📌 注:
+          SSR: Shadowsocks原作者被喝茶 放弃此项目，由ShadowsocksR作者接手. 所以SS项目不再更新, 推荐用 SSR 
+          在CentOS上搭建ss-panel（前端）和ssr（后端）以及chacha20（加密）的梯子，帮助自己和朋友登高远望。
+
+            SSR 相比 SS 优点:
+                可以直接启用chacha20加密，在移动设备上比较好使
+                TFO(TCP Fast Open)直接自带，减少握手次数。
+                二次混淆和抗重放等附加功能,减少被封概率.
+                Github 官网 https://github.com/breakwa11/shadowsocks-rss
+
+
+
+
+
+
+
+
+==================================================================================================================================================================
+==================================================================================================================================================================
+
+❤️ 正文
+
+
+
+    📌📌 多人翻墙服务器整体搭建流程:
+          1. 安装 LNMP 环境.         
+          2. 安装 SS-panel 前端部分
+          3. 安装 SSR 后端部分
+
+          ❗️正常情况用 LNMP.org 网站里面的一键安装脚本.安装好后.
+          ❗️就可以在本地浏览器用服务器IP 直接访问服务器上的一个默认网站. 
+          ❗️还可以在本地浏览器用服务器IP/phpmyadmin 直接访问服务器上的数据库.
+          ❗️如果这两个出现问题. 请先自行解决这两个问题.
+              LNMP安装过程中你可以不新建虚拟主机. 
+              你只要把虚拟主机的环境安装上,也就是 Nginx
+              增删虚拟主机都是可以改的.关系不大.
+
+
+    📌 SS-Panel Github链接  https://github.com/orvice/ss-panel/tree/master
+    📌 本教程 只适合CentOS6. 其他系统 可以参考本教程的思路.具体命令肯定有区别的.
+    📌 本教程 带有🔅 都是要执行的命令.
+    📌 本教程 安装的是 官方的 v3.4.5 版本. 2017-04-2-09. 亲测可用.
+    📌 本教程 需要一个域名. 
+          首先你要去 域名注册商那里 添加一个www记录 (也就是把你的域名 对应到你的服务器IP)
+          这步完成了. 你还不能访问服务器上的网页的. 至少Nginx 这个web服务器需要一些设置 
+          才能通过你的域名 访问 服务器上的网页.
+
+          没有域名的 看这个教程.https://doub.io/ss-jc13/  这个教程安装的是v2版本
+
+
+
+
+❤️️ 前端部分: SS-Panel
+    官网项目里的安装介绍只是一个大概思路. 不够详细.下面是个人整理出的详细教程
+
+🔵 设置一个虚拟主机
+🔅 lnmp vhost add
+    📌 输入你的域名: www.0214.help 其他全部选no
+        虚拟主机设置好后
+          /usr/local/nginx/conf/vhost 下就多了个虚拟主机配置文件.
+          /home/wwwroot/               就多了个 虚拟主机文件夹
+
+          当然你如果之前设置过虚拟主机这步就可以省略了.
+          确保有上面的一个 虚拟主机配置文件. 和 一个虚拟主机文件夹就可以了.
+
+          列出虚拟主机 lnmp vhost list
+          删除虚拟主机 lnmp vhost del
+
+
+
+🔵 cd 到虚拟主机目录.
+🔅 cd /home/wwwroot/www.0214.help
+
+
+
+🔵 官网 Step 0: 下载
+🔅 git clone https://github.com/orvice/ss-panel.git
+
+      这个就是复制别人的项目.
+      上述操作将复制该项目的全部记录，让你本地拥有这些。
+      并且该操作将拷贝该项目的主分支， 使你能够查看代码，或编辑、修改。
+      进到该目录中，你会看到 .git 子目录。 所有的项目数据都存在那里。
+
+      这步下载下来的是一个 ss-panel 文件夹,不是压缩包.
+
+🔵 cd 到ss-panel项目目录.
+🔅 cd ss-panel
+
+
+🔵 官网 Step 1 : 安装
+🔅 curl -sS https://getcomposer.org/installer | php
+🔅 php composer.phar  install
+    curl 就是下载东西的. 网址是一个php文件.  
+    -s silent mode . 不显示进度信息
+    -S 不显示进度的情况下 如果出现错误 就显示错误信息.
+    | php:  | 是管道符号. 可能下载的文件.用php处理吧.
+
+🔵 官网 Step 2. 配置文件.
+🔅 cp .env.example .env
+🔅 vi .env
+🔅 chmod -R 777 storage
+
+    将 .env.example 复制一份重命名为 .env，
+    修改配置文件: 参考里面的中文注释自行修改其中的数据库等信息。
+        主要就是改 数据库名字、数据库登录账户、数据库账户密码、加密方法要改也可以
+        📌 db_database = 'ss-panel'  → db_database = 'ss'  
+        📌 db_username = 'ss-panel'  → db_username = 'root'  
+        📌 db_password = 'secret'    → db_password = '你的root密码'
+        muKey = 'api_key_just_for_test' → 随便输入写英文字符.不要默认就可以了. 
+        
+        这三步可以用正则式解决.提高效率.有空再写.
+
+
+    chmod -R 777 storage 确保 storage 目录可写入.
+
+
+    就是一个配置文件.
+        V2 版本的是一个 config.php 文件
+        V3 版本的是一个 .env 文件
+
+    ❗️❗️配置文件主要目的: 让前端的这个网页 可以连接到后端的数据库来获取各种用户信息的.
+    只要就是 ❗️DB_USER 数据库用户名、❗️DB_PWD 数据库密码、❗️DB_DBNAME 数据库名称
+    其实V3.4的配置文件都是中文详细说明的!!!! 按住说明改就可以了.
+
+
+
+🔵 导入sql文件
+
+📌 先下载 ss-panel 项目文件夹到本地. 并解压. 需要用到里面的 db.sql 文件.
+
+📌 本地电脑连接服务器数据库.
+    浏览器上 输入 你的IP/phpmyadmin    就能进数据库管理界面了. 输入账户密码就可以修改数据库了.
+    我们这里是 23.105.192.96/phpmyadmin   回车就进去了.
+
+    数据库启动了不代表你可以远程连接进数据库.
+    LNMP一键脚本默认只允许你用 phpmyadmin 网页来连接数据库.
+
+
+📌 新建一个数据库. 
+    任取一个数据库名字 ss ❗️务必记住这个数据库名字
+
+📌 导入 /ss-panel/db.sql 
+    V3 版本和V2版本 导入方法不一样的!!!!
+    V3 只要新建一个数据库.让后导入 /ss-panel/db.sql 就可以了!!!!! 
+    导入 → 选择文件 → 执行就可以了.
+
+📌 开启数据库的远程功能: (这步可选,非必须)
+    修改nginx配置文件.有时候可能导致 不能用网页进数据库.
+    这时候如果你可以用第三方的软件远程连接到数据库. 也就没必要用网页进入数据库了.
+
+    安装好LNMP环境后,为了安全. 默认是只能用网页访问数据库的.
+    要开启远程数据库访问需要修改两方面内容.
+    1. mysql 数据库账户权限.
+    2. 服务器防火墙.
+
+        账户权限设置: 
+            phpmyadmin 主页登录进去 → 用户 → 添加用户 → 
+            帐号密码 可以直接用 root
+            主要就是 Host 那个选项必须选择 任意主机.
+            这个Host 就是帐号权限. 
+            选择本地: 就是只能本地电脑登录数据库.也就就不能远程登录.
+            选择任意主机: 就是互联网上所有电脑 只要有服务器的IP,数据库账户,数据库密码 就能远程登录服务器数据库.
+
+
+        服务器防火墙:
+
+            📌📌 查看防火墙状态
+            🔅 iptables -L
+            Chain INPUT (policy ACCEPT)
+            target     prot opt source               destination
+            ACCEPT     all  --  anywhere             anywhere
+            ACCEPT     all  --  anywhere             anywhere            state RELATED,ESTABLISHED
+            ACCEPT     tcp  --  anywhere             anywhere            tcp dpt:ssh
+            ACCEPT     tcp  --  anywhere             anywhere            tcp dpt:http
+            DROP       tcp  --  anywhere             anywhere            tcp dpt:mysql
+            ACCEPT     icmp --  anywhere             anywhere            icmp echo-request
+            ACCEPT     udp  --  anywhere             anywhere            state NEW udp dpt:tivoconnect
+
+            这里可以看到默认的防火墙 mysql 对应的是drop.
+            也就是如果有互联网上有数据包要发到你电脑的mysql这个程序.那么就丢弃这个数据包.
+            所以只要你防火墙不允许. 你是永远连不上服务器上的数据库的....
+
+        📌📌 清空所有防火墙设置.
+            🔅 iptables -F
+            这下所有的数据都能进入到服务器了.
+
+            其实如果整个系统搭建成功后.
+            每个帐号都是单独一个端口的.
+            管理员是 10000端口. 
+            第一个注册的是 10001端口 ... 类推...
+            为了安全起见.不建议清空所有的防火墙.
+            开发某些端口就可以了. 这个另外说. 防火墙也麻烦的.
+
+
+
+🔵 编辑虚拟主机配置文件.
+    修改虚拟主机的配置文件.这里最后面改成你自己的虚拟主机名.
+    🔅 vi /usr/local/nginx/conf/vhost/www.0214.help.conf
+        📌 添加下面的4行到 server下. 参考文件里已有的改就可以了.
+location / 
+{
+  try_files $uri $uri/ /index.php$is_args$args;		                
+}
+
+        📌 并将 root 那一行改成为
+        root /home/wwwroot/你的域名/ss-panel/public;
+            你通过浏览器访问服务器的默认首页都是在 ss-panel/public/下面的
+            root 路径 写上 ss-panel/public/的绝对路径就可以了.
+
+
+🔵 重启nginx
+🔅 service nginx restart
+这时候用网址(你的域名) 去访问服务器 就出现了崭新的 界面了. 这就是 SS-Panel 
+这里必须不能用IP登录. IP登录 还是LNMP 一键安装包的默认界面.不是 ss-panel的.
+当前域名解析.需要你事先做好. 添加一个www记录就可以了. 
+这时候前端部分就差不多了. 该弄后端了.
+
+
+
+
+
+
+
+🔵 登录 SS-Panel 网页后台
+    http://23.105.192.96/user/index.php
+    网页必须有个管理员帐号啊. 怎么创建呢..
+    V3 版本提供了一个脚本 帮你快速建立管理员帐号.
+    🔅 cd /home/wwwroot/www.0214.help/ss-panel
+    🔅 php xcat createAdmin
+        输入管理员邮箱、密码、按下Y 帐号就创建好了.
+
+        [root@localhost ss-panel]# php xcat createAdmin
+        add admin/ 创建管理员帐号.....Enter your email/输入管理员邮箱: xx2610@gmail.com
+        Enter password for: xx2610@gmail.com / 为 xx2610@gmail.com 添加密码 xujian0219
+        Email: xx2610@gmail.com, Password: xujian0219! Press [Y] to create admin..... 按下[Y]确认来确认创建管
+        理员账户..... y
+        start create admin accountSuccessful/添加成功![root@localhost ss-panel]#
+
+        然后就可以用刚建立的帐号去登录了!!!
+
+
+
+
+
+
+
+
+❤️ 后端部分:
+  SSR 多用户版本(mysql)  https://github.com/breakwa11/shadowsocks-rss/wiki/Server-Setup(manyuser-with-mysql)
+  原则不推荐使用各种一键安装脚本. 升级个php 居然花了半个多小时..  怪了... ...
+
+
+🔵 基本库安装:
+    🔅 yum install python-setuptools && easy_install pip
+    🔅 yum install git
+
+🔵 安装依赖 cymysql
+🔅 pip install cymysql
+
+    CyMySQL: 它是PyMySQL的一个fork，使用Cython进行了加速，并且支持Python3。
+    PyMySQL: Python3 的一个用于连接MySQL数据库的工具,可以实现基本的增删改查。
+    mysqldb: Python2 的一个用于连接MySQL数据库的工具.
+
+🔵 cd 到home目录
+🔅 cd ~ 
+
+🔵 获取 SSR 项目源代码
+🔅 git clone -b manyuser https://github.com/shadowsocksr/shadowsocksr.git
+    执行完毕后此目录会新建一个shadowsocksr目录，
+        其中根目录的是多用户版（即数据库版），
+        子目录中的是单用户版。(即shadowsocksr/shadowsocks)。
+
+    以下是相对路径，比如你在 /root 目录下执行上面的代码，那你的SS根目录就是 /root/shadowsocksr 。
+    根目录即 shadowsocksr
+    子目录即 shadowsocksr/shadowsocks
+
+
+🔵 服务端配置: 
+    📌 进入根目录 并 初始化项目  🔅 cd /root/shadowsocksr && bash initcfg.sh
+    📌 修改 🔅 vi userapiconfig.py
+          API_INTERFACE = 'sspanelv2'      //修改接口类型, 引号里改成sspanelv3ssr
+                需正确选择使用sspanelv2, sspanelv3, sspanelv3ssr之一
+                ssr 应该是多人版的意思.
+          
+
+    📌 修改:    🔅 vi usermysql.json
+        "host": "127.0.0.1",      //数据库地址 
+        "port": 3306,             //mysql端口
+        "user": "root",           //mysql用户名
+        "password": "..........", //你自己的 mysql密码
+        "db": "ss",               //数据库名
+        "node_id": 1              //节点ID.先在网页里添加一个节点.第一个节点在数据库 ss_node表下的id是1
+        因为是第一条数据啊....
+
+    📌 去网页设置节点:
+            登录管理员帐号 → 控制面板 → 节点管理 → 添加节点 → 
+            节点名称随意.
+            节点地址: 服务器IP地址
+            加密方式 aes-256-cfb
+            自定义加密: 不支持
+
+
+
+        ❌注意1：host
+        这里的数据库信息除了 host ，其他的必须和SS-Panel完全一致，服务端启动的时候会读取数据库信息！
+        至于 host ，如果你的服务端和前端（SS-Panel）在一个VPS上，那就写localhost或者127.0.0.1，
+        如果不在一起，请写前端（SS-Panel）所在VPS的ip或者域名！
+        如果服务端和前端（SS-Panel）不在一个VPS上，那么数据库链接就属于远程链接了，
+        这时候需要开启数据库用户的远程链接功能！
+
+        ❌注意2：node_id
+        sspanelv3必须正确填写node_id才能正常使用
+        并且在填写该ID前，必须在面板上已经添加好该节点，以确定节点ID后，再在此处填写。
+        节点: 不是IP 就是网址
+        一个服务器可能有好几个外网IP地址, 也就可能有好几个节点.一般只有一个的...
+
+
+
+    📌 修改文件: 🔅 vi /root/shadowsocksr/user-config.json
+        "method":"aes-128-ctr",                  //加密方式,最好改成 aes-256-cfb. 很多客户端都不支持 ctr的!!!
+        "protocol": "auth_aes128_md5",           //修改成您要的协议插件名称. 一般不用改
+        "obfs": "tls1.2_ticket_auth_compatible", //修改成您要的混淆插件名称. 一般不用改
+
+
+
+🔵 服务端的运行与停止.
+        下面命令都是在 shadowsocksr 这个根目录下执行的.
+
+
+        📌 调试运行:   python server.py
+
+        这句运行代码主要用于调试，关闭ssh后ss后端自动关闭，所以正式使用请使用下面的脚本运行！如果需要停止请按Ctrl+C键终止程序。
+        这时可查看有运行情况，检查有没有错误。如果服务端没有错误，而连接不上，需要检查iptables或firewall(centos7)的防火墙配置
+
+
+        📌 通过脚本运行:
+            脚本位于 /shadowsocksr 根目录，如果你没有在这个目录，请先进入根目录cd shadowsocksr
+            请分清楚，根目录 /shadowsocksr 和子目录 /shadowsocksr/shadowsocks ！！！！！！！！！！！！！！！！
+
+            赋予所有脚本执行权限（执行一次就好）
+            chmod +x *.sh
+
+            后台运行 但不记录日志（ssh窗口关闭后也继续运行）
+            ./run.sh
+            后台运行 且 记录日志（ssh窗口关闭后也继续运行）
+            ./logrun.sh
+
+            查看 SS日志（用 logrun.sh 脚本启动才会打开日志）
+            ./tail.sh
+
+            停止运行
+            ./stop.sh
+
+            注：通过脚本运行默认日志会保存在根目录的ssserver.log，可手动查看。
+
+            如果日志文件太大，需要清理，可以用下面这个命令 清空 日志文件。
+            cat /dev/null > ssserver.log
+
+
+
+❌❌❌❌❌❌丫的 用管理员帐号是不能拿来翻墙的. 必须新注册个帐号      ❌❌❌❌❌
+❌❌❌❌❌❌sspanel → 用户中心 → 连接信息里面的自定义加密方式 为准.❌❌❌❌❌
+❌❌❌❌❌❌ss 后端里面的方式.还有 本地客户端的方式 都要改成 rc4-md5 ❌❌❌❌❌
+
+🔵 注册一个用户来测试
+        ❗️❗️❗️❗️ 去网页注册一个新用户.管理员账户是不能用来翻墙的.你可以试试看....
+
+        先生成注册码: 
+        邀请好友 → 输入邀请码数量: 5 → 点击生成 →  gB3vH4PWJFDq34hniyWhmBRCjunSUMw2
+        → 退出管理员账户 → 注册账户 → 填写信息 → xx 、xujian0219@126.com、2840..... 
+        → 登录新注册帐号 → 用户中心 → 
+        连接信息 ❗️❗️❗记录端口️,️ 记录密码️,️ 记录自定义加密方式️.️❗️
+
+        端口  1026 、 加密方式: rc4-md5 、  密码    JZrZe5
+
+        有这三个信息 就可以连接了!!!
+        ❗️❗️❗️❗️注意: 这里的自定义加密方式是 rc4-md5. 和 之前ss后端设置的加密方式是 aes-256-cfb 冲突了怎么办!!!
+        按照网页上的来, 去修改ss后端的加密方式为 rc4-md5 !!!!!
+        这个问题. 有空再解决. 先搭建起来再说.
+        🔅 vi /root/shadowsocksr/user-config.json
+        "method": "aes-256-cfb" 改成 "method": "rc4-md5"
+
+
+
+🔵 本地客户端设置: Mac: ShadowsSocksX-NG 
+    server → server preferences → 添加节点 →  
+       📌 address: 23.105.192.96  端口: 1026
+       📌 Encryption: rc4-md5
+       📌 Password:  JZrZe5
+
+        确保服务器上 后端的ss 服务是开启的!
+        然后就可以上google了!!!!
+        2017-04-2-18 亲测成功.
+        速度 起码300KB+ 我用的公共wifi 上限就是300. 所以实际只会更快
+
+
+
+
+
+再说一句. 这里整个翻墙系统就算搭建好了,请务必做快照备份!!!!!
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+其他 乱七八糟的..
+
+
+    自定义加密方式:
+    就是你节点是可以支持多种加密方式的.
+    开了自定义加密. 用户就可以在多种支持的方式中选择一种.
+    没开自定义 用户就只能使用你提供的某一种加密方式.
+
+    ❗️❗️❗️❗️❗️ 关闭自定义加密: 添加节点的时候自定义加密填0 ❗️❗️❗️❗️❗️
+
+
+    注意 如果你用 speclite  是不支持  aes-128-ctr 加密方式的.!!!
+    shadowsocksx-NG 也是不支持 aes-128-ctr 加密的.
+    所以 你要在服务器上 把加密方式改掉!!!!
+    改成 aes-256-cfb
+    然后重启ss 试试. 操 居然可以了....
+
+    sudo rm -r shadowsocksr  先删除之前的整个ss文件夹.
+
+
+
+
+    ❌❌❌❌❌❌❌❌
+    🔵 server_pool.py:166 IPV4 [Errno 98] Address already in use
+        开了两个. 前一个没有完全关闭.
+        运行 ./stop.sh   在启动就好了
+    🔵 common.py:236 unsupported addrtype 69, maybe wrong password or encryption method
+    密码错误 我就重新建个账户..丫的..
+
+    🔵 tcprelay.py:989 can not parse header when handling connection from
+    aes-256-cfb
+
+

@@ -1,0 +1,58 @@
+
+
+
+虚拟主机:
+没有域名可以跳过.
+
+
+
+数据库配置:
+
+先GitHub 下载ss-panel 最新面板文件. dowload zip 就可以了.
+然后解压  里面有5个sql文件.
+
+想办法连到vps上的数据库. 用这几个文件.来建立数据库.
+就会建立一个数据库 + 5个表.
+
+
+
+
+
+
+
+
+
+
+安装路径:
+    find / -name nginx.conf
+    find / -name php.ini
+    find / -name my.cnf
+    find / -name httpd.conf
+    这种方法会找出好几个文件. 要稍微判断下哪个是.
+
+    [root@localhost ~]# find / -name nginx.conf
+    /root/lnmp1.4/conf/nginx.conf
+    /root/lnmp1.4/lnmp1.3-full/conf/nginx.conf
+    /usr/local/nginx/conf/nginx.conf
+    [root@localhost ~]#
+
+
+
+
+
+❤️ PHP操作命令.
+
+service php-fpm restart //重新启动php
+chkconfig php-fpm on //设置php开机启动
+
+
+
+
+chattr +i .user.ini
+会让你删除不了文件. 先
+chattr -i .user.ini
+再删除.
+
+
+
+
