@@ -1,3 +1,43 @@
+🔵 注册页面:  www.0214.help
+
+🔵 免费邀请码: 
+
+    wuGrAVXmH4yxhRsRpqHHCKVJXP8kNXHg
+
+    rdiHchBcX4H5EVwSux6688MjwmUzfNkN
+
+    Uu6HsC6qBzE58EMqW9rkHXTUCuQ8HqQL	
+
+    jWSG2eEXewNeS22FNAbFa7U4SfxcDNQD
+
+
+        如遇到邀请码被使用. 
+        请发 imessage: xujian0219@126.com
+        有空就会更新的.
+
+
+🔵 使用方法:
+    注册 → 用户中心 → 查看连接信息 → 获取 端口、密码、加密方式
+    就可以使用了!!!!
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 ❤️ 项目简介:❤️
 
     📌 项目环境: 搬瓦工、openVZ、CentOS 6 X86.
