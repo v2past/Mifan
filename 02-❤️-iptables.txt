@@ -1,3 +1,16 @@
+❤️ 常用命令
+vps的防火墙就算你关闭了. 它会自动启动的...
+折腾的时候 尽量关闭防火墙.以免因为防火墙的原因导致出问题. 害你半天查不出原因...
+
+service iptables stop/restart/start
+
+开发某端口:
+iptables -A INPUT -p tcp --dport 22 -j ACCEPT
+
+
+
+
+
 ❤️ 简介
 
     ❗️❗️❗️ Usage: iptables {start|stop|reload|restart|condrestart|status|panic|save} ❗️❗️❗️

@@ -1,0 +1,246 @@
+❗️❗️❗️❗️❗️❗️ FRP/Ngrok 等等各种内网穿透工具原理都是反向代理❗️❗️❗️❗️❗️❗️
+❗️❗️❗️❗️❗️❗️     强烈推荐 FRP. 搭建和使用比Ngrok简单多了   ❗️❗️❗️❗️❗️❗️
+
+
+❤️ 简介:
+
+        服务器域名: www.0214.help
+        服务器IP: 23.105.192.96
+
+        本地客户端 网页端口: 80
+        本地客户端 ssh端口: 22
+
+        目的: 任何电脑可以通过: www.0214.help:8080 来访问本地客户端上的网站.端口可自定义.
+
+
+
+
+
+
+
+
+
+🔵 FRP 实现原理:
+    公网服务器长期运行FRP服务端的服务.
+    内网客户端长期运行FRP客户端的服务.
+    所以公网服务器和内网客户端就建立了一个长期的连接.
+
+    服务器事先设置这个服务器的端口A 绑定到内网客户端的某个端口B.
+    外网用户先去访问公网服务器特定端口A，就相对于访问内网客户端的端口B.
+    服务器就相对于一个 传话的. 中转站.
+
+
+
+🔵 FRP 中文官方教程   https://github.com/fatedier/frp/blob/master/README_zh.md
+
+
+
+
+🔵 必知内容
+    官方下载地址 https://github.com/fatedier/frp/releases
+    里面有各平台的安装包.
+
+    你有自己的服务器: 可以选择自己搭建FRP服务器.
+    你没自己的服务器: 可以选择使用别人的FRP服务器. 网上有免费的.
+
+
+    🔸自己搭FRP服务器.
+        服务器: CentOS
+            就去官网下载 Linux 的安装包 并 解压
+            将 frps 及 frps.ini 放到有公网 IP 的机器上。也就是服务器上.
+
+        客户端: Mac 
+            就去官网下载 Mac 的安装包并解压.
+            4. 将 frpc 及 frpc.ini 放到处于内网环境的机器上。也就是客户端上.
+
+    🔸使用别人的FRP 服务器.
+        官网下载自己电脑对应的客户端.
+        安装别人提供的配置进行修改就可以了
+
+
+
+🔵 详细搭建流程
+    注: 服务器:Centos X86 ; 客户端:Mac
+
+🔸 服务器配置
+    想办法把 frp_0.9.3_linux_386.tar.gz 这个压缩包里面的frps 及 frps.ini放到服务器上就可以.
+    可以直接服务器上下载 解压, 也可以先下载到Mac 然后用FTP工具或者scp命令上传.
+
+    这里示范服务器直接下载解压.
+    先去官网获取CentOS X86 对应的下载链接.
+    https://github.com/fatedier/frp/releases/download/v0.9.3/frp_0.9.3_linux_386.tar.gz
+
+    SSH到服务器. 并利用 wget + 网址来下载文件
+
+    wget https://github.com/fatedier/frp/releases/download/v0.9.3/frp_0.9.3_linux_386.tar.gz
+
+    然后解压. 解压很简单的 tar -xzf 加上压缩包名就可.
+    tar -xzf frp_0.9.3_linux_386.tar.gz
+
+    保留 frps 及 frps.ini 两个文件. 其他删了吧.服务器清爽点好.
+    
+    frps 这个是主程序. 需要执行权限的. 没有就 chmod +x frps 来添加权限.
+    frps.ini 是配置文件. 一般都是修改这个文件的.
+        建议直接清空里面的内容 , 直接复制我的内容.
+===============================================================================
+
+[common]
+bind_port = 7000
+vhost_http_port = 8080
+privilege_mode = true
+privilege_token = keuqricjswosdpfk
+privilege_allow_ports = 50000-60000
+max_pool_count = 100
+dashboard_port = 5500
+dashboard_user = admin
+dashboard_pwd = admin
+
+
+[web]
+type = http
+auth_token = 123
+custom_domains = www.0214.help
+
+===============================================================================
+
+主要就是两行: 
+    📌 vhost_http_port = 8080
+    📌 custom_domains = www.0214.help
+        搭建完成后可以用 www.0214.help:8080 访问本地Mac上的http网页
+
+
+
+简介: 
+
+[common]
+bind_port = 7000                           # 服务器监听端口
+vhost_http_port = 8080                     # http协议穿透时使用的端口
+privilege_mode = true                      # 以特权模式运行
+privilege_token = keuqricjswosdpfk         # 这个值随意填写，但是要与客户端的值相同
+privilege_allow_ports = 50000-60000        # 端口白名单，只有这个范围内的端口可以被使用
+max_pool_count = 100
+dashboard_port = 5500                      # 管理面板的端口号               
+dashboard_user = admin                     # 管理面板的用户名
+dashboard_pwd = admin                      # 管理面板的密码
+
+
+[common]部分是必须有的配置，
+其中bind_port是自己设定的frp服务端端口，
+vhost_http_port是自己设定的http访问端口。
+
+[ssh]部分是ssh反向代理，
+listen_port是自己设定的ssh访问端口，
+auth_token用于身份认证（以下皆是）。
+（如果只需要建立ssh反向代理，那么服务端和客户端下面的http反向代理部分都可以删去。）
+
+
+[nas]部分是http反向代理
+（❗️❗️ 这里[]里的内容可以自己设定，但是客户端和服务端必须要对应。❗️❗️）；
+type为服务类型，可以设为https；
+custom_domains为要映射的域名，记得域名的A记录要解析到外网主机的IP。
+
+[web]部分同上，
+这里创建了两个http反向代理是为了分别映射群晖两个重要的端口，5000和80，
+前者用于登录群晖管理，后者用于群晖的Web Station和DS Photo。
+
+
+
+
+
+
+
+        然后保存
+        然后启动访问.
+
+        ./frps -c ./frps.ini
+        这个不会后台运行. 你关闭ssh就退出了.
+
+
+        nohup ./frps -c ./frps.ini &
+
+
+
+
+
+
+🔸 客户端配置
+
+1. 官网下载 Mac 对应的版本 frp_0.9.3_darwin_amd64.tar.gz
+    Mac 其实就是 darwin .注意了. 很多安装包都不写Mac 而是写 darwin 的
+
+2. 解压得到7个文件:
+    LICENSE、frpc、frpc.ini、frpc_min.ini、frps、frps.ini、frps_min.ini
+
+4. 保留 frpc 及 frpc.ini 两个文件. 其他文件删了吧.
+    注意这个两个文件 不能删除. 要长期在电脑上的.
+
+
+
+5. 编辑 frpc.ini 文件.
+也建议直接清空文件. 复制我的.
+
+===============================================================================
+
+[common]
+server_addr = 23.105.192.96
+server_port = 7000
+
+# console or real logFile path like ./frpc.log
+log_file = ./frpc.log
+log_level = info
+log_max_days = 3
+
+# for authentication
+auth_token = 123
+
+# for privilege mode
+privilege_token = 12345678
+
+
+[web]
+type = http
+local_ip = 127.0.0.1
+local_port = 80
+
+===============================================================================
+
+主要就是配置服务器的IP地址. 服务器的域名. 和本地web模块对应的端口.
+ server_addr = 23.105.192.96
+ local_port = 80
+
+
+启动 frpc：
+./frpc -c ./frpc.ini
+
+后台启动:
+nohup ./frps -c ./frps.ini &
+权限不够给权限
+
+
+到这里就完成了. 
+现在可以用 www.0214.help:8080 就访问到Mac上面的网页了.
+
+
+
+
+❤️ 控制台:
+
+    FRP 自带网页控制台的.
+
+                    dashboard_port = 5500
+                    dashboard_user = admin
+                    dashboard_pwd = admin
+    服务器设置文件里面的 这几个参数就是设置控制台的.
+    http://www.0214.help:5500/
+    然后 输入 admin admin 就登录进去了.
+
+
+
+
+
+
+
+
+
+
+其他参考网站:    http://www.jianshu.com/p/e8e26bcc6fe6

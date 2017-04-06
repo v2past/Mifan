@@ -263,3 +263,185 @@ Shadowsocks  最常见了. 不怎么好, 但是配置简单.
 
 
 
+
+是一个网页服务器， 性能高.多进程模式
+
+启动后 会有 一个 master 和 多个 worker 进程
+master 管理 worker 
+
+
+
+
+它能反向代理HTTP, HTTPS, SMTP, POP3, IMAP的协议链接，以及一个负载均衡器和一个HTTP缓存
+
+版本: nginx -v
+
+相较于Apache、lighttpd具有占有内存少，稳定性高等优势。
+
+整体采用模块化设计是nginx的一个重大特点，甚至http服务器核心功能也是一个模块。要注意的是：nginx的模块是静态的，添加和删除模块都要对nginx进行重新编译，这一点与Apache的动态模块完全不同。
+
+
+其特点是占有内存少，并发能力强，事实上nginx的并发能力确实在同类型的网页服务器中表现较好，中国大陆使用nginx网站用户有：百度、新浪、网易、腾讯等。
+
+
+
+
+
+
+
+
+?????
+🔸??????  vim /etc/dovecot/conf.d/10-ssl.conf
+  ssl = no
+  //禁用ssl认证:
+
+
+posfix使用方法
+/etc/rc.d/init.d/postfix start/stop/status/restart
+Dovecot使用方法
+/etc/rc.d/init.d/dovecot start/stop/status/restart
+服务端日志目录：
+cat /var/log/maillog
+
+
+
+
+
+
+
+
+===============
+
+域伪装。
+这是为了解决邮件地址采用用户名@域名这个问题的。
+通过myorigin选项配置伪装地址： postconf -e "myorigin = $mydomain"
+
+
+
+配置SSL
+如果不配置ssl的话，邮件在网络上通过明文传输，安全性极低，所以ssl是非常有必要的
+
+
+
+
+
+
+⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️
+ns 名称服务记录  也用0214.help   得到两个 dns....
+mx 邮件交换记录 用0214.help 查: → mail.0214.help
+
+
+
+
+
+MX 邮件服务器记录
+NS 名字服务器记录
+PTR 反向记录
+
+
+
+
+
+查询dns 记录
+
+
+⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️
+
+A 地址记录(Ipv4)
+AAAA 地址记录（Ipv6）
+CNAME 别名记录
+HINFO 硬件配置记录，包括CPU、操作系统信息
+ISDN 域名对应的ISDN号码
+MB 存放指定邮箱的服务器
+MG 邮件组记录
+MINFO 邮件组和邮箱的信息记录
+MR 改名的邮箱记录
+MX 邮件服务器记录
+NS 名字服务器记录
+PTR 反向记录
+RP 负责人记录
+SRV TCP服务器信息记录
+TXT 域名对应的文本信息
+
+比如你要查询tool.chinaz.com的A记录,那在命令符提示窗口输入：nslookup -qt=a tool.chinaz.com 则可以查到相应的记录
+如何使用指定DNS服务器查询?
+语法为 nslookup -qt=类型 目标域名 指定的DNS服务器IP或域名
+例子：nslookup -qt=A tool.chinaz.com 8.8.8.8
+
+
+
+比如 mail.itr.cn
+这是邮箱. 一般直接查 itr.cn 的mx记录 
+
+✘✘∙𝒗 Desktop nslookup -qt=MX itr.cn
+*** Invalid option: qt=MX
+Server:		202.96.209.5
+Address:	202.96.209.5#53
+
+Non-authoritative answer:
+Name:	itr.cn
+Address: 54.238.196.244
+
+
+扫描 ip
+✘✘∙𝒗 Desktop nmap 54.238.196.244
+
+Starting Nmap 7.25BETA1 ( https://nmap.org ) at 2017-04-05 22:22 CST
+Nmap scan report for ec2-54-238-196-244.ap-northeast-1.compute.amazonaws.com (54.238.196.244)
+Host is up (0.35s latency).
+Not shown: 995 filtered ports
+PORT     STATE  SERVICE
+21/tcp   closed ftp
+22/tcp   open   ssh
+80/tcp   open   http
+443/tcp  closed https
+8080/tcp closed http-proxy
+
+Nmap done: 1 IP address (1 host up) scanned in 96.26 seconds
+
+
+
+
+
+用网页解析出来的..202.177.31.253(中国香港)	
+
+✘✘∙𝒗 Desktop nmap 202.177.31.253
+
+Starting Nmap 7.25BETA1 ( https://nmap.org ) at 2017-04-05 22:27 CST
+Nmap scan report for mail.itr.cn (202.177.31.253)
+Host is up (0.099s latency).
+Not shown: 988 filtered ports
+PORT     STATE  SERVICE
+25/tcp   open   smtp
+53/tcp   closed domain
+80/tcp   open   http
+110/tcp  open   pop3
+143/tcp  open   imap
+366/tcp  open   odmr
+389/tcp  closed ldap
+465/tcp  open   smtps
+587/tcp  open   submission
+993/tcp  open   imaps
+995/tcp  open   pop3s
+1000/tcp open   cadlock
+
+Nmap done: 1 IP address (1 host up) scanned in 11.42 seconds
+
+
+一看就是这个啊..  有25端口的...
+
+
+
+✘✘∙𝒗 Desktop nslookup -qt=MX mail.itr.cn
+*** Invalid option: qt=MX
+Server:		202.96.209.5
+Address:	202.96.209.5#53
+
+Non-authoritative answer:
+Name:	mail.itr.cn
+Address: 202.177.31.253
+
+
+
+
+
