@@ -4,9 +4,12 @@ vps的防火墙就算你关闭了. 它会自动启动的...
 
 service iptables stop/restart/start
 
-开发某端口:
-iptables -A INPUT -p tcp --dport 22 -j ACCEPT
+开放某端口:
+    iptables -A INPUT -p tcp --dport 22 -j ACCEPT
 
+
+开放多个连续端口
+    iptables -A INPUT -p tcp --dport 1025:1200 -j ACCEPT
 
 
 
