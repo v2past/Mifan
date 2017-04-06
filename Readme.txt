@@ -6,17 +6,13 @@
 
 
     Uu6HsC6qBzE58EMqW9rkHXTUCuQ8HqQL	✔︎
-
-
     PpD32dTK2uXMxdb4Sq45Zidu49WqkTKR   ✔︎
-
-
     aWQqRPUFPkYCLxUX9ERAvQguZHrSfhH2	 ✔︎
+    公共邀请码地址:   http://www.0214.help/code
 
 
-
-
-
+    有问题联系   qq 285730285
+    或者发邮件到 xx2610@gmail.com
 
 
 
@@ -25,7 +21,6 @@
 🔵 使用方法:
    网站注册 → 用户中心 → 查看连接信息 → 获取 端口、密码、加密方式 → 使用.
 
-🔵 如遇邀请码被使用完. 请发 imessage: xujian0219@126.com
 
 🔵 最详细的中文搭建教程: 看SS—Panel+SSR.txt.  亲测可用.
 
