@@ -1,0 +1,159 @@
+  vpn服务器. pptp.
+
+
+🔵  检测
+
+  cat /dev/net/tun
+如果这条指令显示结果为下面的文本，则表明通过：
+cat: /dev/net/tun: File descriptor in bad state
+就能安装pptp。否则就只能考虑openvpn。
+
+
+
+🔵 安装ppp 和 iptables
+    yum install -y perl ppp iptables 
+
+
+安装 pptpd
+
+根据ppp 版本 选择对应的 pptpd
+ppp 2.4.4——————>pptpd 1.3.4
+ppp 2.4.5——————>pptpd 1.4.0
+
+查看 ppp 版本:
+yum list installed ppp
+我们是 2.4.5 所以选择 pptpd 1.4.0
+
+
+第一种安装pptpd的方法
+    是直接用yum安装，让电脑自动选择对应的版本：
+
+    先加入yum源：
+    rpm -Uvh http://poptop.sourceforge.net/yum/stable/rhel6/pptp-release-current.noarch.rpm
+
+    然后用yum安装pptpd：
+    yum install pptpd
+
+
+
+
+🔵 配置
+
+cp /etc/ppp/options.pptpd /etc/ppp/options.pptpd.bak
+先备份.
+
+
+vi /etc/ppp/options.pptpd
+添加下面两行就可以了
+ms-dns 8.8.8.8
+ms-dns 8.8.4.4
+
+
+
+
+
+cp /etc/ppp/chap-secrets   /etc/ppp/chap-secrets.bak
+vi /etc/ppp/chap-secrets
+
+xx pptpd oo *
+
+//格式: 帐号. 密码. 星号表示任何ip. 必须有.
+// xx 就是帐号  oo 就是密码.  改成你自己的就可以.
+// xj... xj
+
+
+
+
+
+cp /etc/pptpd.conf     /etc/pptpd.conf.bak
+vi /etc/pptpd.conf
+添加下面两行：
+localip 192.168.9.1
+remoteip 192.168.9.11-30 //表示vpn客户端获得ip的范围
+
+关键点：pptpd.conf这个配置文件必须保证最后是以空行结尾才行，否则会导致启动pptpd服务时
+
+
+
+
+
+
+vi /etc/sysctl.conf 
+//修改内核设置，使其支持转发
+将net.ipv4.ip_forward = 0 改成 net.ipv4.ip_forward = 1
+/sbin/sysctl -p
+
+
+第四步：启动pptp vpn服务和iptables
+/sbin/service pptpd start 
+service pptpd start
+
+
+
+启动iptables和nat转发功能，很关键的呀：
+
+/sbin/service iptables start 
+//启动iptables
+
+
+
+iptables -t nat -A POSTROUTING    -s 192.168.9.0/24 -j SNAT --to-source 23.105.192.96
+你需要将207.210.83.140替换成你的vps的公网ip地址，因为这里我写的是我的。
+
+
+/etc/init.d/iptables save 
+//保存iptables的转发规则
+/sbin/service iptables restart 
+//重新启动iptables
+
+
+
+最后一步：重启pptp vpn
+
+service pptpd restart
+
+
+
+
+
+#chkconfig pptpd on //开机启动pptp vpn服务
+#chkconfig iptables on //开机启动iptables
+
+
+
+Mac 连接pptp.
+Mac 10.12 没有pptp了.
+这个协议有安全问题...
+建议用.... l2tp 或者 openvpn.
+
+
+办法还是有的 安装 shimo 这个软件.
+输入ip. 帐号密码
+加密方式选择 无....
+
+
+前提是你pptp服务器搭建好了啊...
+
+
+
+连不上 .
+首先 nmap 查看服务器开发端口
+pptp用的...1723 端口.
+
+然后关闭服务器防火墙.
+
+
+
+
+A general error occured. Please get in contact with the support from Feingeist.
+
+出错...
+
+
+
+
+
+
+
+
+

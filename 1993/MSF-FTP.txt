@@ -1,0 +1,40 @@
+本机iP: 101.225.78.86
+
+
+netstat -nr 
+查看本机网段.
+
+nmap 网段内活动主机
+    nmap -sP 101.225.72/21
+
+    怎么找出 活动主机中的... 服务器.
+
+    Starting Nmap 7.25BETA1 ( https://nmap.org ) at 2017-04-10 11:17 CST
+    Nmap scan report for 101.225.72.3
+    Host is up (0.089s latency).
+    Nmap scan report for 101.225.72.6
+    Host is up (0.12s latency).
+    Nmap scan report for 101.225.72.11
+    Host is up (0.11s latency).
+    Nmap done: 24 IP addresses (3 hosts up) scanned in 17.88 seconds
+
+
+也可以直接用 nessus 来扫描网段...
+
+
+然后呢...
+针对某电脑 进行....xxoo
+
+
+
+
+
+
+
+
+
+
+
+利用上面Nmap的扫描结果，选取192.168.20.4上所运行的3Com 3CDaemon FTP Server为攻击目标。通过前面的扫描可以得到目标主机运行的操作系统及应用程序版本的详细信息，如图4所示，在Metasploit Framework里搜索针对3CDaemon的攻击脚本：
+
+

@@ -1,0 +1,92 @@
+最好的 系统侦查工具:  xprobe2
+系统只要大概判断出Linux 还是win 还是Mac 就可以了. 不用很准确的.
+但是一旦涉及到某个软件 就必须知道详细版本了.
+不同的版本有不同的漏洞的!!!!
+所以对方的系统不必纠结. 知道大概就好.
+Nessus 可以准确查出对方系统的!!! 好用多了...
+
+
+https://www.aldeid.com/wiki/Xprobe2
+
+依赖环境: gcc、libsui++、lipcap
+
+    lipcap安装:
+
+        1.安装GCC：
+          yum -y install gcc-c++
+
+        2.安装flex： 
+          yum -y install flex 
+          没有flex，直接安装libpcap会提示"Your operating system's lex is insufficient to compile libpcap"错误；
+
+        3.安装bison
+          yum -y install bison
+          前面安装的是flex，就需要搭配bison，如不会提示"don't have both flex and bison;reverting to lex/yacc"错误；
+
+        4.安装 libpcap
+          下载地址：http://www.tcpdump.org/
+          下载版本：wget -c http://www.tcpdump.org/release/libpcap-1.5.3.tar.gz
+
+          tar zxf libpcap-1.5.3.tar.gz
+          cd libpcap-1.5.3/
+          ./configure
+          make && make install
+
+
+
+
+wget https://cytranet.dl.sourceforge.net/project/xprobe/xprobe2/Xprobe2%200.3/xprobe2-0.3.tar.gz
+
+tar xvfz xprobe2-0.3.tar.gz && cd xprobe2-0.3
+./configure
+make && make install
+
+
+这里必须注意.  make的时候 很可能会报错!!!
+
+需要在解压出来的文件夹内修改几个文件!!! 
+
+🔸vi libs-external/USI++/src/ip.cc
+    After line 15: #include "config.h" add;
+    #include <cstdlib>
+
+    Save and exit
+
+🔸vi libs-external/USI++/src/misc.cc
+    After line 2: #include "usi++/usi-structs.h" add;
+    #include <cstdlib>
+
+    Save and exit
+
+🔸vi libs-external/USI++/usi++/tcp.h
+    After line 17: #include "ip.h" add;
+    #include <cstring>
+
+    Save and exit
+
+🔸make clean
+🔸make
+🔸make install
+
+
+
+然后就可以使用了!!
+
+
+
+
+
+
+
+
+
+
+
+❤️ xprobe-ng
+现在最新版本的 是xprobe-ng
+不过找不到地方下...奇怪了 算了..
+
+
+
+
+❗️❗️❗️❗️❗️Mac 就算安装好了 使用也有问题...建议直接用 kali 或者vps上安装这个....

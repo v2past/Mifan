@@ -1,0 +1,173 @@
+ip段:
+	
+  10.1.182.12 
+  10.1.182.1/24
+
+
+先扫描出 扫描活动的主机....
+
+
+先进行系统扫描..
+
+nmap 先扫描5个.
+
+
+
+
+🔵 主机发现
+一般不需要扫描机器的所有端口.
+我们只对服务器有兴趣. 
+
+
+
+nmap -sP 101.255.78.0/24
+-sP (Ping扫描)
+只简单扫描对方是否开机. 不进行端口扫描!! 扫描端口很费时间的.
+
+
+
+✘✘∙𝒗 Desktop nmap -sP 101.255.78.0/24
+
+
+Starting Nmap 7.25BETA1 ( https://nmap.org ) at 2017-04-10 10:38 CST
+Nmap scan report for 101.255.78.1
+Host is up (0.67s latency).
+Nmap scan report for 101.255.78.2
+Host is up (0.45s latency).
+Nmap done: 256 IP addresses (2 hosts up) scanned in 26.82 seconds
+
+公共wifi一般都进行 隔离的??
+怎么办...
+
+
+
+
+
+✘✘∙𝒗 Desktop nmap -sP  10.1.182.1/24
+
+
+Starting Nmap 7.25BETA1 ( https://nmap.org ) at 2017-04-10 10:41 CST
+Nmap scan report for 10.1.182.12
+Host is up (0.0032s latency).
+Nmap scan report for 10.1.182.250
+Host is up (0.013s latency).
+Nmap done: 256 IP addresses (2 hosts up) scanned in 34.87 seconds
+✘✘∙𝒗 Desktop
+
+丫的 上图 也进行隔离的 好像.
+看看10.1.182.250 是什么
+
+✘✘∙𝒗 Desktop nmap 10.1.182.250
+
+
+Starting Nmap 7.25BETA1 ( https://nmap.org ) at 2017-04-10 10:43 CST
+Note: Host seems down. If it is really up, but blocking our ping probes, try -Pn
+Nmap done: 1 IP address (0 hosts up) scanned in 3.09 seconds
+
+防ping的还是.... 祭出神参数 -Pn
+
+✘✘∙𝒗 Desktop nmap -Pn 10.1.182.250
+
+
+Starting Nmap 7.25BETA1 ( https://nmap.org ) at 2017-04-10 10:44 CST
+Nmap scan report for 10.1.182.250
+Host is up (0.0063s latency).
+Not shown: 985 filtered ports
+PORT     STATE  SERVICE
+17/tcp   open   qotd
+21/tcp   open   ftp
+80/tcp   open   http
+389/tcp  closed ldap
+443/tcp  open   https
+636/tcp  closed ldapssl
+1723/tcp open   pptp
+2323/tcp closed 3d-nfsd
+5080/tcp closed onscreen
+8080/tcp open   http-proxy
+8081/tcp open   blackice-icecap
+8082/tcp open   blackice-alerts
+8083/tcp closed us-srv
+8088/tcp open   radan-http
+8888/tcp closed sun-answerbook
+
+Nmap done: 1 IP address (1 host up) scanned in 10.66 seconds
+
+
+
+先看操作系统!!
+
+✘✘∙𝒗 Desktop sudo nmap -O 10.1.182.250
+
+Password:
+
+Starting Nmap 7.25BETA1 ( https://nmap.org ) at 2017-04-10 10:45 CST
+Nmap scan report for 10.1.182.250
+Host is up (0.0048s latency).
+Not shown: 985 filtered ports
+PORT     STATE  SERVICE
+17/tcp   open   qotd
+21/tcp   open   ftp
+80/tcp   open   http
+389/tcp  closed ldap
+443/tcp  open   https
+636/tcp  closed ldapssl
+1723/tcp open   pptp
+2323/tcp closed 3d-nfsd
+5080/tcp closed onscreen
+8080/tcp open   http-proxy
+8081/tcp open   blackice-icecap
+8082/tcp open   blackice-alerts
+8083/tcp closed us-srv
+8088/tcp open   radan-http
+8888/tcp closed sun-answerbook
+MAC Address: 00:1A:1E:01:C8:E0 (Aruba Networks)
+Device type: general purpose
+Running (JUST GUESSING): Linux 2.6.X (86%)
+OS CPE: cpe:/o:linux:linux_kernel:2.6.26
+Aggressive OS guesses: Linux 2.6.26 (PCLinuxOS) (86%)
+No exact OS matches for host (test conditions non-ideal).
+Network Distance: 1 hop
+
+OS detection performed. Please report any incorrect results at https://nmap.org/submit/ .
+Nmap done: 1 IP address (1 host up) scanned in 16.39 seconds
+
+
+Linux的.....
+再来分析端口:
+
+
+借助就是 漏洞扫描了... 用nessus.
+分析只有三个 ssl 的中级漏洞...
+
+一个是ssl证书 使用弱算法.
+SHA-1 With RSA Encryption
+SHA-1 是什么
+RSA是什么
+
+
+SHA1：公钥后处理回传
+RSA：非对称加密，有公钥和私钥
+
+
+SHA-1算法目前尚未发现严重的弱点，但伪造证书所需费用正越来越低。
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,152 @@
+
+❤️ CentOS 6 安装
+
+🔵 安装依赖:
+
+    yum groupinstall 'Development Tools'
+
+    yum install sqlite-devel libxslt-devel libxml2-devel java-1.7.0-openjdk libpcap-devel nano openssl-devel zlib-devel libffi-devel gdbm-devel readline-devel nano wget
+
+
+🔵 安装ruby:
+    先安装 yaml. 再安装ruby.
+
+    🔸 yaml 安装: 
+        cd /usr/src
+        wget http://pyyaml.org/download/libyaml/yaml-0.1.6.tar.gz
+        tar zxvf yaml-0.1.6.tar.gz 
+        cd yaml-0.1.6
+        ./configure --prefix=/usr/local
+        make && make install
+
+
+    🔸 ruby 安装
+
+        cd /usr/src
+        wget http://ftp.ruby-lang.org/pub/ruby/2.2/ruby-2.2.1.tar.gz
+        tar zxvf ruby-2.2.1.tar.gz
+        cd ruby-2.2.1
+        ./configure --prefix=/usr/local --with-opt-dir=/usr/local/lib
+        make && make install
+
+
+🔵 安装 Nmap
+
+    cd /usr/src  svn co https://svn.nmap.org/nmap
+    cd nmap && ./configure
+    make && make install && make clean
+
+
+
+🔵 安装 Postgresql
+
+        下载
+        exclude=postgresql*
+        wget https://download.postgresql.org/pub/repos/yum/9.4/redhat/rhel-6-i386/pgdg-centos94-9.4-3.noarch.rpm
+
+        rpm -ivh pgdg-centos94-9.4-3.noarch.rpm
+
+        yum update
+        yum install postgresql94-server postgresql94-devel postgresql94
+
+
+        现在开始初始化服务器并将其配置为自动启动，命令如下
+        service postgresql-9.4 initdb
+        service postgresql-9.4 start
+        chkconfig postgresql-9.4 on
+
+
+        因为编译ruby所必须的gem时，需要把新安装的加入路径，这样编译器就能找到库和二进制文件，接下来需要执行几个命令：
+
+        echo export PATH=/usr/pgsql-9.4/bin:\$PATH >> /etc/bashrc
+            // 如果你用的是zsh 就修改 .zhsrc
+            // 添加这行内容进去就可以  export PATH=/usr/pgsql-9.4/bin:$PATH
+        source ~/.bashrc
+            // 这个是重新加载 bash的意思. 
+            // source ~/.zshrc
+
+
+        接下来，切换到Postgresql用户，
+        这样就可以创建我们将要用于Metasploit的用户名和数据库了，命令如下：
+
+        su - postgres
+
+
+        现在开始创建用户和数据库,这些都将在database.yml中使用到。命令如下：
+        createuser msf -P -S -R -D     // 记住自己的的密码. 我是 xujian
+        createdb -O msf msf
+        exit
+
+
+
+        为了允许我们创建的用户能够连接Postgresql，我们需要设置一下pg_hba.conf文件，命令如下：
+            vi /var/lib/pgsql/9.4/data/pg_hba.conf
+
+            local msf msf md5
+            hostmsf msf 127.0.0.1/8 md5
+            hostmsf msf ::1/128 md5
+
+
+            设置好了之后，重启服务：
+            service postgresql-9.4 restart
+            这里你设置不对 就会启动不了!!!
+            我我们就不该.
+            不就是连接服务器上的数据库么.
+            navicast 可以通过ssh 先登录到服务器. 再连接到数据库.
+            这样就不用该这个设置了..
+
+
+
+
+
+🔵 安装Metasploit框架.
+
+我们需要再安装一些Metasploit依赖的Ruby库，命令如下：
+
+gem install wirble pg sqlite3 msgpack activerecord redcarpet rspec simplecov yard bundler
+
+
+🔸 使用Git下载最新的Metasploit，命令如下：
+    cd /opt
+    git clone https://github.com/rapid7/metasploit-framework.git
+    cd metasploit-framework
+
+
+
+🔸 为了在终端下也能运行，这样就不仅仅只在Metasploit的文件中运行。我们需要创建软链接。
+
+    bash -c 'for MSF in $(ls msf*); do ln -s /opt/metasploit-framework/$MSF /usr/local/bin/$MSF;done'
+    ln -s /opt/metasploit-framework/armitage /usr/local/bin/armitage
+
+
+🔸 在终端下，进入Metasploit的文件中，使用Bundler Gem来安装合适的Gem版本：
+    bundle install
+
+
+🔸 创建Metasploit框架将要使用的database.yml，命令如下：
+
+    vi /opt/metasploit-framework/database.yml
+        database.yml中的具体内容如下：
+            production:
+            adapter: postgresql
+            database: msf
+            username: msf
+            password: 
+            host: 127.0.0.1
+            port: 5432
+            pool: 75
+            timeout: 5
+
+
+
+        再次执行以下命令，这样就能通过Armitage和msfconsole在当前shell中创建和加载环境变量：
+
+        echo export MSF_DATABASE_CONFIG=/opt/metasploit-framework/database.yml >> /etc/bashrc
+        source ~/.bashrc
+
+
+        msfconsole  运行msf
+        然后服务器重启 输入 msfconsole 看看能不能进去..
+
+
+

@@ -1,0 +1,141 @@
+❤️️ 简介
+
+    企业云盘, 官网：https://www.seafile.com/download/
+
+
+    🔸准备工作:
+        安装好LNMP环境就搭建好 mysql数据库.和 nginx了. 详情参考:vps.txt
+        Python 升级:  参考 Python-update.txt
+
+        需要用到数据库:  个人建议用 SQLite、企业建议用 MySQL 
+        需要Web服务器:   Nginx 或者 Apache 
+        python 2.7+
+
+
+❤️ 安装:
+
+
+🔵 下载 seafile-server 到/root目录.
+wget http://seafile-downloads.oss-cn-shanghai.aliyuncs.com/seafile-server_6.0.9_i386.tar.gz
+
+mkdir seafile                               🔅 root目录下新建个seafile文件夹
+mv seafile-server_* seafile                 🔅 移动压缩包到 seafile 文件夹中; 星号:匹配.
+cd seafile && tar -xzf seafile-server_*     🔅 cd到 seafile 并解压文件
+cd seafile-server-6.0.9 
+
+
+这里就有选择了
+./setup-seafile.sh           用sqlite3 来当数据库 然后开始安装 seafile 服务器.
+./setup-seafile-mysql.sh     用mysql   来当数据库 然后开始安装 seafile 服务器.
+
+我们选择mysql.这里安装过程首先会检查一些依赖.没有的自己安装!!!
+
+
+
+
+
+ python-imaging  is not installed, Please install it first.
+🔵 安装 Python Imaging :
+    有个python的我们都用 pip来安装 方便很多.
+    图型处理库Python Imaging Library(PIL)
+    由于PIL基本挂了. 我们用 pillow 来代替.
+   🔅 pip install Pillow
+   
+
+    或者你可以现在手动下载编译 Python Imagin
+        wget http://effbot.org/downloads/Imaging-1.1.7.tar.gz
+
+        tar xvf Imaging-1.1.7.tar.gz
+        cd Imaging-1.1.7
+        python setup.py install
+
+
+
+ python-mysqldb  is not installed, Please install it first.
+🔵 安装 MySQL-python
+    seafile 需要用到数据库.
+    你可以选择用 sqlite数据库. 也可以选择用 mysql数据库.
+    还是mysql吧.   
+    seafile 安装程序就是用 python写的.
+    python 要操作mysql 就得安装 mysqldb 这个东西. 通过这个才能操作mysql数据库.
+    ❗❗️❗️要用pip安装 MySQL-python. 必须先安装 python-devel、mysql-devel
+
+    yum install python-devel
+    yum install mysql-devel
+    pip install MySQL-python
+
+
+
+
+
+
+🔵 安装seafile主程序
+ python setup-seafile-mysql.py
+
+
+1. 输入 server name   
+2. 服务器IP/域名       
+3. 文件存放路径:       
+4. 选择端口:           
+5. 数据库.             
+6. 数据库服务器地址.     
+7. 数据库端口.            
+8. root 的密码.... 
+9. 创建用户名:              
+10 给 seafile 用户创建密码:  xujian
+11 创建ccnetserverd 数据库名: 叫File
+12 创建seafile-server 数据库名: File2
+13 创建seahub 的数据库名: File3
+
+
+This is your configuration
+---------------------------------
+
+    server name:            xujian
+    server ip/domain:       www.0214.help
+
+    seafile data dir:       /root/seafile/seafile-data
+    fileserver port:        8082
+
+    database:               create new
+
+    database user:          seafile
+    xujian
+
+    ccnet database:         默认
+    seafile database:       默认
+    seahub database:        默认
+
+
+❌ Error: Failed to init seahub database: Specified key was too long; max key length is 1000 bytes
+
+丫的... ...  决定放弃了. 至少 mysql5.5 ... 不行..懒得折腾了.
+
+
+
+./seafile.sh start # 启动 seafile 服务
+./seahub.sh start # 启动 seahub 网站 （默认运行在8000端口上）
+
+
+
+
+
+❌ LC_ALL is not set in ENV, set to en_US.UTF-8
+    Linux 用 locale 来设置程序运行的不同的语言环境.
+
+    命名规则为<语言>_<地区>.<字符集编码>
+    zh_CN.UTF-8，zh代表中文，CN代表大陆地区，UTF-8表示字符集。
+
+    LC_ALL
+    它是一个宏，如果该值设置了，则该值会覆盖所有LC_*的设置值。注意，LANG的值不受该宏影响。
+    哪里去设置呢.
+
+    每次装东西都会出现  LC_ALL未设置。
+    只能通过export LC_ALL=C 来缓解，而且重启后又会丢失
+    vi ~/.zshrc  添加下面行就可以了 
+    export LC_ALL="en_US.UTF-8"
+
+
+
+
+

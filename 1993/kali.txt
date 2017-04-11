@@ -1,0 +1,56 @@
+kali 开启ssh功能.
+
+
+
+🔵 IP 设置.
+网络设置成Nat. 
+也就是vmware 会虚拟出一个网络.
+本机给你分配 192.168.169.1
+kali给你分配 192.168.169.130
+你就可以用 192.168.169.130 来ssh了.
+
+
+
+🔵 开启 ssh 
+
+'' 	一般自带 SSH. 启动服务就行.不然要安装ssh服务
+'' 
+'' 1. 启动ssh服务
+'' 2. 编辑 配置文件:  允许 root 用密码登录 & 允许空密码登录.
+'' 3. 重启服务.
+	'' 
+'' 启动/重启服务 : 二选一
+''		/etc/init.d/ssh start / restart
+'' 	service ssh start / restart
+'' 
+'' 配置文件 :     
+'' 	vi /etc/ssh/sshd_config
+'' 
+'' 服务状态 : 二选一
+'' 	/etc/init.d/ssh status 
+'' 	service ssh status
+'' 
+'' 
+'' 配置文件默认设置:
+'' 
+'' 1. 默认不许 空密码登录 !   修改配置文件.
+'' 	改成 →       `PermitEmptyPasswords yes `
+'' 
+'' 2. 默认 Root  不能用密码登录! 
+'' 	改成 →       `PermitRootLogin yes` 
+'' 
+
+### 客户端设置
+'' ZSH:    `ssh root@172.19.16.164`
+'' 
+''  连接错误:
+'' 
+1. '' *Connection refused* → Server 没有开启 ssh 服务.
+	'' 
+	2. '' 连不上 可能之前连过一次. 系统重装了 那个什么秘钥就变了.
+		'' 得去客户端. 删除相应 ip 的那行 再重新连.
+
+
+顺便进行 证书登录吧..
+
+性能不行啊... 将就吧..没办法..

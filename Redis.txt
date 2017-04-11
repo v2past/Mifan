@@ -1,0 +1,67 @@
+作用:
+    内存数据库. 性能非常非常高.
+
+主要就是缓存...
+
+
+
+
+
+
+
+
+
+
+
+
+
+🔵 源码编译安装
+
+    官网下载:  https://redis.io/download
+    源码编译安装: 3.2 版本
+    wget http://download.redis.io/releases/redis-3.2.8.tar.gz
+    tar xzf redis-3.2.8.tar.gz
+    cd redis-3.2.8 && make
+
+
+    安装好后.当前目录下的 src 文件夹下会多出: 
+    服务端程序redis-server
+    测试客户端程序: redis-cli
+
+
+启动服务: ./redis-server   
+
+启动redis服务进程后，就可以使用测试客户端程序redis-cli和redis服务交互了。 比如：
+
+连接服务器: ./redis-cli
+➜  src ./redis-cli
+127.0.0.1:6379> set foo bar
+OK
+127.0.0.1:6379> get foo
+"bar"
+127.0.0.1:6379>
+这就可以设置数据. 和 获取数据了额.
+
+
+
+
+
+
+🔵 配置:
+redis.conf
+
+默认6379端口. 可以改变端口.....
+设置timeout 指定时间后断开客户端连接.
+
+
+
+
+
+
+
+
+
+
+
+
+

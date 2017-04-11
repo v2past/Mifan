@@ -1,0 +1,60 @@
+最好的扫描工具. 
+
+
+❤️ 是否开机
+
+    www.itr.cn   网页可以访问.
+    但是你ping不通. 因为人家服务器做了设置...
+
+    一般都是通过ping来判断对方电脑是否运行.
+    ping通了 肯定是运行的.
+    ping不通 不代表肯定没运行. 得用 nmap 进一步测试!!!
+
+        ✘✘∙𝒗 Desktop nmap -sP www.itr.cn
+
+        Starting Nmap 7.25BETA1 ( https://nmap.org ) at 2017-04-09 15:18 CST
+        Nmap scan report for www.itr.cn (54.238.196.244)
+        Host is up (0.29s latency).
+        rDNS record for 54.238.196.244: ec2-54-238-196-244.ap-northeast-1.compute.amazonaws.com
+        Nmap done: 1 IP address (1 host up) scanned in 10.63 seconds
+        ✘✘∙𝒗 Desktop nmap www.itr.cn
+
+        Starting Nmap 7.25BETA1 ( https://nmap.org ) at 2017-04-09 15:18 CST
+        Note: Host seems down. If it is really up, but blocking our ping probes, try -Pn
+        Nmap done: 1 IP address (0 hosts up) scanned in 3.09 seconds
+
+        ✘✘∙𝒗 Desktop nmap -Pn www.itr.cn
+
+        Starting Nmap 7.25BETA1 ( https://nmap.org ) at 2017-04-09 15:19 CST
+        Nmap scan report for www.itr.cn (54.238.196.244)
+        Host is up.
+        rDNS record for 54.238.196.244: ec2-54-238-196-244.ap-northeast-1.compute.amazonaws.com
+        All 1000 scanned ports on www.itr.cn (54.238.196.244) are filtered
+
+        Nmap done: 1 IP address (1 host up) scanned in 202.14 seconds
+
+
+        nmap -sP www.itr.cn
+        看到没 这就是 -sP 参数的作用.当然用 -Pn 也行但是时间太久了.
+
+
+
+
+
+❤️ 对方系统版本:
+    nmap 可以检测 目标操作系统的类型! -O 参数.字母O.需要sudo 运行..
+
+    ✘✘∙𝒗 Desktop sudo nmap -O www.itr.cn
+ 
+
+
+❤️ 批量查找
+
+    nmap -p 3306 101.92.192.0/20
+
+
+
+
+
+
+

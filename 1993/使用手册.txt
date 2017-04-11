@@ -1,0 +1,42 @@
+msf > nmap -v -sV some_host
+
+msf > db_nmap -v -sV some_host    ➜  这个结果会输出到 数据库!!!!
+msf > hosts                       ➜  列出db_nmap 找到的主机
+msf > hosts -R                    ➜  把找到的主机 加入到目标主机.
+
+
+更多工具:
+search portscan
+
+
+
+🔵 搜索可用的漏洞
+
+
+
+msf > search CVE-xxxx-xxx
+msf > search name:mysql
+msf > search windows type:exploit
+
+
+
+
+
+🔵 使用一个漏洞
+
+msf > use exploit/path/to/exploit_name
+
+
+🔵 设置payload：
+
+msf > show payloads
+msf > set payload path/to/payload
+
+
+
+🔵 入侵：
+
+msf > exploit
+
+
+
