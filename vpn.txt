@@ -488,3 +488,59 @@ key client.key   客户端密钥名字  cert rmbp.key
 
 
 
+
+
+
+
+
+
+⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️
+搭建 pptp   
+
+
+Centos 6一键脚本:
+cd /root
+wget --no-check-certificate https://raw.githubusercontent.com/teddysun/across/master/pptp.sh
+chmod +x pptp.sh
+./pptp.sh
+
+
+
+
+PPTP VPN service is installed.
+ServerIP:23.105.192.96
+Username:vpn
+Password:OWgF4+ol
+Welcome to visit: http://teddysun.com/134.html
+
+当然，这是预定义好的一个用户名（vpn）和密码（随机生成的6位字符串），要想增加用户怎么办呢？
+很简单，用任一文本编辑器打开 /etc/ppp/chap-secrets，按照其中既有的用户格式添加即可
+
+
+看服务器1723 端口是否开启..
+关闭防火墙试试.
+
+service pptpd status     看服务状态:
+service pptpd restart   重启服务...
+
+
+⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️
+如果你在VPS上搭建了VPN并且经常使用， 尤其是OpenVPN ，请立即停止使用。VPN协议特征明显，GFW可以非常容易的检测到，从而盯上你的IP，轻则限速，重则彻底屏蔽。常见VPN协议根据易受干扰的程度从大到小依次为：OpenVPN > PPTP > L2TP > IPSec，尤其是OpenVPN，GFW已经可以实现对其定点清除(同样遭此待遇的还有SSH翻墙)。如果你想让自己VPS的IP快速报废，那么就请尽情的使用搬瓦工的控制面板搭建OpenVPN吧。（ 重要提醒： 在不明所以的情况下尽量不要在自己的VPS上搭建其他杂七乱八的翻墙服务尤其是一些早已过时和落后的翻墙方式，翻墙手段宜新不宜旧，只搭一个Shadowsocks是最能保证你翻墙效果和服务器稳定的好策略）
+
+
+pptpd: unrecognized service
+说明安装没有成功.
+说明 pptpd安装没有成功，可以换32位或64版的来试尝，也可单独下载安装包
+那就自己安装:
+yum install ppp
+cd /usr/local/src
+wget http://poptop.sourceforge.net/yum/stable/packages/pptpd-1.4.0-1.el6.x86_64.rpm
+rpm -Uhv pptpd-1.4.0-1.el6.x86_64.rpm
+
+
+
+
+VPN service is installed, your VPN username is vpn, VPN password is eyA3Sb+C
+
+
+

@@ -1,0 +1,47 @@
+IPSec VPN 安装
+    详情参考流程:   https://doub.io/vpnzy-3/
+
+🔵 一键脚本安装:
+
+  wget --no-check-certificate https://raw.githubusercontent.com/quericy/one-key-ikev2-vpn/master/one-key-ikev2.sh
+
+  chmod +x one-key-ikev2.sh
+ 
+  bash one-key-ikev2.sh
+
+🔵 安装过程:
+
+  选择vps类型（OpenVZ还是Xen、KVM），选错将无法成功连接，请务必核实服务器的类型。
+  这里必须选择对. 我是 openvz  也就是输入2 然后回车.
+
+
+
+🔵 安装结果 
+
+    # [Install Complete]
+    # Version:1.2.0
+    # There is the default login info of your IPSec/IkeV2 VPN Service
+    # UserName: myUserName
+    # PassWord: myUserPass
+    # PSK: myPSKkey
+    # you should change default username and password in /usr/local/etc/ipsec.secrets
+    # you cert: /root/my_key/ca.cert.pem
+    # you must copy the cert to the client and install it.
+
+
+
+🔵 服务器上的 /root/my_key/ca.cert.pem 证书到本地:
+🔵 ca.cert.pem 改名成 .cer 后缀的 比如:  ca.cer
+
+🔵 Mac OS 设置
+    双击ca.cer 导入证书...
+
+🔵 Mac客户端配置
+
+    网络设置 ➜  添加 ➜  vpn ➜  ikev2 ➜ 
+        📌server address : 23.105.192.96         这里是你服务器的ip
+        📌remote id:       23.105.192.96         这里是你服务器的ip
+        📌authentication settings ➜ username    选择 username认证模式
+                  Username: 输入安装结果中的 username  
+                  password: 输入安装结果中的 passeord
+    Apply ➜  connect 就连接上了!!!
