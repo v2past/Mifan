@@ -88,11 +88,6 @@ Hadoop 的镜像不小!!!!
 ubuntu 就130MB. 加上 vim / hadoop / ssh / JDK(java) 有 500MB ..
 
 
-🔵 拉取镜像:
-
-    sudo docker pull kiwenlau/hadoop:1.0
-
-
 
 原理:
 三个hadoop容器: 一个 master 两个slave 分别运行在三个不同的 容器中.
@@ -108,6 +103,61 @@ sudo docker network create --driver=bridge hadoop
 
 然后在运行Hadoop容器时，使用”–net=hadoop”选项，
 这时所有容器将运行在hadoop网络中，它们可以通过容器名称进行通信。
+
+
+
+🔵 拉取镜像:
+
+    sudo docker pull kiwenlau/hadoop:1.0
+
+下载 git仓库:
+git clone https://github.com/kiwenlau/hadoop-cluster-docker
+
+3. 创建Hadoop网络
+sudo docker network create --driver=bridge hadoop
+
+
+4. 运行Docker容器
+cd hadoop-cluster-docker
+./start-container.sh
+
+运行结果
+start hadoop-master container...
+start hadoop-slave1 container...
+start hadoop-slave2 container...
+root@hadoop-master:~#
+
+启动了3个容器，1个master, 2个slave
+运行后就进入了hadoop-master容器的/root目录
+
+
+
+5. 启动hadoop
+./start-hadoop.sh
+
+6. 运行wordcount
+./run-wordcount.sh
+
+input file1.txt:
+Hello Hadoop
+input file2.txt:
+Hello Docker
+wordcount output:
+Docker	1
+Hadoop	1
+Hello	2
+
+
+Hadoop网页管理地址:
+NameNode: http://192.168.59.1:50070/
+ResourceManager: http://192.168.59.1:8088/
+
+192.168.59.1为运行容器的主机的IP。
+
+
+
+
+
 
 
 
