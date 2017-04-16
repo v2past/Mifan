@@ -10,8 +10,9 @@
         本地客户端 网页端口: 80
         本地客户端 ssh端口: 22
 
-        目的: 任何电脑可以通过: www.0214.help:8080 来访问本地客户端上的网站.端口可自定义.
+        目的: 任何电脑可以通过: www.0214.help:8080 来访问本地客户端上的网站.
 
+任何电脑可以通过 ssh -p 222 Xu.Jian@23.105.192.96 来访问mac的ssh        
 
 
 
@@ -27,8 +28,6 @@
 
 
 🔵 FRP 中文官方教程   https://github.com/fatedier/frp/blob/master/README_zh.md
-
-
 
 
 🔵 必知内容
@@ -253,10 +252,51 @@ nohup ./frps -c ./frps.ini &
 
 
 
-
-
-
 其他参考网站:    http://www.jianshu.com/p/e8e26bcc6fe6
 
 
 开机启动有点问题. 需要延迟10秒. 估计是DNS解析问题...
+
+
+
+
+
+
+❤️ SSH 设置.
+
+目的: 任何电脑通过 ssh -p 222 Xu.jian@23.105.192.96 连接到我笔记本上的ssh.
+
+
+🔵 Mac 开启ssh功能
+    系统设置➜ 共享➜ 远程登录➜ 添加用户Xu.Jian 
+
+🔵服务器(VPS) 编辑 frps.ini
+    🔸添加下面三行.
+    [ssh]                   # ssh 为代理的自定义名称，可以有多个，不能重复，和frpc中名称对应
+    auth_token = 123        # 服务器端和客户端认证口令，一致才能认证通过
+    listen_port = 222       # 最后将通过此端口访问后端服务
+
+    🔸重启 frps:   ➜  pidof frps  ➜  kill   ➜  nohup /root/frp/frps -c /root/frp/frps.ini &
+
+
+
+🔵客户端(Mac) 编辑 frpc.ini
+    🔸添加两行
+    [ssh]                  # ssh 需要和 frps.ini 中配置一致
+    local_port = 22        # 需要转发的本地端口
+
+    🔸重启 frpc:   ➜  pidof frpc  ➜  kill   ➜  /Users/v/Desktop/frp/frpc -c /Users/v/Desktop/frp/frpc.ini &
+
+
+
+
+
+
+
+
+
+
+
+
+
+

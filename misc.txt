@@ -449,3 +449,116 @@ Address: 202.177.31.253
 
 
 
+🔵 日志分析
+
+        如果还是启动不成功就只能看日志了..
+        📌 tail -f /tmp/zabbix_server.log
+                tail 查看文件尾部几行.
+                -f是好东西.可以实时监听文件变化内容. 
+                /tmp 是日志的路径.
+
+
+
+        🔸shared memory
+                共享内存: 方便两个进程直接通信.  比如 server 和 agent 都安装在本地的.
+                正常来说. 两个进程要通信 需要 客户端把数据写到一个文件. 然后服务器去访问这个文件.
+                有了共享内存 两个进程之间就能直接互相访问.
+
+
+        🔸semaphore: 
+                信号量: 解决资源冲突的东西.
+                举个简单的例子，
+                一张凳子一个人已经坐 了，第二个人就不能坐，
+                但如果第二个人不知道这张凳子已经给人坐了，还坐上去，就会出现问题，
+                所以如果我们约定凳子被占了就登记到一个本子上，
+                每个人想坐 这张凳子之前都先看看这个本子有没写下东西，就不会出现上述情况了。
+
+
+
+        🔸 IPC
+
+                IPC   一个让进程之间可以通信的东西.
+                        ipcs  (ipc show) 查看ipc信息, 如内存共享.以及资源被谁占用.. 
+                        ipcrm (ipc rm)   删除某个东西,如删除共享内存.
+
+                ipcs -c 输出ipc各种方式的在该系统下的限制条件信息
+
+                📌ipcs -m    查看共享内存信息.
+                        IPC status from <running system> as of Sun Apr 16 09:40:33 CST 2017
+                        T     ID     KEY        MODE       OWNER    GROUP
+                        Shared Memory:
+                        m 327680 0x0052e2c1 --rw------- postgres   daemon
+                        m 393217 0x0052e6a9 --rw-------        v    staff
+
+                                T:    工具类型: q 消息队列. m共享内存段  s 信号量.
+                                ID:   工具项的标识.
+                                key:  占用共享内存的大小??
+                                mode: r 有读取权限、w 有写入权限、a 有修改权限
+                                owner: 工具项的所有者.
+                                group: 工具项的 组名.
+
+
+                📌sysctl -A | grep shm   查看当前共享内存设置
+                        kern.sysv.shmall: 1024       ➜ 全部允许使用的共享内存大小
+                        kern.sysv.shmseg: 8
+                        kern.sysv.shmmni: 32
+                        kern.sysv.shmmin: 1
+                        kern.sysv.shmmax: 4194304   ➜ 某进程最大值. 4194304 byte = 4MB
+                        machdep.pmap.hashmax: 18
+                        security.mac.posixshm_enforce: 1
+                        security.mac.sysvshm_enforce: 1
+
+
+                📌📌 sudo sysctl -w kern.sysv.shmmax=16777216    ➜ 手动设置上限.     
+
+
+
+
+
+🔵 debug 
+
+
+
+👹 ✔︎ cannot open PID file [/tmp/zabbix_server.pid]: [13] Permission denied
+        用sudo 执行启动目录
+        sudo zabbix_server
+
+
+👹 cannot allocate shared memory of size 16777216: [22] Invalid argument
+        allocate 分配!!  也就是不能分配 16777216 这么大的内存 来做共享内存.
+        那就调整shmmax的最大值.  
+
+
+👹 cannot allocate shared memory of size 16777216: [12] Cannot allocate memory
+        cannot allocate shared memory for history cache
+                🔸Cannot allocate memory
+                ✘✘∙𝒗 /etc sudo zabbix_server
+                zabbix_server [38439]: user zabbix does not exist
+                zabbix_server [38439]: cannot run as root!
+
+                        🔸cannot run as root!        把server.conf 里的 allowroot 设置成1 就用root了.
+
+
+
+
+👹 [12] Cannot allocate memory
+
+
+        Need to increase kernel.shmmax=134217728 which allows to use 128M for any cache related parameter in the zabbix server configuration.
+
+
+
+👹 cannot allocate shared memory for history cache
+
+
+
+
+👹cannot allocate shared memory of size 4194304: [28] No space left on device
+
+
+
+
+👹 connection to database 'zabbix' failed: [0] expected authentication request from server, but received M
+卡死在这了.  丫的 弄了快一天了.... zabbix-server放弃.
+
+

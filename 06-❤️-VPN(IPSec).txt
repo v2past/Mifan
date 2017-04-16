@@ -4,16 +4,13 @@ IPSec VPN 安装
 🔵 一键脚本安装:
 
   wget --no-check-certificate https://raw.githubusercontent.com/quericy/one-key-ikev2-vpn/master/one-key-ikev2.sh
-
   chmod +x one-key-ikev2.sh
- 
   bash one-key-ikev2.sh
 
 🔵 安装过程:
 
   选择vps类型（OpenVZ还是Xen、KVM），选错将无法成功连接，请务必核实服务器的类型。
-  这里必须选择对. 我是 openvz  也就是输入2 然后回车.
-
+  这里必须选择对. 我是 openvz  也就是输入2 然后一路回车.
 
 
 🔵 安装结果 
@@ -25,8 +22,9 @@ IPSec VPN 安装
     # PassWord: myUserPass
     # PSK: myPSKkey
     # you should change default username and password in /usr/local/etc/ipsec.secrets
-    # you cert: /root/my_key/ca.cert.pem
+    # you cert: //my_key/ca.cert.pem
     # you must copy the cert to the client and install it.
+
 
 
 
@@ -45,3 +43,13 @@ IPSec VPN 安装
                   Username: 输入安装结果中的 username  
                   password: 输入安装结果中的 passeord
     Apply ➜  connect 就连接上了!!!
+
+
+
+
+
+
+
+用了几天就连不上了....  ... 被封了也不一定..
+有用抓包看看...
+
