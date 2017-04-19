@@ -127,12 +127,13 @@
 
       🔸 检查Linux内核版本:    uname -r  ➜  必须大于 2.6
       🔸 检查Device Mapper是否安装: 
-            ls -l /sys/class/misc/device-mapper
-            有信息输出就可以.如果没有检测到.需要安装device-mapper软件包:
-            sudo yum install -y device-mapper
+            🔅ls -l /sys/class/misc/device-mapper
+            有信息输出就可以.
+                    如果没有检测到.需要安装device-mapper软件包:
+                    sudo yum install -y device-mapper
             
-            然后重新加载dm_mod内核模块:
-            sudo modprobe dm_mod
+                    然后重新加载dm_mod内核模块:
+                    sudo modprobe dm_mod
 
       🔸 安装docker:       sudo yum install docker
           /var/run/yum.pid 已被锁定错误:网上统一的解决办法：
@@ -142,6 +143,46 @@
       🔸 升级系统 (必须):  sudo yum update
       🔸 验证安装:         docker info
       🔸 开机启动 (可选):  systemctl enable docker
+
+
+
+❤️ 安装/配置 Docker  (CentOS 6.9)
+        docker不支持32位系统的!!!!!!
+    http://www.voidcn.com/blog/kdchxue/article/p-5739914.html
+
+
+    🔵 EPEL 源
+        是一个软件源.为RHEL/CentOS提供他们默认不提供的软件包。要安装docker必须用EPEL软件库.
+
+        安装epel,centos6选6-8，5就选5-4
+        🔸32位系统选择：
+            rpm -ivh http://dl.fedoraproject.org/pub/epel/6/i386/epel-release-6-8.noarch.rpm
+            rpm -ivh http://dl.fedoraproject.org/pub/epel/5/i386/epel-release-5-4.noarch.rpm
+        🔸64位系统选择：
+            rpm -ivh http://dl.fedoraproject.org/pub/epel/6/x86_64/epel-release-6-8.noarch.rpm
+            rpm -ivh http://dl.fedoraproject.org/pub/epel/5/x86_64/epel-release-5-4.noarch.rpm
+        🔸导入对应的key：
+            rpm --import /etc/pki/rpm-gpg/RPM-GPG-KEY-EPEL-6
+            rpm --import /etc/pki/rpm-gpg/RPM-GPG-KEY-EPEL-5
+
+        🔸安装yum install yum-priorities
+
+            查看是否安装成功:  rpm -q epel-release
+            用yum repolist 查看是否有 epel.
+            EPEL已经在repo 后列出，并且显示提供了上万个软件包，所以EPEL 已经安装到你的CentOS了。
+            测试下 能不能安装: sudo yum install htop
+            重建缓存 yum makecache
+
+
+      🔸 安装docker:      sudo yum install docker-io
+            👹 No package docker-io available.
+            要么是你系统是32位的.  要么就是epel安装出错.
+            建议参考:    http://www.voidcn.com/blog/kdchxue/article/p-5739914.html
+
+      🔸 启动Docker:      sudo service docker start
+      🔸 开机启动 (可选): sudo chkconfig docker on  
+
+
 ⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️
 ⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️
 

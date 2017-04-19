@@ -1,40 +1,32 @@
-LNMP 环境安装好. 
-浏览器地址栏就可以通过 IP地址 来访问服务器默认网页了!!
-这个默认页面 有链接  可以用 myphpadmin 直接连到数据库.
-这个默认网页在服务器的 /home/wwwroot/default/index.html
-/home/wwwroot/default/ 这个就是网站的根目录!!!!
+🔵 Nginx 安装
+        LNMP 环境安装好. 
+        浏览器地址栏就可以通过 IP地址 来访问服务器默认网页了!!
+        这个默认页面 有链接  可以用 myphpadmin 直接连到数据库.
+        这个默认网页在服务器的 /home/wwwroot/default/index.html
+        /home/wwwroot/default/ 这个就是网站的根目录!!!!
 
-下面我们来搭建 ss-panel.
-终端进入到网站根目录下执行下面命令
-🔅 git clone https://github.com/monokoo/ss-panel.git
-这个是下载文件
-🔅 mv ss-panel/.git . && rm -rf ss-panel && git reset --hard
-这个是解压文件.
+        下面我们来搭建 ss-panel.
+        终端进入到网站根目录下执行下面命令
+        🔅 git clone https://github.com/monokoo/ss-panel.git
+        这个是下载文件
+        🔅 mv ss-panel/.git . && rm -rf ss-panel && git reset --hard
+        这个是解压文件.
 
-🔅 curl -sS https://getcomposer.org/installer | php
-好像也是下载文件
-🔅 php composer.phar  install
-安装文件...
-这里 php组件 需要 php版本 >5.6  不然报错.
+        🔅 curl -sS https://getcomposer.org/installer | php
+        好像也是下载文件
+        🔅 php composer.phar  install
+        安装文件...
+        这里 php组件 需要 php版本 >5.6  不然报错.
 
-然后 把.env.example 文件名重命名成 .env
-🔅 cp .env.example .env
+        然后 把.env.example 文件名重命名成 .env
+        🔅 cp .env.example .env
 
-修改权限
-🔅 chmod -R 777 storage
-
-
-然后就可以导入sql文件夹里面的 文件了.
+        修改权限
+        🔅 chmod -R 777 storage
 
 
-
-最后就是进程 nginx 的配置了..
-
-
-
-
-
-
+        然后就可以导入sql文件夹里面的 文件了.
+        最后就是进程 nginx 的配置了..
 
 
 
@@ -346,7 +338,93 @@ yum remove
 
 
 
+虚拟主机有很多类型. 基于IP/基于域名/基于端口.
+一般一个服务器也就一个iP和一个域名. 所以基于端口的虚拟主机最常见.
+
+配置简单..  一个网站,一个端口,一个 server,一个根目录.
+基于端口的话. 服务器上虚拟主机只需要创建一个!!!
+要添加端口 .去配置文件中 添加 server就可以了.
 
 
 
+
+
+
+
+❤️ nginx.conf 配置文件详解.
+其实很简单!  
+nginx配置文件主要分为六个区域： 
+main(全局设置)、events(nginx工作模式)、http(http设置)、 
+sever(主机设置)、location(URL匹配)、upstream(负载均衡服务器设置)。
+
+
+main
+
+events {                       ➜  nginx 工作模式
+    use kqueue;                ➜ 可选值: select/kqueue/qpoll .mac平台用kqueue
+    worker_connections  1024;  ➜ 每个进程的最大连接数. 也就是前端最大请求数量.
+   }
+
+
+http {   http服务器相关设置. 最主要就是 server、upstream 两个模块
+    ....
+
+
+    upstream iyangyi.com {   指定了一个负载均衡器的名称iyangyi.com
+    
+     ip_hash;   ➜ 一种负载均衡调度算法: 每个请求按访问IP的hash结果分配，
+                ➜ 这样来自同一个IP的访客固定访问一个后端服务器，
+                ➜ 有效解决了动态网页存在的session共享问题。
+
+    server 192.168.12.1:80;           ➜ server指令指定后端服务器的IP地址和端口，
+    server 192.168.12.4:8080;   
+    server 192.168.12.2:80 down;    ‍  ➜  当前的server暂时不参与负载均衡。
+    server 192.168.12.3:8080  max_fails=3  fail_timeout=20s;
+                                      ➜ max_fails，   允许请求失败的次数，默认为1。
+                                      ➜ fail_timeout，max_fails失败后，暂停服务的时间. 
+    server 192.168.12.5:8080 backup;  ➜ 备份服务器,其他机器出现故障/忙时启用.
+
+
+    
+    }
+
+    server  {  http的子模块.里面还有个location模块. 每个server可以指定一个虚拟主机.
+
+                listen       8080;         ➜  指定这个虚拟主机的端口.
+                server_name  localhost 192.168.12.10 www.yangyi.com;
+                                        ➜  指定该虚拟主机的IP/域名. 多域名用空格分开
+                root   /Users/yangyi/www;  ➜ 这个虚拟主机的网站根目录.
+                index  index.php index.html index.htm;                ➜ 设置默认首页地址!
+                charset utf-8;                                        ➜ 设置网页编码格式.
+                access_log  usr/local/var/log/host.access.log  main;  ➜ 日志路径
+                aerror_log  usr/local/var/log/host.error.log  error;  ➜ 日志路径
+                ....
+
+
+                location / {                 ➜ 最主要模块:负载均衡、反向代理、虚拟域名.. 
+                                             ➜ 这个模块用定位URL.解析URL(支持正则匹配)
+                                             ➜ / 的意思就是匹配访问根目录.
+                                             ➜ 开启正则式匹配(加~):location ~ \.php$ 
+                    root   /Users/yangyi/www;      ➜ 指定该虚拟主机的web目录.
+                    index  index.php index.html;   ➜ 指定默认首页
+                
+
+                }
+
+
+
+
+            }
+
+
+
+
+    server  {  主机2 设置
+                location {  URL 匹配    }
+            }
+    server  {  主机3 设置
+                location {  URL 匹配    }
+            }            
+    ....
+}
 

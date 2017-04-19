@@ -1,0 +1,13 @@
+👹 git_prompt_info:2: fork failed: cannot allocate memory
+
+
+
+
+I was also having this issue but increasing the PHP memory_limit solved the problem.
+
+
+OK, forget it. I forgot to enable the swap again... The machine really ran out of memory...
+
+
+
+
