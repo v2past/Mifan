@@ -1,42 +1,41 @@
 ❤️ 基本信息
 
-🔵 VPS配置信息: 
-    内存256MB,硬盘12G SSD,宽带1G,流量500G每月. 价格 120RMB/年, 搬瓦工.美国.
+    🔵 VPS配置信息: 
+        内存256MB,硬盘12G SSD,宽带1G,流量500G每月. 价格 120RMB/年, 搬瓦工.美国.
 
 
-🔵 CentOS 6 VS CentOS7
+    🔵 CentOS 6 VS CentOS7
 
-    最新版本是7. 但是一般服务器.以及各种教程都是6.
-    新手避免不了学各种教程还是建议6.  
+        最新版本是7. 但是一般服务器.以及各种教程都是6.
+        新手避免不了学各种教程还是建议6.  
 
-        常见区别区别: 
-        比如某些服务的启动和停止 
-            [CentOS6]
-            $ service service_name start
-            $ service service_name stop
-            $ service sshd restart/status/reload
+            常见区别区别: 
+            比如某些服务的启动和停止 
+                [CentOS6]
+                $ service service_name start
+                $ service service_name stop
+                $ service sshd restart/status/reload
 
-            [CentOS7]
-            $ systemctl start service_name
-            $ systemctl stop service_name
-            $ systemctl restart/status/reload sshd
+                [CentOS7]
+                $ systemctl start service_name
+                $ systemctl stop service_name
+                $ systemctl restart/status/reload sshd
 
-
-🔵 系统版本
-      CentOS X86               这个就是 32位系统 (❗️我的选择❗️)
-      CentOS X86-devel         开发版本,软件新但是不太稳定.
-      CentOS X86-minimal       精简版本,很多功能需要手动下载安装.
-      CentOS X86_64            这个就是 64位系统
-      CentOS X86_64-devel
-      CentOS X86_64-minimal
-
-
-🔵 MySQL 版本选择
-    1G 一下内存的只能选择 MySQL 5.5  不要做死上5.6
+    🔵 系统版本
+        CentOS X86               这个就是 32位系统 (❗️我的选择❗️)
+        CentOS X86-devel         开发版本,软件新但是不太稳定.
+        CentOS X86-minimal       精简版本,很多功能需要手动下载安装.
+        CentOS X86_64            这个就是 64位系统
+        CentOS X86_64-devel
+        CentOS X86_64-minimal
 
 
-🔵 php 版本选择
-    理论是越新越好... 
+    🔵 MySQL 版本选择
+        1G 一下内存的只能选择 MySQL 5.5  不要做死上5.6
+
+
+    🔵 php 版本选择
+        理论是越新越好... 
 
 
 
@@ -47,77 +46,71 @@
 
 ❤️ SSH 免密码登录
 
-📌帮瓦工密码: 一个是控制台的密码; 一个是ssh的密码. 不一样的..
+    🔵SSH 改默认端口
+        帮瓦工密码: 一个是网页控制台的密码; 一个是终端ssh的密码. 不一样的..
 
-📌 ssh 初始登录密码:    控制台 → root password modification → 手动生成一个 
-📌 SSH 初始登录端口:    控制台 → main controls → ssh port 
+        ssh 初始登录密码查看:    控制台 → root password modification → 手动生成一个 
+        SSH 初始登录端口查看:    控制台 → main controls → ssh port 
 
-📌 登录ssh                  ssh -p 27401 root@23.105.192.96
-        27401 改成你自己的端口,23.105.192.96 改成你服务器的外网IP
-📌 修改SSH密码(先登录)      passwd → 输入两次密码 就改掉了.
-📌 修改初始SSH端口
-    🔵 修改两个文件
-        下面的两个命令可以帮你快捷修改文件.  
-        需要手动改一个地方. Port.22  改成你原先的SSH登录端口
+        🔸 登录ssh                  
+            ssh -p 27401 root@23.105.192.96
+            👁‍🗨 27401 改成你自己的ssh初始端口,23.105.192.96 改成你服务器的外网IP
+        🔸 修改SSH密码(先登录)      passwd → 输入两次密码 就改掉了.
+        🔸 修改初始SSH端口: 把两个文件里面的port 22 改成 你想要的端口.如2222
+                下面的两个命令可以帮你快捷修改文件.  
 
-        🔅 sed -i 's/^#...Port.22/Port 2222/g' /etc/ssh/ssh_config
-        //作用: vi /etc/ssh/ssh_config    取消Port 22 前的注释，并将22改成2222
+                🔅 sed -i 's/^#...Port.22/Port 2222/g' /etc/ssh/ssh_config
+                //作用: vi /etc/ssh/ssh_config    取消Port 22 前的注释，并将22改成2222
 
-        🔅 sed -i 's/^Port.22/Port 2222/g' /etc/ssh/sshd_config
-        //作用: vi /etc/ssh/sshd_config   取消Port 22 前的注释，并将22改成2222
+                🔅 sed -i 's/^Port.22/Port 2222/g' /etc/ssh/sshd_config
+                //作用: vi /etc/ssh/sshd_config   取消Port 22 前的注释，并将22改成2222
 
-    🔵 重启sshd  
-        二选一. 上面是CentOS7 的重启方法. 下面是CentOS6的重启方法
-        🔅 systemctl restart sshd.service
-        🔅 service sshd restart
+        🔸 重启sshd  
+            🔅 systemctl restart sshd.service   CentOS7 的重启方法.
+            🔅 service sshd restart             CentOS6 的重启方法
 
-    🔵 重新登录
-        ssh -p 5222 xujian@198.74.49.76
-
-
-
-📌 SSH 免密码登录 (密钥登录)
-    大致流程:
-        1. 本地生成一对密钥.
-        2. 服务器用户目录建立 .ssh 文件夹, 并给700权限
-        3. 把本地公钥用scp传到服务器
-        4. 服务器上把公钥加到公钥验证列表.
-        5. 当你ssh服务器.服务器就可以自动连接了.
-
-    Mac OS 密钥默认生成路径:
-        cd /Users/v/.ssh/ 下有个 id_rsa.pub 就说明生成成功了.
-
-    🔵 服务器: cd && mkdir .ssh && chmod 700 .ssh
-
-    🔵 客户端: 上传公钥文件(id_rsa.pub):
-        🔅 cd /Users/v/.ssh/
-        🔅 scp -P 2222 -r id_rsa.pub root@23.105.192.96:~/.ssh/
-                P             必须大写.
-                27401         服务器的SSh端口     
-                root          服务器的ssh用户名
-                23.105.192.96 服务器IP
-                SSH初始密码:  root password modification → 新设置一个
-            
-    🔵 注册公钥文件: 把你的公钥添加到公钥验证列表.
-        🔅 cat ~/.ssh/id_rsa.pub >> ~/.ssh/authorized_keys
-        作用就是把id_rsa.pub文件里的内容 全部追加到authorized_keys这个文件 后面.
-        如果没有 authorized_keys这个文件会自动帮你建立的.
-        用这种方法 一台服务器可以有很多人都ssh 免密码登录.
-        因为authorized_keys这个身份验证文件中可以添加很多人的公钥(id_rsa.pub)
-
-        也可以直接重命名上传的文件.  🔅 mv id_rsa.pub authorized_keys
-        这种方法 整个验证列表中 只有你的公钥.这个服务器只有你能ssh 免密码登录.
+        🔸 重新登录
+            ssh -p 5222 xujian@198.74.49.76
 
 
 
+    🔵 SSH 免密码登录 (密钥登录)
+        大致流程:
+            1. 本地生成一对密钥.
+            2. 服务器用户目录建立 .ssh 文件夹, 并给700权限
+            3. 把本地公钥用scp传到服务器
+            4. 服务器上把公钥加到公钥验证列表.
 
-        📌📌📌📌📌 公共wifi 每两小时就会断开. 断开后怎么让Mac 的iterm 自动重新连接服务器呢.
-        /etc/ssh/ssh_config 这个ssh配置文件最后加上一行 ServerAliveInterval 6 就可以了.
-        每隔6秒就会向服务器发一个 KeepAlive 请求，避免断开连接。
+        Mac OS 密钥默认生成路径:
+            cd /Users/v/.ssh/ 下有个 id_rsa.pub 就说明生成成功了.
 
-                🔅 sudo vi /etc/ssh/ssh_config
-                    添加: ServerAliveInterval 6
+        🔸 服务器: cd && mkdir .ssh && chmod 700 .ssh
 
+        🔸 客户端: 上传公钥文件(id_rsa.pub):
+            🔅 cd /Users/v/.ssh/
+            🔅 scp -P 2222 -r id_rsa.pub root@23.105.192.96:~/.ssh/
+                    P             必须大写.
+                    27401         服务器的SSh端口     
+                    root          服务器的ssh用户名
+                    23.105.192.96 服务器IP
+                    SSH初始密码:  root password modification → 新设置一个
+                
+        🔸 注册公钥文件: 把你的公钥添加到公钥验证列表.
+            🔅 cat ~/.ssh/id_rsa.pub >> ~/.ssh/authorized_keys
+            作用就是把id_rsa.pub文件里的内容 全部追加到authorized_keys这个文件 后面.
+            如果没有 authorized_keys这个文件会自动帮你建立的.
+            用这种方法 一台服务器可以有很多人都ssh 免密码登录.
+            因为authorized_keys这个身份验证文件中可以添加很多人的公钥(id_rsa.pub)
+
+            也可以直接重命名上传的文件.  🔅 mv id_rsa.pub authorized_keys
+            这种方法 整个验证列表中 只有你的公钥.这个服务器只有你能ssh 免密码登录.
+
+            📌📌📌📌📌 公共wifi 每两小时就会断开. 断开后怎么让Mac 的iterm 自动重新连接服务器呢.
+            /etc/ssh/ssh_config 这个ssh配置文件最后加上一行 ServerAliveInterval 6 就可以了.
+            每隔6秒就会向服务器发一个 KeepAlive 请求，避免断开连接。
+
+                    🔅 sudo vi /etc/ssh/ssh_config
+                        添加: ServerAliveInterval 6
 
 
 
@@ -129,12 +122,11 @@
     默认的shell 太难看. 黑白的,废话不多说. 直接用全世界公认的最好的shell: ZSH.
     ZSH 配置有点麻烦. 这也不是事情.有人早把你配好了.这人就是 oh-my-zsh
 
-
     📌 大致流程:      安装 zsh、git、oh-my-zsh、Autojump插件
-    🔵 安装 ZSH    🔅 yum install zsh -y
-    🔵 安装 Git    🔅 yum install git
-    🔵 安装 oh-my-zsh
-   🔅 sh -c "$(wget https://raw.github.com/robbyrussell/oh-my-zsh/master/tools/install.sh -O -)"
+    🔸 安装 ZSH    🔅 yum install zsh -y
+    🔸 安装 Git    🔅 yum install git
+    🔸 安装 oh-my-zsh
+    🔅 sh -c "$(wget https://raw.github.com/robbyrussell/oh-my-zsh/master/tools/install.sh -O -)"
 
         - 查看当前已装 shell   🔅 cat /etc/shells
         - 设置zsh为默认shell   🔅 chsh -s /bin/zsh
@@ -192,18 +184,17 @@
     详情安装步骤参考: http://banwagongvpn.lofter.com/post/1d541acc_7b4bfc0
     也可参考 VPS-Speed.txt
     
-    简单安装步骤:
-    🔵 下载
-    
+    🔵简单安装步骤:
+    🔸 下载
 🔅 wget https://coding.net/u/njzhenghao/p/download/git/raw/master/net_speeder-installer.sh
 
-    🔵 编译并安装
+    🔸 编译并安装
     🔅 bash net_speeder-installer.sh
 
-    🔵 开启端口加速
+    🔸 开启端口加速
     🔅 nohup /usr/local/net_speeder/net_speeder venet0 "ip" >/dev/null 2>&1 &
     
-    🔵 查看是否成功开启
+    🔸 查看是否成功开启
         ✘✘∙𝒗 .ssh ping 23.105.192.96
         PING 23.105.192.96 (23.105.192.96): 56 data bytes
         64 bytes from 23.105.192.96: icmp_seq=0 ttl=52 time=166.606 ms
@@ -215,7 +206,7 @@
         
         ping 一个数据包. 会放回两个一模一样的数据包. (DUP). 说明成功了.
 
-    🔵 重启服务器看看 是否会自动开启 🔅 reboot
+    🔸 重启服务器看看 是否会自动开启 🔅 reboot
        ✘✘∙𝒗 .ssh ping 23.105.192.96
         PING 23.105.192.96 (23.105.192.96): 56 data bytes
         64 bytes from 23.105.192.96: icmp_seq=0 ttl=52 time=149.929 ms
@@ -225,7 +216,7 @@
        答案是不会....
 
 
-    🔵 设置开机启动
+    🔸 设置开机启动
             启动这个工具只需要一行命令就可以了.
             开机启动 就是一个文件.  /etc/rc.local
             这个文件里面的所有命令.都会在开机后 自动运行.
@@ -237,7 +228,7 @@
             这里注意 echo 后面的是 '' 英文的单引号, 不是逗号什么的..
         🔅 echo 'nohup /usr/local/net_speeder/net_speeder venet0 "ip" >/dev/null 2>&1 &' >> /etc/rc.local
 
-    🔵 再重启 ping下. 发现都是 DUP! 也就是服务器发出双倍数据包了.
+    🔸 再重启 ping下. 发现都是 DUP! 也就是服务器发出双倍数据包了.
 
 
 
@@ -420,9 +411,7 @@ https://kiwivm.64clouds.com/main.php
 
 🔵 ssh 自动断开问题
 
-
     vi /etc/ssh/sshd_config
-
     将ClientAliveInterval 0和ClientAliveCountMax 3的注释符号去掉
 
 
@@ -434,3 +423,53 @@ https://kiwivm.64clouds.com/main.php
 
     service sshd restart
     重启ssh 应该就可以了.
+
+
+
+
+
+👹 ssh 连不上服务器
+
+        ✘✘∙𝒗 Desktop ssh -p 2222 root@23.105.192.96
+        ssh_exchange_identification: read: Connection reset by peer
+
+
+        先重启!!!!  估计是机器负载太高了.... 一般来说都是内存不够用... 
+
+
+        还连不上.  那就查看 ssh 详细错误. 用 -v 参数.
+
+        ✘✘∙𝒗 Desktop ssh -p 2222 root@23.105.192.96 -v
+        OpenSSH_7.4p1, LibreSSL 2.5.0
+        debug1: Reading configuration data /Users/v/.ssh/config
+        debug1: Reading configuration data /etc/ssh/ssh_config
+        debug1: Connecting to 23.105.192.96 [23.105.192.96] port 2222.
+        debug1: Connection established.
+        debug1: identity file /Users/v/.ssh/id_rsa type 1
+        debug1: key_load_public: No such file or directory
+        debug1: identity file /Users/v/.ssh/id_rsa-cert type -1
+        debug1: key_load_public: No such file or directory
+        debug1: identity file /Users/v/.ssh/id_dsa type -1
+        debug1: key_load_public: No such file or directory
+        debug1: identity file /Users/v/.ssh/id_dsa-cert type -1
+        debug1: key_load_public: No such file or directory
+        debug1: identity file /Users/v/.ssh/id_ecdsa type -1
+        debug1: key_load_public: No such file or directory
+        debug1: identity file /Users/v/.ssh/id_ecdsa-cert type -1
+        debug1: key_load_public: No such file or directory
+        debug1: identity file /Users/v/.ssh/id_ed25519 type -1
+        debug1: key_load_public: No such file or directory
+        debug1: identity file /Users/v/.ssh/id_ed25519-cert type -1
+        debug1: Enabling compatibility mode for protocol 2.0
+        debug1: Local version string SSH-2.0-OpenSSH_7.4
+        ssh_exchange_identification: Connection closed by remote host
+
+
+        没有文件. 要么是文件真的不存在. 要么是没有权限. 
+
+
+
+
+
+
+

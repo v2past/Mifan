@@ -12,21 +12,46 @@
                         低版本的puppet-server 不能连接高版本的 puppet-agent
                            所以: 服务器尽量安装最新版本. 客户端相对无所谓.
 
+               ❗️❗️❗️❗️❗️puppet官方yum源: https://yum.puppetlabs.com/ ❗️❗️❗️❗️❗️
+               ❗️❗️❗️❗️❗️不同的系统选择不同的源. centos6/7 就有区别.  ❗️❗️❗️❗️❗️
+
                         📌别在Mac上折腾 puppet-agent. 我反正半天没折腾成功📌
     🔸目的: 在无公网IP的Centos7虚拟机上搭建 puppet-server 服务器. 控制有公网IP的 vps.(puppet-agent)🔸
 
 
 
 
-🔵 四个组件:
+
+
+🔵 三个组件:
     🔸puppet-server    Puppet Server. 会自动安装 puppet-agent!!!
     🔸puppet-agent     多合一安装包.会安装 Puppet-agent, Ruby, Facter.等各种依赖.
+                       👁‍🗨Facter 获取客户端数据并传给服务器.
     🔸puppetdb         数据库. 可以更好的使用 puppet.
-    🔸facter           获取数据传给服务器.
 
         Puppet: C/S架构软件.
-            📌服务器一般要安装 puppet-server 和 facter
-            📌客户端一般要安装 puppet        和 facter
+            📌服务器一般要安装 puppet-server
+            📌客户端一般也安装 puppet-server 反正会自动安装puppet-agent的.       
+
+
+🔵 目录
+    🔸软件安装目录               /opt/puppetlabs
+    🔸执行文件目录               /opt/puppetlabs/bin
+
+    🔸puppet-agent  配置文件   /etc/puppetlabs/puppet/puppet.conf    
+    🔸puppet-server 配置文件   /etc/puppetlabs/puppetserver/puppetserver.conf
+
+    🔸agent  ssl证书存放目录         /etc/puppetlabs/puppet/ssl            
+    🔸server ssl证书存放目录         /etc/puppetlabs/puppetserver/ssl            
+
+
+
+    🔸所有的module/manifest/data从confdir 移到/etc/puppetlabs/code
+        包含environments目录
+        包含全局的modules目录
+
+
+
 
 
 🔵 Puppet 工作流程
@@ -45,17 +70,12 @@
         保证某个文件一直存在， 如果该文件被删除了   puppet下次执行时（默认30分钟）会重新创建文件.
         保证ssh服务始终开启，  如果ssh服务被关闭了  puppet下次执行时（默认30分钟）会重启ssh服务.
 
-    两者是通过 https 建立连接.  服务端端口默认 8140
-
 
 
 
 🔵 储备知识 rpm
-
     RPM软件包的管理工具.最初是 red hat用来管理linux软件程序的,由于非常好用,被centos等系统采用了.
-
     🔸语法: rpm  ✚ 选项  ✚ 软件名.
-
     🔸选项:
         -i  显示套件的相关信息； 
         -v  显示指令执行过程； 
@@ -68,8 +88,7 @@
         rpm -ql        查看软件安装位置.
         rpm --force -i ❗️❗️❗️❗️强制安装❗️❗️❗️❗️
                 正常一般添加对应源之后就可以用 yum 来安装对应的软件了.
-                但是如果 rpm -ivh 安装过程报错. 最后yum install xxx 提示  command not found 
-                就可以用强制安装!!!
+                但是如果 rpm -ivh 安装过程报错. 就可以用强制安装!!!
                 rpm -ivh http://yum.puppetlabs.com/puppetlabs-release-el-6.noarch.rpm
                     👹 package puppetlabs-release-22.0-2.noarch is already installed
 
@@ -78,37 +97,18 @@
 
 
 
-🔵 Puppet 目录结构简介
 
-    🔸Centos6    ls -1 /etc/puppet/     
-        auth.conf         #定义puppet master的acl文件
-        fileserver.conf   #定义puppet master文件服务器的配置文件
-        manifests         #puppet脚本主文件目录，site.pp文件必须存在
-        modules           #puppet模块目录
-        puppet.conf       #puppet主配置文件
-        ssl               #存放ssl证书的目录
 
-🔵 相关资源
-
-        ❗️❗️❗️❗️puppet官方yum源: https://yum.puppetlabs.com/
-            不同的系统选择不同的源.  比如 centos6 和centps7 就有区别.
       
-        puppet server 官网安装教程  https://docs.puppet.com/puppetserver/2.7/install_from_packages.html
-        puppet agent  官网安装教程  https://docs.puppet.com/puppet/4.10/install_osx.html
-
 🔵 常用命令
 
     🔅puppet help 查看各种命令.
-    🔅puppet -V   查看版本.来确认是否安装成功.
 
     🔅puppet help agent                查看agent该子命令的详细用法.
         puppet agent -V/--version    查看版本
         puppet agent --verbose/-v    详细输出命令.  
         puppet agent --test / -t     测试连接.
         puppet agent --noop          模拟运行.
-        puppet agent --debug/-d   
-        puppet agent --certname <NAME>
-
 
     🔸证书相关命令:.
         puppet cert list                     列出未签名请求. (未签名最前面没有+号)
@@ -117,24 +117,8 @@
         puppet cert sign --all               给所有客户端请求进行签名(服务器上操作).
 
 
-
         ss -tlunp | grep puppet           查看puppet的端口 默认8140
-
         👁‍🗨 升级版本. 先卸载(yum remove puppet-server) 再安装
-
-
-
-        🔅 vim /etc/puppet/puppet.conf     加入下面三行
-              listen = true
-              server = master.fansik.com
-              runinterval = 30               
-        🔅 /etc/init.d/puppet start        启动服务
-        🔅 chkconfig puppet on             设置开机自启动
-
-
-
-    puppet agent -v      ➜ verbose v模式.这样才会出现报错信息.才能对问题进行分析.
-    puppet agent -d      ➜ 进入debug模式.. debug 排错!!! 比-v模式更加详细.
 
 
 
@@ -158,7 +142,6 @@
 
                     👹 package puppetlabs-release-22.0-2.noarch is already installed
                     如果出现 xxx is already installed 类似提示.  用 rpm --force -i  ✚ 网址 强制安装.
-                    rpm --force -i http://yum.puppetlabs.com/puppetlabs-release-el-6.noarch.rpm
                     rpm --force -i https://yum.puppetlabs.com/puppetlabs-release-pc1-el-6.noarch.rpm
 
     🔵安装puppet-server
@@ -291,8 +274,6 @@
 
 
 
-
-
 ⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️ 域名解析 ⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️
 
 🔸 关闭 SELINUX
@@ -315,31 +296,34 @@
 
 🔸puppet-agent域名解析
     vi /etc/hosts         
-    23.105.192.96 VM-C7 ➜  添加这行就可以了. 其实你不用管端口的 
+    23.105.192.96 VM-C7 ➜  添加这行就可以了. 你不用管端口的 
                         ➜ 这个电脑运行的是puppet-agent 那么它肯定是去连接服务器的.肯定是去连接8140端口的.
                         ➜ 23.105.192.96:8140 端口的所有数据.都会被frp服务器.转个puppet-server的8140端口.
 
-🔸 编辑puppet-agent配置文件. 添加下面两行.
+🔸 编辑puppet-agent配置文件. 在[agent]模块下添加下面一行.
     vi /etc/puppetlabs/puppet/puppet.confi
-    [agent]
     server = VM-C7      ➜ 这个就是你要连接的 puppet-server 的主机名/域名
+                        ➜ puppet-agent 是连到叫这个名字的服务器上的. 
+                        ➜ 这个名字对应的ip 就是我们hosts文件里添加的dns解析
 
-🔸 puppet-agent申请连接服务器
+🔸 puppet-agent 连接服务器测试
     🔅 puppet agent --test
     Info: Creating a new SSL key for mail.0214.help
 
     puppet 为了信息安全. 双方采用了SSL协议. 也就是https. 需要用到证书!
-    客户端运行 就自动会向服务器申请建立连接. 这时候要去服务器同意对方进行连接.
-    同意之后 服务器和客户端就会长期保持通信(客户端每半小时连一次服务器)!!!
+    客户端运行 就自动会向服务器申请建立连接. 
+    这时候要去服务器同意客户端的连接.客户端才能真正连上服务器.
+    同意连接这个操作就叫签名.
+    服务器和客户端就会长期保持通信(客户端每半小时连一次服务器)!!!
 
 
-🔸 puppet-server 服务器查看 签名请求
+🔸 puppet-server 服务器查看客户端连接请求
     🔅puppet cert list
       "mail.0214.help" (SHA256) 6E:3F:48:F6:F1:52:18:30:F8:DD:2F:D3:7E:BA:C1:2E:1E:89:8A:0D:37:96:DF:E3:F5:79:A0:7F:85:5C:28:97
       出现一个 前面没带加号的 就说明有客户端想要连服务器.如果你同意对方连接 就需要签名.
 
 🔸 puppet-server 对客户端请求进行签名
-    puppet cert sign mail.0214.help
+    🔅puppet cert sign mail.0214.help
     Signing Certificate Request for:
     "mail.0214.help" (SHA256) 6E:3F:48:F6:F1:52:18:30:F8:DD:2F:D3:7E:BA:C1:2E:1E:89:8A:0D:37:96:DF:E3:F5:79:A0:7F:85:5C:28:97
     Notice: Signed certificate request for mail.0214.help
@@ -347,19 +331,277 @@
 
 
 🔸puppet-server 查看所有证书
-    ➜  requests puppet cert list -all
+    🔅requests puppet cert list -all
     + "mail.0214.help" (SHA256) 4D:01:04:D7:4B:C8:75:D6:C2:D5:63:BA:93:46:C2:E1:D9:82:D6:97:AA:AC:A8:50:69:9F:6A:A8:67:27:67:F2
     + "mail.0214.live" (SHA256) D3:D7:DB:74:E6:53:CC:0F:EE:55:83:5E:65:A5:9B:32:4B:D6:9F:E5:DA:D1:50:67:88:31:3C:44:EE:C0:EE:92
 
-
-🔸puppet-server 失效某证书  puppet cert -revoke mail.0214.live
+🔸puppet-server 失效某证书  puppet cert --revoke mail.0214.live
 🔸puppet-server 删除某证书  puppet cert --clean mail.0214.live
-    证书签名的过期或删除需要重启puppetmaster服务。
+证书签名的过期或删除需要重启puppetmaster服务。
 
 
-🔸puppet-agent 证书操作.
-    /etc/puppetlabs/puppet/ssl
-    📌如果客户端连接服务器出问题. 清空ssl文件夹 用puppet agent --test 重新申请证书.
+🔸puppet-agent 连接设置.
+    ➜  puppet puppet agent --test
+    Error: Could not request certificate: The certificate retrieved from the master does not match the agent's private key.
+    Certificate fingerprint: 4D:01:04:D7:4B:C8:75:D6:C2:D5:63:BA:93:46:C2:E1:D9:82:D6:97:AA:AC:A8:50:69:9F:6A:A8:67:27:67:F2
+    To fix this, remove the certificate from both the master and the agent and then start a puppet run, which will automatically regenerate a certificate.
+    On the master:
+    puppet cert clean mail.0214.help
+    On the agent:
+    1a. On most platforms: find /etc/puppetlabs/puppet/ssl -name mail.0214.help.pem -delete
+    1b. On Windows: del "\etc\puppetlabs\puppet\ssl\certs\mail.0214.help.pem" /f
+    2. puppet agent -t
+
+
+    📌如果客户端连接服务器出问题. 
+    📌 1. 首先排除frp问题. 看frps/frpc 服务是否正常运行
+    📌 2. 进行下面的步骤
+    📌还不行就重装客户端.   还不行就重装服务器.  再不行就自己分析问题原因了.
+    1. 客户端: rm -r /etc/puppetlabs/puppet/ssl        删除整个ssl文件夹. 不要只删除某个文件.
+    2. 客户端: mkdir /etc/puppetlabs/puppet/ssl        新建 ssl 文件夹
+    3. 服务器: puppet cert clean mail.0214.help        删除证书. 
+    4. 服务器️:️ puppetserver reload ️ ️ ️ ️ ️ ️ ️ ️ ️ ️ ️ ️ ️ ️       删除/失效某证书后必须重启服务器
+    5. 客户端: puppet agent --test                     重新申请证书.
+    6. 服务器: puppet cert list                        列出客户端的请求
+    7. 服务器: puppet cert sign mail.0214.help         对mail.0214.help 这客户端进行签名.
+    8. 客户端: puppet agent --test                     重新请求连接.
+        👹 Info: Caching certificate for mail.0214.help
+        Error: Could not request certificate: 
+        Server hostname 'VM-C7' did not match server certificate; 
+        expected one of localhost.localdomain, DNS:puppet, DNS:localhost.localdomain
+        Exiting; failed to retrieve certificate and waitforcert is disabled
+            又报错了...  服务器的名字 和服务器的证书不服.
+            问题出在服务器. 其实服务器是改过主机名字的. 
+            原来名字是 localhost.localdomain 安装好puppetserver后改成VM-C7了.
+            其实puppetserver 安装的时候是需要生成服务端证书的! 生成证书肯定用到主机名的. 
+            这时候用的主机名是localhost.localdomain.  对应服务器证书上的主机名是localhost.localdomain
+            🔸解决方法一: 卸载重装.puppet-server
+
+            🔸解决方法二: 客户端: 添加参数. --server 
+                ➜  ~ puppet agent --test --server localhost.localdomain
+                Info: Caching certificate_revocation_list for ca
+                Info: Using configured environment 'production'
+                Info: Retrieving pluginfacts
+                Info: Retrieving plugin
+                Info: Caching catalog for mail.0214.help
+                Info: Applying configuration version '1492656142'
+                Info: Creating state file /opt/puppetlabs/puppet/cache/state/state.yaml
+
+            🔸解决方法三: 
+                编辑客户端的配置文件 [anent] 下面的server name 改掉
+                vi /etc/puppetlabs/puppet/puppet.conf
+                server = localhost.localdomain
+
+                还要添加 一条域名解析..
+                vi /etc/hosts
+                23.105.192.96 localhost.localdomain
+
+                ➜  puppet puppet agent -t
+                Info: Using configured environment 'production'
+                Info: Retrieving pluginfacts
+                Info: Retrieving plugin
+                Info: Caching catalog for mail.0214.help
+                Info: Applying configuration version '1492656538'
+                Notice: Applied catalog in 0.02 seconds
+
+
+
+
+⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️---使用---⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️
+推荐文章:  https://pom.nops.cloud/bestpractice/puppet4.html
+
+经过千辛万苦客户端终于成功连上服务器了.环境算搭好了.我们来看看怎么用.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+目的: 让客户端自动创建一个  aa 用户.
+
+服务器只有一台. 客户端可以有千万台. 
+每台客户端你都可以有自己的配置(模块).
+客户端连上服务器. 首先要查找自己的模块!!!
+
+
+📌 Puppet 两种执行模式:
+    直接读取puppet file.manifest配置
+    通过puppetd --server puppetmaster.server.com，从服务端下载manifest配置
+
+如果是服
+
+
+
+
+
+🔵 site.pp
+site.pp文件是puppet读取所有模块pp文件的开始
+这个文件的路径呢...
+/etc/puppetlabs/code  ????
+
+
+再未指定modulepath搜索路径的情况下，会有默认搜索路径的，可通过以下方式查看到
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+motd 模块默认路径.
+/etc/puppetlabs/code/modules:/opt/puppetlabs/puppet/modules
+
+
+创建模块目录结构:
+/etc/puppetlabs/code/modules/
+└── motd
+    ├── files  #存放文件目录
+    │   └── etc
+    │       └── motd
+    ├── manifests  #存放模块pp配置文件目录
+    │   └── init.pp
+    └── templates #存放模板目录
+
+
+模块文件夹可以存放 文件、配置文件、 有些命令的运行 需要用到某些文件的.
+
+manifests 文件夹:
+init.pp
+user{'11':
+    name => xu,
+    ensure => present,
+}
+
+
+site.pp
+$puppetserver = 'localhost.localdomain' #设置全局变量
+node 'mail.0214.help'{
+  include  motd
+}
+
+
+
+去测试....
+
+
+
+
+
+
+
+
+
+🔵 编写 pp文件
+配置后缀名是.pp
+🔸配置文件路径是:  
+puppet3 的配置文件路径是: /etc/puppet/modules/motd/manifests/xxx.pp
+puppet4 的配置文件路径是: /etc/puppetlabs/code/modules/motd/manifests/test.pp
+
+在这里创建.. 
+如: test.pp  
+user{'11':
+    name => xu,
+    ensure => present,
+}
+
+就是说创建一个 xu用户.
+
+
+🔵 编写 site.pp 文件
+那个客户端.运行那个模块. 都可以指定的...
+
+$puppetserver = 'VM-C7'
+node 'mail.0214.help'{
+  include  motd
+}
+
+
+
+
+🔵 测试 
+客户端去执行. .. 
+puppet agent --test
+
+
+➜  ~ puppet agent --test
+Info: Caching certificate for mail.0214.help
+Info: Caching certificate_revocation_list for ca
+Error: Could not request certificate: SSL_connect returned=1 errno=0 state=error: certificate verify failed: [certificate revoked for /CN=localhost.localdomain]
+Exiting; failed to retrieve certificate and waitforcert is disabled
+
+👹 certificate revoked for /CN=localhost.localdomain
+证书过期..  后面是服务器的 主机名..
+
+
+
+
+
+
+
+
+
+
+====mac 客户端
+删除;
+sudo rm -rf ~/.puppet && sudo rm -rf ~/.puppetlabs && sudo rm -rf /opt/puppetlabs && sudo rm -rf /etc/puppet && sudo rm -rf /etc/puppetlabs && sudo rm -rf /usr/bin/puppet
+
+重新安装.
+安装过程中 hostname 填写. VM-C7
+certname 填写xu-jian.local
+
+
+编辑 hosts文件...
+由于服务器ip 是192.168.169.111
+这里就把 VM-C7 解析到 192.168.169.111了...
+
+编辑 puppet.conf
+
+然后去客户端 puppet agent --test ..
+
+
+还是重装服务器吧.  
+必须先改名 然后才是 安装puppet-server.
+绝对不要先安装后改名. 会出一堆问题的...
+
+
+
+
+
+四、Hello World
+
+在master节点新建site.pp文件
+
+[root@master ~]# vim /etc/puppet/manifests/site.pp
+node slave01 {
+  file {
+    "/tmp/testpuppet": #在slave节点上创建该文件
+    content=>"good morning!\n"; #文件中打印如下内容
+  }
+}
+在slave节点中请求新配置
+
+[root@slave01 ~]# puppetd --test --server master
+info: Caching catalog for slave01
+info: Applying configuration version '1450250442'
+notice: Finished catalog run in 0.03 seconds
+[root@slave01 ~]# cat /tmp/testpuppet #可以看到已生成该文件
+good morning!
 
 
 
@@ -367,6 +609,63 @@
 
 
 ⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️------⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️
+首先 你得大概知道puppet 有多少子命令. 每个puppet 子命令又有哪些action..
+✘✘∙𝒗 pp puppet help
+
+Usage: puppet <subcommand> [options] <action> [options]
+
+Available subcommands:
+
+  agent             The puppet agent daemon
+  apply             Apply Puppet manifests locally
+                    ➜ 在客户端本地运行xx.pp 
+
+  cert              Manage certificates and requests
+                    ➜ 证书相关命令.
+
+  config            Interact with Puppet's settings.
+ 
+  facts             Retrieve and store facts.
+
+  lookup            Data in modules lookup function
+
+  master            The puppet master daemon
+  module            Creates, installs and searches for modules on the Puppet Forge.
+
+  node              View and manage node definitions.
+  parser            Interact directly with the parser.
+  plugin            Interact with the Puppet plugin system.
+
+
+
+
+
+
+
+
+
+🔵 puppet apply 
+
+puppet agent 客户端默认都是从服务器下载配置文件.然后再执行这个配置文件.
+puppet apply 客户端当然也可以不从服务器下载.而是直接运行本地的配置文件.
+
+🔸配置文件:
+config.pp
+class puppet::config{
+  include puppet::params
+  file { '/etc/puppet/puppet.conf':
+    ensure  => present,
+    content => template('puppet/puppet.conf.erb'),
+    owner   => 'root',
+    group   => 'root',
+    mode    => '0644',
+    require => Class['puppet::install'],
+    notify  => Class['puppet::service'],  #配置更新后主动通过puppet服务重启
+  }
+}
+
+🔸 模拟执行这个配置文件.
+✘✘∙𝒗 pp puppet apply config.pp --noop --verbose
 
 
 
@@ -378,9 +677,20 @@
 
 
 
+🔵 puppet help agent
+
+USAGE
+-----
+puppet agent [--certname <NAME>] [-D|--daemonize|--no-daemonize]
+  [-d|--debug] [--detailed-exitcodes] [--digest <DIGEST>] [--disable [MESSAGE]] [--enable]
+  [--fingerprint] [-h|--help] [-l|--logdest syslog|eventlog|<FILE>|console]
+  [--masterport <PORT>] [--noop] [-o|--onetime] [-t|--test]
+  [-v|--verbose] [-V|--version] [-w|--waitforcert <SECONDS>]
 
 
-
+主要参数
+[-v|--verbose]
+[-t|--test]
 
 
 

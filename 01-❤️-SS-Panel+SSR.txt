@@ -608,3 +608,37 @@ ss-panel → 用户列表 → 选择用户 → 编辑 → 设置流量上限/设
 
 
 
+
+=====
+todo:
+
+
+服务器端协议和混淆： “protocol”: “auth_sha1_compatible”,”obfs”: “http_simple_compatible”, （这两个是目前 ssR-manyuser 默认的协议和混淆）
+
+
+
+测试方法：分别测试了 RC4-MD5 和 chacha20 在客户端选择了协议和混淆，以及选择用原版协议和混淆的方式进行了 youtube 的 4k 是视频的测试
+
+结论：我经过 2 次测试后都是加了协议和混淆比原版要快很多。。。当然这个只是我自己的个人测试， 欢迎大家也做下这个测试，并且分享下测试结果。
+
+理论上加了混淆如果能躲开墙的干扰以及非正常流量的限速，那就应当会获得更好的速度。这本身也是 SSR 只所以存在的价值把。
+
+
+
+
+https://github.com/breakwa11/shadowsocks-rss/wiki/obfs
+
+混淆:
+让数据看起来像 http 数据包...
+
+客户端和服务器都需要设置.
+
+
+客户端:
+plain 不混淆
+http_simple: 
+http_post:
+
+
+
+

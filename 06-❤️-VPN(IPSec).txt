@@ -26,13 +26,12 @@ IPSec VPN 安装
     # you must copy the cert to the client and install it.
 
 
-
-
-🔵 服务器上的 /root/my_key/ca.cert.pem 证书到本地:
-🔵 ca.cert.pem 改名成 .cer 后缀的 比如:  ca.cer
+🔵 服务器上的 /root/my_key/ca.cert.pem 证书到本地并把 ca.cert.pem 改名成 .cer 后缀的 比如:  ca.cer
 
 🔵 Mac OS 设置
-    双击ca.cer 导入证书...
+    双击ca.cer 导入证书... 证书导入的位置是  system.
+    导入后 必须去 证书软件 找到对应证书(一般带红叉的那个就是.) ➜ 右键 ➜ 信息 ➜  信任 ➜  都信任.... 这样才行!!!
+
 
 🔵 Mac客户端配置
 
@@ -42,13 +41,41 @@ IPSec VPN 安装
         📌authentication settings ➜ username    选择 username认证模式
                   Username: 输入安装结果中的 username  
                   password: 输入安装结果中的 passeord
-    Apply ➜  connect 就连接上了!!!
+                  Apply ➜  connect 就连接上了!!!
 
 
 
 
 
 
-用了几天就连不上了....  ... 被封了也不一定..
-有用抓包看看...
+🔵 查看版本: 
+
+    ➜  ~ ipsec --version
+
+🔵 启动IPsec
+
+    ipsec start.
+    Starting strongSwan 5.5.1 IPsec [starter]...
+    no netkey IPsec stack detected
+    no KLIPS IPsec stack detected
+    no known IPsec stack detected, ignoring!
+
+
+🔵 查看进程是否开启. 
+    ➜  ~ ps -aux | grep IPsec
+
+
+
+
+
+🔵 vpn 被禁......
+遇到好几个了...  vpn都不能用 估计是常用的端口被封了. 换端口..
+
+ipsec 使用 udp 500 和 4500 来创建和维护连接.
+
+
+
+
+
+
 

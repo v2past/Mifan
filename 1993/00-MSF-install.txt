@@ -8,10 +8,8 @@
     yum install sqlite-devel libxslt-devel libxml2-devel java-1.7.0-openjdk libpcap-devel nano openssl-devel zlib-devel libffi-devel gdbm-devel readline-devel nano wget
 
 
-🔵 安装ruby:
-    先安装 yaml. 再安装ruby.
+🔵 安装yaml:(ruby依赖)
 
-    🔸 yaml 安装: 
         cd /usr/src
         wget http://pyyaml.org/download/libyaml/yaml-0.1.6.tar.gz
         tar zxvf yaml-0.1.6.tar.gz 
@@ -20,7 +18,7 @@
         make && make install
 
 
-    🔸 ruby 安装
+🔵 ruby 安装
 
         cd /usr/src
         wget http://ftp.ruby-lang.org/pub/ruby/2.2/ruby-2.2.1.tar.gz
