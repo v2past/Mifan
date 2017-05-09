@@ -55,5 +55,19 @@
 
 
 
+🔵 rockyou 字典
+
+		🔸搜索并解压 rockyou 字典(Kali自带.)
+				打开资源管理器 ➜ 左上角 places 选择 computer ➜ 搜索 rockyou 会发现有个 rockyou.txt.gz 
+				选择这个文件 右键 ➜ open item location 打开文件所在位置 ➜ 再次选择文件 右键 ➜ extract to 解压到 
+				➜ 选择桌面 ➜ 解压出错...
+
+				用命令解压试试 .
+				cd /usr/share/wordlists/
+				gzip -d rockyou.txt.gz
+				可以...  解压出来的文件. 手动放到桌面去
+
+
+
 
 

