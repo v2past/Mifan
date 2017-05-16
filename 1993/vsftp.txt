@@ -1,0 +1,28 @@
+
+
+🔵 centos6 搭建ftp:
+    sudo yum install vsftpd  
+    adduser userftp
+    passwd userftp xujian1111
+
+    禁止用户的 ssh 登录权限，只允许 FTP 访问:
+    usermod -s /sbin/nologin userftp
+
+    配置 VSFTP    sudo vi /etc/vsftpd/vsftpd.conf
+
+      anonymous_enable=NO           关闭匿名访问：
+      local_enable=YES              去掉 local_enable 的注释，修改为开启：
+      chroot_local_user=YES         限制用户仅能访问自己的主目录：
+      local_root=/data/test         设置用户的主目录：(不设置时，默认为用户的家目录/home/userftp)
+
+
+    重启服务：       sudo service vsftpd restart   
+    设置开机自启动： chkconfig vsftpd on           
+
+    ftp userftp@112.126.74.124 连接测试
+
+    ftp> pwd
+    Remote directory: /home/userftp
+
+    ftp> quit
+    221 Goodbye.

