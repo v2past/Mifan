@@ -61,9 +61,11 @@ IPSec VPN 安装
     no KLIPS IPsec stack detected
     no known IPsec stack detected, ignoring!
 
+这算开启还是不开启啊....
 
 
-🔵 查看进程是否开启. 
+
+🔵 查看进程是否开启.  ???
     ➜  ~ ps -aux | grep IPsec
 
 
@@ -118,6 +120,64 @@ IPSec VPN 安装
 
 
 
+
+
+
+
+
+
+
+
+
+⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️------⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️
+用kiwivm 自带的 一键安装openvpn功能...
+
+安装成功之后 就可以下载 openvpn keys.
+
+🔸 压缩包
+    vps 根证书 ca.crt
+    vps 密钥  ca.key
+    用户证书: client1.crt
+    用户私钥 client1.key
+    client1.csr 
+
+
+
+    然后再下载个 可以连接openvpn的工具.
+    mac 可以用 shimo 这个软件.
+
+    然后 解压证书. 里面有个 xxx.ovpn 后缀的文件.
+    这个文件用 shimo 打开就可以连接了....
+
+
+👹 连接不上...
+    MANAGEMENT: >STATE:1497535245,WAIT,
+
+    估计被运营商 block了..    估计只是block 1194 这个端口.
+    换端口试试...
+    服务器上 vi /etc/openvpn/server.conf  加一行 port 443
+    客户端的 .ovpn 里面  原来的1194 改成443 .
+    然后重启服务器的 openvpn service openvpn restart
+
+
+    现在发现能连上了. 但是接收到的数据... 只有一点点.. 总比没有好..
+    还是不行... 诶 ..... 防火墙太厉害了...
+
+不只是openvpn ipsec的vpn也被墙的... fuck...
+
+
+
+🔸 服务器配置.
+    openvpn 的配置目录:  /etc/openvpn/openvpn.conf
+
+    server 10.10.10.0 255.255.255.0
+    这个是连上vpn 后分配给你的ip地址. 也就是 dhcp服务器.
+
+
+🔸 开启 openvpn 服务
+    service openvpn start
+
+    可将此命令添加到/etc/rc.local使openvpn开机自启动
 
 
 

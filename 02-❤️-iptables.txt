@@ -9,10 +9,11 @@ service iptables restart
 service iptables status
 
 
+禁止某端口:
+    iptables -A INPUT -p tcp --dport 21 -j DROP
 
 
 开放某端口:
-    iptables -A INPUT -p tcp --dport 22 -j ACCEPT
 
     iptables -A INPUT -p udp --dport 500 -j ACCEPT
 

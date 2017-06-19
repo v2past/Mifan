@@ -279,7 +279,7 @@
 🔸 关闭 SELINUX
     Security-Enhanced Linux的缩写，是一种非常安全的LINUX模式。
     基本上用户得不到什么权限在这个系统下面。
-    🔅 usr/sbin/sestatus -v                       ➜ 查看当前SELINUX状态. 
+    🔅  /usr/sbin/sestatus -v                     ➜ 查看当前SELINUX状态. 
         vi /etc/selinux/config                    ➜ 修改这个文件来永久关闭SELINUX
         将SELINUX=enforcing改为SELINUX=disabled   ➜ 修改后重启电脑.
 

