@@ -1,0 +1,853 @@
+本文参考   https://91vps.club/2017/05/26/ss-panel/
+
+
+❗️❗️ ss-panel 官方项目orvice/ss-panel 非常非常多的坑!!! 系统的兼容性有大问题!
+❗️❗️ ss-panel 官方项目orvice/ss-panel 非常非常多的坑!!! 系统的兼容性有大问题!
+❗️❗️ ss-panel 官方项目orvice/ss-panel 非常非常多的坑!!! 系统的兼容性有大问题!
+
+❗️❗️ centos6 我安装好了. centos7 丫的花了我5天 还没搞定. 浪费生命. 
+❗️❗️ 最终我选择了一个第三方的ss-panel. https://github.com/mmmwhy/ss-panel
+❗️❗️ 本文的教程 是基于上面第三方的. 而不是官方的ss-panel
+
+
+
+
+
+
+
+🔸 域名常识
+    一个域名绑定一个公网IP;
+    一个域名对应一个服务器(一般情况);
+    一个域名不等于一个网站, 
+    购买来的域名是 0214.live 是没有前缀的.也就是说你可以自定义前缀.
+    www.0214.live、ss.0214.live、blog.0214.live ......
+
+    最常用的就是 www.0214.live 这个带www前缀的.
+    任何其他前缀就叫二级域名.
+    www.0214.live 可以对应一个网站
+    xxx.0214.live 也可以对应一个网站.
+    要实现上面的功能就涉及到服务器的nginx配置了.
+
+
+🔸 Nginx常识 (centos7)
+
+    一个网站 在服务器上叫虚拟主机.
+    一个服务器可以有多个虚拟主机. 你可以新增/删除/显示...
+    虚拟主机的名字可以任意取,但是一般直接把 域名的网址 设置成虚拟主机的名字.
+    每个虚拟主机都有自己的配置文件
+
+      如 www.0214.live 对应一个叫 www.0214.live 的虚拟主机名. 
+      配置文件就是   /usr/local/nginx/conf/vhost/www.0214.live.conf
+
+      如 ss.0214.live 对应一个叫 ss.0214.live 的虚拟主机名. 
+      配置文件就是   /usr/local/nginx/conf/vhost/ss.0214.live.conf
+
+      如 blog.0214.live 对应一个叫 blog.0214.live 的虚拟主机名. 
+      配置文件就是   /usr/local/nginx/conf/vhost/blog.0214.live.conf
+
+
+    ❗️ nginix 有个默认的 nginx配置文件 /usr/local/nginx/conf/nginx.conf 
+    ❗️ nginix 有个默认的 nginx配置文件 /usr/local/nginx/conf/nginx.conf 
+          这个配置文件的最后一行是 include vhost/*.conf;
+          会自动加载 /usr/local/nginx/conf/vhost/下面所有以.conf后缀的文件.
+          vhost 文件夹里是所有的虚拟主机配置:www.0214.live.conf...
+          也就是Nginx默认加载所有虚拟主机配置的.
+
+    ❗️不要修改 nginx 默认的配置文件. 尽量修改每个虚拟主机单独的nginx配置文件.
+    ❗️不要修改 nginx 默认的配置文件. 尽量修改每个虚拟主机单独的nginx配置文件.
+
+
+
+🔸 Nginx.conf 默认配置文件详解.
+    任何软件的配置文件 一般都是分成好几个模块的. 每个模块负责某个功能
+
+    ⦿ nginx.conf 三大模块： 
+       • events {...}  ➜ 不管
+       • http   {...}  ➜ 不管
+       • server {...}  ➜ 最重要
+
+
+
+        main      (全局设置)
+        events    (nginx工作模式)
+        http      (http设置) 
+        sever     (主机设置) ❗️❗️❗️ 
+        location  (URL匹配)
+        upstream  (负载均衡服务器设置)
+
+🔸 Server {} 大模块详解
+    这个大模块有很多小模块组成. 最重要的是
+    其实每个虚拟主机的配置文件都是一个 server{}模块.
+    然后把所有的虚拟主机配置文件都 导入到默认配置文件中.
+    其实最终的 默认配置文件 就是 导入了很多 server{}模块而已.
+
+    • listen
+    • server_name
+    • root
+    • location
+
+
+    ⦿ listen: 80; 
+        监听端口. 一般都是80. 不用改
+          http://www.0214.live == http://www.0214.live:80
+          https://www.0214.live == https://www.0214.live:443
+
+          http://ss.0214.live == http://ss.0214.live:80
+          https://ss.0214.live == https://ss.0214.live:443
+
+
+    ⦿ server_name ❗️ 域名 ❗️
+        用户不管是通过单击链接 或者输入网址 来访问你的网站.重点就在这个 URL 网址
+        用户先要访问不同的内容 就得点击不同的网址. 
+
+        不管用户点击的是什么网站. 只要是发给你的服务器的. 那么首先 Nginx 会第一个出来干活.
+        如果用户要访问 www.0214.live 那么Nginx 就去找 www.0214.live 这个虚拟主机的配置文件.
+        按照里面的配置, 找到 www.0214.live 的默认首页 index.php 的路径. 
+        如果用户要访问 ss.0214.live 那么Nginx 就去找 ss.0214.live 这个虚拟主机的配置文件.
+        按照里面的配置, 找到 ss.0214.live 的默认首页 index.php 的路径. 
+
+        这样就达到了用户访问不同网站 显示不同网页内容的功能.
+        server_name 就是对应 用户网址的.
+
+        所以 www.0214.live 虚拟主机配置文件(/usr/local/nginx/conf/vhost/www.0214.live.conf)
+        里的 server_name 就应该是
+        server_name www.0214.live;
+        这样不管是 www.0214.live/xx.html、www.0214.live/xx2.html..
+        只要是www.0214.live 开头的网址 都交给 www.0214.live 这个虚拟主机处理.
+
+
+
+    ⦿ root  ❗️ 文件的存放路径❗️
+        每个虚拟主机是一个网站. 网站是有很多很多文件组成的. 是一个项目!
+        项目就有个项目路径. root 就是设置给每个虚拟主机设置路径的.
+        这个就叫 虚拟主机的根目录.  不是网站的默认根目录.
+        你创建一个叫 xx.0214.live 的虚拟主机. 就会在/home/wwwroot/ 下自动创建一个叫 xx.0214.live 的文件夹.
+        这个xx.0214.live 文件夹就是这个xx.0214.live虚拟主机的默认根目录. 
+        如果你在xx.0214.live 下建立一个叫 yy.html 的文件, 
+        那么你就可以用浏览器输入 xx.0214.live/yy.html 来访问这个文件.
+
+
+        但是.一个网站是由很多文件、文件夹组成的. 网站架构
+        xx.0214.live
+          -- file1
+          -- file2
+          -- Folder1
+          -- Folder2
+          -- public
+              -- index.html
+              -- robots.txt
+
+
+        为了安全(这里不展开) 
+        网站的首页(index.html/index.php) 是放在项目某个子文件夹(如 public)中的.
+        而不是放在项目根目录 ss.0214.live 文件夹下的.
+        那么现在 我们要访问网站首页 就得输入 xx.0214.live/public/index.html 来访问.
+        如果你输入 xx.0214.live 那么对不起. 网页没任何显示...
+        网站是安全了.但是用户体验很差. 用户能记住 xx.0214.live 已经很不错了.网址长了肯定记不住.
+        怎么才能 安全和用户体验兼得呢. 有办法的.
+
+
+
+
+    ⦿ location ❗️ 路由 ❗️
+
+        默认你可以用 xx.0214.live/public/index.html 来访问网站首页.
+        但是如果你想达到访问 xx.0214.live/index.html 等于访问 xx.0214.live/public/index.html
+        那么就得设置这里.
+
+        location 语法: location 参数A(字符串/正则式) 参数B(一段代码)
+        ❗️ 参数A 用来匹配用户请求网址中某个特定目录.
+        我们这里 用户请求的网址是 xx.0214.live/index.html 
+        我们要匹配/这个目录. 把/ 变成 /public/ 然后再处理. 就可以了.
+        这里的/其实是个正则式. 也就是匹配所有 xx.0214.live 开头的网址
+
+        location / { }  参数A 确定了 那么参数B该怎么写呢.
+        ❗️ 参数B 的作用就是 加载名为 try_files 的文件❗️ 
+        如果参数B里不添加任何内容.  那么默认寻找项目中的 index.html文件.
+
+          解析实例:  location / { try_files $uri $uri/ /index.html; }
+          
+          ❗️ $uri、$uri/、/index.html 是三个路径! ❗️
+          每个路径中去 找 index.html 文件.
+
+          首先查找 $uri > 找不到再找 $uri/ > 找不到再去 /index.html 
+
+
+          访问 http://carrot.is.about 和 http://carrot.is/about.html 时你会得到相同的文件
+
+          ⦿ $uri  
+          你没看错这里不是 $url 而是 $uri 
+
+    说了这么多. 还是来实践下吧. 
+
+
+
+    在实际项目中，经常会用Nginx对特定的客户端请求做改写（即rewrite）后返回或将改写后的request_url传给后端real server做业务逻辑的处理。
+
+    上面是Nginx文档对rewrite语法规则的说明，可知rewrite配置由4部分构成： 
+    1）关键字rewrite表明这是一个rewrite规则 
+    2）正则表达式regex用于筛选满足regex条件的client request uri 
+    3）replacement用于替换uri中命中regex模式的部分 
+    4）可选参数flag用于控制Nginx对满足本条rewrite规则的uri的后续处理行为
+
+
+    还可看到，rewrite配置可以位于server或location区块（一个典型的Nginx配置文件通常由http ==> server ==> location三个层级构成），还可以与if条件语法结合使用。 
+    备注：Nginx的if配置项在使用不当时会引发诡异行为（可参考nginx wiki的If Is Evil这篇文章），通常不推荐新手使用。
+
+
+    伪静态可以使URL更加简洁也利于SEO，如程序支持并且需要设置伪静态的话，如启用输入 y ，不启用输入 n 回车。
+
+
+
+
+⦿ chattr 命令：
+
+  有时候root 都不能修改某个文件(防止小白误删文件). 很可能是因为用了 chattr命令 锁定文件了.
+  chmod 只能改变文件的 读、写、执行权限.
+  但是其实文件还有很多额外权限. 这些更底层的权限要用 chattr 命令来修改.
+  最常用的就是chattr的 i 属性
+
+  i：设定文件不能被删除、改名、设定链接关系，同时不能写入或新增内容。
+  i参数对于文件 系统的安全设置有很大帮助。用chattr命令防止系统中某些关键文件被修改!!
+
+    chattr -i /home/wwwroot/default/.user.ini  解锁文件.
+    chattr +i /home/wwwroot/default/.user.ini  锁定文件.
+
+
+⦿ 复制所有文件
+    复制文件 cp filepatha filepathb
+    复制目录 cp -R /home/xxx /home    只会复制xxx文件夹下的 非隐藏文件 到/home下
+    复制所有文件 cp -R /home/xxx/. /home  会复制 所有文件到 /home下
+
+
+⦿ c7 停止防火墙:  systemctl stop firewalld.service
+
+
+
+
+🔸 废话 
+
+
+    • 列/增/删虚拟主机: lnmp vhost list/add/del
+
+    重启nginx : /usr/local/nginx/sbin/nginx –s reload
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️------⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️
+🔸 准备工作: 
+⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️------⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️
+
+    ⦿ 储备
+        前端只是个网页.可以安装在任何电脑. 不一定要安装在vps上.
+        后端才是 ss 翻墙的核心. 必须安装在vps上.
+        数据库是储存数据的 也可以安装在任何电脑上(带公网IP.), 
+        前端 后端都要连到数据库上! 进行数据的读取和存储
+
+
+    ⦿ 域名解析:   
+        加A记录 www.0214.live   指向 104.224.139.45
+        加A记录 ss.0214.live    指向 104.224.139.45
+
+    ⦿ 数据库建立
+        • 安装好Mysql数据库. 并开启远程连接功能
+        • 建立数据库: ss2: utf8、utf8_bin
+
+
+    ⦿ db.sql
+        数据库么, 肯定有很多数据表的. 放心不用你手动建立.
+        db.sql 里面就是一个 mysql 的脚本. 运行这脚本就能自动帮你建立很多数据表.
+
+        https://raw.githubusercontent.com/mmmwhy/ss-panel/master/db.sql
+        文件保存为 db.sql 到本地电脑
+
+    ⦿ 修改: db.sql
+        ss-panel 创建新用户默认使用的加密方法是在这里设置的.
+        默认使用的是 rc4-md5 加密方法. 我个人是建议你用chacha20加密方法.
+        如果你要更改 默认的加密方法. 最好在这里修改.
+        不然等你安装好数据库. 再要修改数据表中某个字段的默认值 就要你有点mysql基础了.
+        
+        `method` varchar(64) NOT NULL DEFAULT 'rc4-md5',  行改成下面的
+        `method` varchar(64) NOT NULL DEFAULT 'chacha20',
+
+    ⦿ 导入数据表: db.sql
+        Mac 用 navicat 软件导入就可以. 很方便的
+        navicast ➜ 选择数据库 ➜  右键 execute sql file ➜ 选择db.sql ➜ start 
+
+
+
+
+
+⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️------⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️
+前端
+⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️------⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️
+
+
+🔸 新建虚拟主机
+    ❗️除了虚拟主机名改成你自己的域名.其他尽量安装我的! 
+    🔅 lnmp vhost add
+    ================================================
+    Virtualhost infomation:
+    Your domain: ss.0214.live
+    Home Directory: /home/wwwroot/ss.0214.live
+    Rewrite: none
+    Enable log: no
+    Create database: no
+    Create ftp account: no
+    ================================================
+
+    输入域名就好,其他全部选no
+
+
+
+
+
+          - 虚拟主机设置好后
+              /usr/local/nginx/conf/vhost 下就多了个❗️虚拟主机配置文件❗️
+              /home/wwwroot/               就多了个 ❗️虚拟主机文件夹  ❗   ️
+
+            当然你如果之前设置过虚拟主机这步就可以省略了.
+            确保有上面的一个 虚拟主机配置文件. 和 一个虚拟主机文件夹就可以了.
+
+            列出虚拟主机 lnmp vhost list
+            删除虚拟主机 lnmp vhost del
+
+          - 帮瓦工的 vps 还原功能不是很完善.
+            有些文件夹 可能会没有删除掉.
+            就像 /home/wwwroot/ss.0214.live 
+            如果残留了这个文件夹. 要么手动删除,要么重命名.
+            免得和我们新建的虚拟主机冲突
+
+
+
+
+
+
+🔸 下载三方 ss-panle 项目源码
+
+    cd /home/wwwroot/ss.0214.live && git clone https://github.com/mmmwhy/ss-panel.git && mv ss-panel/{.,}* ./ 
+
+        下载然后移动文件.
+          移动 ss-panel 文件夹下所有内容到 /home/wwwroot/ss.0214.live
+          确保 /home/wwwroot/ss.0214.live 下有个叫 public的文件夹.
+          也可以用 cp -R /home/wwwroot/ss.0214.live/ss-panel/. /home/wwwroot/ss.0214.live/
+
+
+
+🔸 安装 php 依赖
+
+    cd /home/wwwroot/ss.0214.live
+    curl -sS https://install.phpcomposer.com/installer | php
+    chmod +x composer.phar
+    php composer.phar install
+    chmod -R 777 storage
+
+    🔅🔅
+        cd /home/wwwroot/ss.0214.live && curl -sS https://install.phpcomposer.com/installer | php && chmod +x composer.phar && php composer.phar install && chmod -R 777 storage
+
+
+    ⦿ 安装(非全局)  Composer
+      curl -sS https://getcomposer.org/installer | php 
+      
+    ⦿ 用composer 来安装项目.
+      就像下载的exe软件是需要安装后才能用的.
+      php composer.phar  install
+
+    ⦿ Composer 简介
+        Composer 类似包管理器. 自动下载安装项目依赖的一些库.
+        在 composer.json 文件中列出你项目所需的依赖包，
+        然后就可以用 Composer 命令来自动安装依赖了.
+        运行 Composer 需要 PHP 5.3.2+ 以上版本。
+
+    ⦿ 全局安装 Composer
+        • cd到安装目录:  cd /usr/local/bin/
+        • 下载安装脚本:  php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');"
+        • 安装后删除:    php composer-setup.php && php -r "unlink('composer-setup.php');"
+        • 全局使用方法:  composer filename
+          cd /usr/local/bin/ && php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');" && php composer-setup.php && php -r "unlink('composer-setup.php');"
+      composer install
+        安装项目依赖
+        这里可能会有两个警告信息! 可忽略.
+        大概意思就是 从项目源地址下载某个模块失败. 自动从别的地方下载
+
+
+
+
+
+🔸 ❗️❗️ 配置 Nginx ❗️❗️
+
+    vi /usr/local/nginx/conf/vhost/ss.0214.live.conf
+    ❗️ 官方的ss-panle 坑就在 location ~ ...模块里.                               ❗           ️
+    ❗️ 官方的安装说明 只有 location / 模型. 压根没有 location ~ 模块.            ❗️
+    ❗️ 你按照官方的安装步骤永远不可能成功的,                                     ❗ ️
+    ❗️ 坑爹的官方说明,浪费我5天时间. 甚至怀疑自己的智商.原来官方项目本身存在问题 ❗️ 
+    ❗️ 官方的 ss-panle github上一堆issue 没解决. 诶. 难以想象..这种项目的存在    ❗ ️
+
+    ❗️ 整个 ss.0214.live.conf 替换成下面内容.           ❗ ️
+    ❗️ 修改文件中两个 ss.0214.live 替换成你自己的就可以 ❗️
+
+
+    server
+        {
+            listen 80 ;
+            server_name ss.0214.live;
+
+            index index.html index.htm index.php;
+            root  /home/wwwroot/ss.0214.live/public;
+            
+            location / {
+                            try_files $uri $uri/ /index.php$is_args$args;
+                    }
+                    
+            location ~ [^/]\.php(/|$) {
+            # comment try_files $uri =404; to enable pathinfo
+            try_files $uri =404;
+            fastcgi_pass unix:/tmp/php-cgi.sock;
+            fastcgi_index index.php;
+            include fastcgi.conf;
+            #include pathinfo.conf;
+            fastcgi_param PHP_ADMIN_VALUE "open_basedir = /home/wwwroot: /temp/:/proc";
+            }
+
+            access_log  /home/wwwlogs/access.log;
+        }
+
+
+🔸 重启Nginx      service nginx restart  
+
+🔸 浏览器访问 ss.0214.live  就出来前端界面了!!!! 
+    但是需要登录. 这就需要注册帐号. 注册信息肯定需要保存到数据库中.
+    所以我们要先通过配置 ss-panel 的配置文件让前端连上数据库.  
+    连上数据库后,才能创建ss-panel帐号.
+
+🔸 ss-panle 配置文件
+
+  ❗️❗️配置文件: 让前端的网页可以连接到后端的数据库来获取各种用户信息.
+    V2 版本的配置文件是 config.php 后缀; V3 版本变成 .env 后缀
+    V3.4的配置文件都是中文详细说明的!!!! 按说明改就可以了.主要就是:
+      • DB_USER 数据库用户名、
+      • DB_PWD 数据库密码、
+      • DB_DBNAME 数据库名称
+
+
+    cd /home/wwwroot/ss.0214.live && cp .env.example .env && vi .env
+
+    ⦿ 重点字段
+        ❗️db_database = 'SS2'  
+        ❗️db_username = 'root'  
+        ❗️db_password = '你的root密码'
+        ❗️db_charset = 'utf8'
+        ❗️db_collation = 'utf8_bin'
+
+    ⦿ 次要字段:
+        appName = 'Xu.jian'
+        baseUrl = 'http://ss.0214.live'
+        ipDayLimit = '100'
+        defaultTraffic = '50'
+        inviteNum = '0'
+
+
+
+🔸 SS-Panel 网页后台登录帐号创建
+
+    V3 版本提供了一个脚本 帮你快速建立管理员帐号.
+    🔅 cd /home/wwwroot/ss.0214.live && php xcat createAdmin
+        输入管理员邮箱、密码、按下Y 帐号就创建好了.
+        然后就可以用刚建立的帐号去登录了!!!
+        前端部分到这里就差不多了.
+
+
+
+⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️------⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️
+🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸 后端 🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸
+⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️------⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️
+
+🔸 简介
+    前端: ss-panle-mod 
+        https://github.com/mmmwhy/ss-panel-and-ss-py-mu
+    后端: SSR 多用户版本(mysql) Shadowsocks-Python-Manyuse
+        https://github.com/breakwa11/shadowsocks-rss/wiki/Server-Setup(manyuser-with-mysql)
+    后端用的是 python, 后端还需要连接 mysql数据库.所以要安装一些python 依赖.
+
+
+
+🔸 加密
+
+  ⦿ 为什么加密
+        像http这种明文协议. 你浏览的内容都是可以被人获取的.而且是明文的.
+        像https这种加密协议. 你浏览的内容也是可以被人获取的,但是是加密的数据.
+        in china 是不准你用ss的. 一旦发现 就会被封.
+        如果你的网络流量是明文的 那么gfw 一眼就看出你用的
+        如果你的网络流量是加密的 那么gfw 能不能看出来就要看你的加密强度了!
+
+  ⦿ 加密方式
+        加密需要时间,不同的加密方法加密时间不一样.加密强度也不一样.
+        加密时间短.网速自然就快了额. 
+        加密强度小了. 你的vps服务器的IP 可能会被GFW封掉!!!. 这后果很严重的.
+        推荐chacha20   可以说是目前性价比比较高的加密算法 .
+        但是系统默认是不支持 chacha20，需要额外安装 libsodium。
+
+            aes-128-cfb  0.368462085724s
+            aes-256-cfb  0.418514966965s
+            chacha20     0.429271936417s
+            rc4-md5      0.169504165649s
+            salsa20      0.44139790535s
+
+
+🔸 libsodium 安装
+
+    CentOS有两种安装方式：
+        一种是 通过包管理器来安装，一般安装的都不是最新版本。
+        一种是 通过编译安装。可以安装最新版  👍🏿 
+
+    ⦿ CentOS 6 编译安装:libsodium
+
+            yum install m2crypto gcc -y
+            wget -N --no-check-certificate https://download.libsodium.org/libsodium/releases/libsodium-1.0.10.tar.gz
+                下载链接如果失效去这里查下载地址: https://download.libsodium.org/libsodium/releases/
+                注意要选择 .tar.gz 结尾的
+
+            tar zfvx libsodium-1.0.10.tar.gz
+            cd libsodium-1.0.10 && ./configure
+            make && make install
+            echo "include ld.so.conf.d/*.conf" > /etc/ld.so.conf
+            echo "/lib" >> /etc/ld.so.conf
+            echo "/usr/lib64" >> /etc/ld.so.conf
+            echo "/usr/local/lib" >> /etc/ld.so.conf
+            ldconfig
+
+
+    ⦿ CentOS 7 编译安装:libsodium
+
+        • libsodium最新版本:  2017-06-27-17  v1.0.12
+          https://github.com/jedisct1/libsodium/releases/tag/1.0.12
+
+        • 安装编译 依赖.
+          yum -y groupinstall "Development Tools"
+
+        • 下载、编译、配置 libsodium
+            wget https://github.com/jedisct1/libsodium/releases/download/1.0.12/libsodium-1.0.12.tar.gz
+            tar -xzf libsodium-1.0.12.tar.gz && cd libsodium-1.0.12
+            ./configure && make -j2 && make install
+            echo "include ld.so.conf.d/*.conf" > /etc/ld.so.conf
+            echo "/lib" >> /etc/ld.so.conf
+            echo "/usr/lib64" >> /etc/ld.so.conf
+            echo "/usr/local/lib" >> /etc/ld.so.conf
+            ldconfig
+
+        • 删除安装文件
+            cd .. && rm -rf libsodium-1.0.12 && rm -rf libsodium-1.0.12.tar.gz
+
+
+        🔅🔅
+            cd ~ && yum -y groupinstall "Development Tools" && wget https://github.com/jedisct1/libsodium/releases/download/1.0.12/libsodium-1.0.12.tar.gz && tar -xzf libsodium-1.0.12.tar.gz && cd libsodium-1.0.12 && ./configure && make -j2 && make install && echo "include ld.so.conf.d/*.conf" > /etc/ld.so.conf && echo "/lib" >> /etc/ld.so.conf && echo "/usr/lib64" >> /etc/ld.so.conf && echo "/usr/local/lib" >> /etc/ld.so.conf && ldconfig && cd .. && rm -rf libsodium-1.0.12 && rm -rf libsodium-1.0.12.tar.gz
+
+
+
+
+🔸 Python 依赖
+  ⦿ 基本库安装:
+    🔅 yum install python-setuptools -y && yum install git && easy_install pip 
+
+  ⦿ cymysql
+    🔅 pip install cymysql
+
+        CyMySQL: 它是PyMySQL的一个fork，使用Cython进行了加速，并且支持Python3。
+        PyMySQL: Python3 的一个用于连接MySQL数据库的工具,可以实现基本的增删改查。
+        mysqldb: Python2 的一个用于连接MySQL数据库的工具.
+
+
+🔸 SSR 安装
+
+  🔅 cd ~ && git clone -b manyuser https://github.com/shadowsocksr/shadowsocksr.git
+      执行完毕后此目录会新建一个shadowsocksr目录，
+          其中根目录的是多用户版（即数据库版），
+          子目录中的是单用户版。(即shadowsocksr/shadowsocks)。
+
+        以下是相对路径，比如你在 /root 目录下执行上面的代码，那你的SS根目录就是 /root/shadowsocksr 。
+        根目录即 shadowsocksr
+        子目录即 shadowsocksr/shadowsocks
+
+
+🔸 SSR 配置
+
+    ⦿ 进入根目录 并 初始化项目  🔅 cd /root/shadowsocksr && bash initcfg.sh
+
+    ⦿ SSR 连接前端 ss-panel 
+    🔅 vi userapiconfig.py
+          API_INTERFACE = 'sspanelv2' ➜  API_INTERFACE = 'sspanelv3ssr' 
+
+                前端不仅要连接数据库 也要连接后端. 
+                前端连接后端是 通过API 来连接的. 
+                ss-panel前端有很多版本 如 v2、v3
+                ss 后端也有很多版本: 单人的ss 和多人的ssr
+
+    ⦿ SSR 连接数据库 Mysql 
+    🔅 vi usermysql.json
+            "host": "127.0.0.1",      //数据库地址 
+            "port": 3306,             //mysql端口
+            "user": "root",           //mysql用户名
+            "password": "..........", //你自己的 mysql密码
+            "db": "ss",               //数据库名
+            "node_id": 1              //节点ID.
+
+                后端连数据库就是在这里配置的        
+                这个是对应前端网页里面的节点的. 
+                前端可以有很多和节点. 不同节点表示不同服务器.每个节点都有ID.
+                我们的前端 只有一个节点. 这个节点的ID 是1
+                因为第一个节点在数据库 ss_node表下的id是1
+
+
+
+🔸 更改加密方式
+    后端、前端、客户端 都需要设置加密方式.
+        后端是系统的加密方式. 肯定已这个为准.
+        客户端加密方式肯定按照后端为准
+
+        前端注册的新用户自带一个默认加密方式. 默认是rc4, 我们要改成默认 chacha20
+        前端注册的新用户的加密方式可以在数据库的 user 表的 method字段里查看和修改!
+        
+        如果 mysql 和 后端 加密方式不一致. 肯定会导致上不去网络.
+        如果 mysql 和 后端 加密方式不一致. 那么就直接改 数据库 user 表中 method 字段.
+
+
+    ⦿ SSR 后端修改加密方式
+        🔅 vi /root/shadowsocksr/user-config.json
+            "method":"aes-128-ctr" ➜   "method":"chacha20"
+
+
+    ⦿ ss-panel 新用户默认加密方式
+        最初在 数据库创建的时候 我们就说了 要修改 db.sql文件. 
+        如果你没有修改,那么ss-panel 创建新用户的时候加密方法用的是 rc4-md5
+        因为创建 user 表的时候 method 字段的默认值就是用的 rc4-md5 
+        `method` varchar(64) NOT NULL DEFAULT 'rc4-md5',
+        现在我们数据库以及安装好了. 当然还是可以修改 method字段的默认值的.
+
+        ⦿ 修改mysql 字段默认值
+            ✘✘∙𝒗2 ss.0214.live ➜ 🔅 mysql -u root -p
+            mysql> 🔅 show databases;
+            +--------------------+
+            | Database           |
+            +--------------------+
+            | information_schema |
+            | SS2                |
+            | mysql              |
+            | performance_schema |
+            +--------------------+
+            4 rows in set (0.00 sec)
+
+            mysql> 🔅 use SS2;
+            Database changed
+
+            mysql> 🔅 show tables;
+            +--------------------+
+            | Tables_in_SS2      |
+            +--------------------+
+            | sp_config          |
+            | sp_email_verify    |
+            | sp_log             |
+            | ss_checkin_log     |
+            | ss_invite_code     |
+            | ss_node            |
+            | ss_node_info_log   |
+            | ss_node_online_log |
+            | ss_password_reset  |
+            | user               |
+            | user_token         |
+            | user_traffic_log   |
+            +--------------------+
+            12 rows in set (0.00 sec)
+
+            mysql> 🔅 ALTER TABLE user MODIFY COLUMN method varchar(64) NOT NULL DEFAULT 'chacha20';
+            Query OK, 0 rows affected (0.00 sec)
+            Records: 0  Duplicates: 0  Warnings: 0
+
+            最后一个命令如果没报错那么就修改成功了!!
+
+            语法: alter table +表名+ modify column +字段名+ ... 默认值...
+            现在 你再去注册 新用户 默认加密方式就是 chacha20了.
+            当然 这样修改 ss-panel 的默认加密方法很麻烦. 需要你会数据库.
+            其实你可以在 新建数据库的时候. 在导入 db.sql之前.把下面行改掉就可以了.
+            `method` varchar(64) NOT NULL DEFAULT 'rc4-md5',  改成
+            `method` varchar(64) NOT NULL DEFAULT 'chacha20',
+
+            ❗️❗️❗️ 节点的加密方式. 不等于用户注册后默认的加密方式. ❗️❗️❗️
+            ❗️❗️❗️ 节点的加密方式. 不等于用户注册后默认的加密方式. ❗️❗️❗️
+            ❗️❗️❗️ 节点的加密方式. 不等于用户注册后默认的加密方式. ❗️❗️❗️
+
+            一般用户注册默认加密方式 都是 rc4-md5. 这个是 mysql 的默认值!
+
+
+
+
+
+
+
+🔸 注册用户 进行测试.
+    千万别用管理员帐号来翻墙. 各种问题. 原因未知.自己注册个吧.
+
+    ⦿ 生成邀请码
+        管理员账户登录 ➜  管理面板 ➜ 邀请管理 ➜ 填写邀请码数量并生成 ➜ 
+        
+    ⦿ 查看邀请码 ➜ http://ss.0214.live/code
+
+        1	972z9VKitBVJteuCKzecKdRC4MifCmTD	可用
+        2	76aXwGeFfps8kUXBq3xyW8EYTh3k7rQK	可用
+        3	R8C5PMC6XhfQX4QQQs9YfLguDKquikC3	可用
+        4	HQsTiN8mm92hh9qz3GhQDCHi54jHyHKb	可用
+
+
+    ⦿ 注册新用户
+        退出管理员, 注册新用户,然后用新注册的用户登录.
+
+    ⦿ 查看新用户 ss 配置信息
+        用户中心 ➜  连接信息:
+
+        端口  1027
+        密码 ASWDZX
+
+
+    ⦿ 启动SSR 服务
+        cd /root/shadowsocksr && python server.py
+
+
+    ⦿ 测试
+
+
+
+	
+🔸 SSR 后台运行
+        下面命令都是在 shadowsocksr 这个根目录下执行的.
+
+        ⦿ 调试运行:   python server.py
+
+                这句运行代码主要用于调试，关闭ssh后ss后端自动关闭，所以正式使用请使用下面的脚本运行！如果需要停止请按Ctrl+C键终止程序。
+                这时可查看有运行情况，检查有没有错误。如果服务端没有错误，而连接不上，需要检查iptables或firewall(centos7)的防火墙配置
+
+
+        ⦿ 通过脚本运行:
+                脚本位于 /shadowsocksr 根目录，如果你没有在这个目录，请先进入根目录cd shadowsocksr
+                请分清楚，根目录 /shadowsocksr 和子目录 /shadowsocksr/shadowsocks ！！！！！！！！！！！！！！！！
+
+                赋予所有脚本执行权限（执行一次就好）
+                chmod +x *.sh
+
+                后台运行 但不记录日志（ssh窗口关闭后也继续运行）
+                ./run.sh
+                后台运行 且 记录日志（ssh窗口关闭后也继续运行）
+                ./logrun.sh
+
+                查看 SS日志（用 logrun.sh 脚本启动才会打开日志）
+                ./tail.sh
+
+                停止运行
+                ./stop.sh
+
+                注：通过脚本运行默认日志会保存在根目录的ssserver.log，可手动查看。
+
+                如果日志文件太大，需要清理，可以用下面这个命令 清空 日志文件。
+                cat /dev/null > ssserver.log
+
+
+
+
+        ⦿ 设置开机启动:
+            Linux 两种方式实现开机启动.
+
+
+                1、把启动程序的命令添加到/etc/rc.d/rc.local文件中
+                2、把启动脚本添加到目录/etc/rc.d/init.d/，然后使用命令chkconfig设置开机启动。
+
+                这里选择第一种. 
+                vi /etc/rc.d/rc.local
+
+                添加: 
+                sh /root/shadowsocksr/run.sh
+                然后重启试试就可以了!!!!
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️------⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️
+客户端
+⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️------⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️
+
+🔵 本地客户端设置: Mac: ShadowsSocksX-NG 
+    server → server preferences → 添加节点 →  
+       📌 address: 23.105.192.96  端口: 1026
+       📌 Encryption: rc4-md5
+       📌 Password:  JZrZe5
+
+        确保服务器上 后端的ss 服务是开启的!
+        然后就可以上google了!!!!
+        2017-04-2-18 亲测成功.
+        速度 起码300KB+ 我用的公共wifi 上限就是300. 所以实际只会更快
+
+
+
+
+
+
+
+
+⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️------⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️
+数据库转移
+⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️------⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️
+vps1 是centos 6 mysql 5.1 
+vps2 是centos 7 mysql 5.5
+为了学习各种主从搭建. 有必要统一系统. 统一mysql 版本. 
+vps1 上注册了 300+ 的免费用户..  要升级系统 就必须先备份.
+先把 vps1 上的 ss 数据库 转到 vps2 上看看 行不行.
+
+数据转移方式: navicat ➜ 数据库右键 ➜ datatransfer ➜ 就可以了.. 这么简单.
+下面把 vps1 的 ssr 配置 指向 vps2 的数据库看看能不能成功..
+
+
+vps1:
+vi usermysql.json
+host "127.0.0.1" 改成 "104.224.139.45"
+数据库名改成 "ss" 改成 "s"
+
+然后重启服务器看看 还能不能连上..
+好像还是可以的么....
+
+那么接下来 就是把 vps2 的备份恢复到 vps1上.. 然后稍微修改下...
+就完成了.
+
+
+那么现在 就vps2 完全从零开始 设置一遍吧... 
+
+
+
+

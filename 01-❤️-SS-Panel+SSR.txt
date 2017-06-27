@@ -99,91 +99,13 @@
 
 
 
-❤️️ 前端部分: SS-Panel
-    官网项目里的安装介绍只是一个大概思路. 不够详细.下面是个人整理出的详细教程
-
-🔵 设置一个虚拟主机
-🔅 lnmp vhost add
-    📌 输入你的域名: www.0214.help 其他全部选no
-        虚拟主机设置好后
-          /usr/local/nginx/conf/vhost 下就多了个虚拟主机配置文件.
-          /home/wwwroot/               就多了个 虚拟主机文件夹
-
-          当然你如果之前设置过虚拟主机这步就可以省略了.
-          确保有上面的一个 虚拟主机配置文件. 和 一个虚拟主机文件夹就可以了.
-
-          列出虚拟主机 lnmp vhost list
-          删除虚拟主机 lnmp vhost del
-
-
-
-🔵 cd 到虚拟主机目录.
-🔅 cd /home/wwwroot/www.0214.help
-
-
-
-🔵 官网 Step 0: 下载
-🔅 git clone https://github.com/orvice/ss-panel.git
-
-      这个就是复制别人的项目.
-      上述操作将复制该项目的全部记录，让你本地拥有这些。
-      并且该操作将拷贝该项目的主分支， 使你能够查看代码，或编辑、修改。
-      进到该目录中，你会看到 .git 子目录。 所有的项目数据都存在那里。
-
-      这步下载下来的是一个 ss-panel 文件夹,不是压缩包.
-
-🔵 cd 到ss-panel项目目录.
-🔅 cd ss-panel
-
-
-🔵 官网 Step 1 : 安装
-🔅 curl -sS https://getcomposer.org/installer | php
-🔅 php composer.phar  install
-    curl 就是下载东西的. 网址是一个php文件.  
-    -s silent mode . 不显示进度信息
-    -S 不显示进度的情况下 如果出现错误 就显示错误信息.
-    | php:  | 是管道符号. 可能下载的文件.用php处理吧.
-
-🔵 官网 Step 2. 配置文件.
-🔅 cp .env.example .env
-🔅 vi .env
-🔅 chmod -R 777 storage
-
-    将 .env.example 复制一份重命名为 .env，
-    修改配置文件: 参考里面的中文注释自行修改其中的数据库等信息。
-        主要就是改 数据库名字、数据库登录账户、数据库账户密码、加密方法要改也可以
-        📌 db_database = 'ss-panel'  → db_database = 'ss'  
-        📌 db_username = 'ss-panel'  → db_username = 'root'  
-        📌 db_password = 'secret'    → db_password = '你的root密码'
-        muKey = 'api_key_just_for_test' → 随便输入写英文字符.不要默认就可以了. 
-        
-        这三步可以用正则式解决.提高效率.有空再写.
-
-
-    chmod -R 777 storage 确保 storage 目录可写入.
-
-
-    就是一个配置文件.
-        V2 版本的是一个 config.php 文件
-        V3 版本的是一个 .env 文件
-
-    ❗️❗️配置文件主要目的: 让前端的这个网页 可以连接到后端的数据库来获取各种用户信息的.
-    只要就是 ❗️DB_USER 数据库用户名、❗️DB_PWD 数据库密码、❗️DB_DBNAME 数据库名称
-    其实V3.4的配置文件都是中文详细说明的!!!! 按住说明改就可以了.
-
-
-
 🔵 导入sql文件
 
-📌 先下载 ss-panel 项目文件夹到本地. 并解压. 需要用到里面的 db.sql 文件.
+📌 先下载 ss-panel 项目文件夹到本地. 需要用到里面的 db.sql 文件.
+    git clone https://github.com/orvice/ss-panel.git && cd ss-panel
+
 
 📌 本地电脑连接服务器数据库.
-    浏览器上 输入 你的IP/phpmyadmin    就能进数据库管理界面了. 输入账户密码就可以修改数据库了.
-    我们这里是 23.105.192.96/phpmyadmin   回车就进去了.
-
-    数据库启动了不代表你可以远程连接进数据库.
-    LNMP一键脚本默认只允许你用 phpmyadmin 网页来连接数据库.
-
 
 📌 新建一个数据库. 
     任取一个数据库名字 ss ❗️务必记住这个数据库名字
@@ -242,50 +164,9 @@
 
 
 
-🔵 编辑虚拟主机配置文件.
-    修改虚拟主机的配置文件.这里最后面改成你自己的虚拟主机名.
-    🔅 vi /usr/local/nginx/conf/vhost/www.0214.help.conf
-        📌 添加下面的4行到 server下. 参考文件里已有的改就可以了.
-location / 
-{
-  try_files $uri $uri/ /index.php$is_args$args;		                
-}
-
-        📌 并将 root 那一行改成为
-        root /home/wwwroot/你的域名/ss-panel/public;
-            你通过浏览器访问服务器的默认首页都是在 ss-panel/public/下面的
-            root 路径 写上 ss-panel/public/的绝对路径就可以了.
-
-
-🔵 重启nginx
-🔅 service nginx restart
-这时候用网址(你的域名) 去访问服务器 就出现了崭新的 界面了. 这就是 SS-Panel 
-这里必须不能用IP登录. IP登录 还是LNMP 一键安装包的默认界面.不是 ss-panel的.
-当前域名解析.需要你事先做好. 添加一个www记录就可以了. 
-这时候前端部分就差不多了. 该弄后端了.
 
 
 
-
-
-
-
-🔵 登录 SS-Panel 网页后台
-    http://23.105.192.96/user/index.php
-    网页必须有个管理员帐号啊. 怎么创建呢..
-    V3 版本提供了一个脚本 帮你快速建立管理员帐号.
-    🔅 cd /home/wwwroot/www.0214.help/ss-panel
-    🔅 php xcat createAdmin
-        输入管理员邮箱、密码、按下Y 帐号就创建好了.
-
-        [root@localhost ss-panel]# php xcat createAdmin
-        add admin/ 创建管理员帐号.....Enter your email/输入管理员邮箱: xx2610@gmail.com
-        Enter password for: xx2610@gmail.com / 为 xx2610@gmail.com 添加密码 xujian0219
-        Email: xx2610@gmail.com, Password: xujian0219! Press [Y] to create admin..... 按下[Y]确认来确认创建管
-        理员账户..... y
-        start create admin accountSuccessful/添加成功![root@localhost ss-panel]#
-
-        然后就可以用刚建立的帐号去登录了!!!
 
 
 
@@ -295,51 +176,10 @@ location /
 
 
 ❤️ 后端部分:
-  SSR 多用户版本(mysql)  https://github.com/breakwa11/shadowsocks-rss/wiki/Server-Setup(manyuser-with-mysql)
   原则不推荐使用各种一键安装脚本. 升级个php 居然花了半个多小时..  怪了... ...
 
 
-🔵 基本库安装:
-    🔅 yum install python-setuptools && easy_install pip
-    🔅 yum install git
-
-🔵 安装依赖 cymysql
-🔅 pip install cymysql
-
-    CyMySQL: 它是PyMySQL的一个fork，使用Cython进行了加速，并且支持Python3。
-    PyMySQL: Python3 的一个用于连接MySQL数据库的工具,可以实现基本的增删改查。
-    mysqldb: Python2 的一个用于连接MySQL数据库的工具.
-
-🔵 cd 到home目录
-🔅 cd ~ 
-
-🔵 获取 SSR 项目源代码
-🔅 git clone -b manyuser https://github.com/shadowsocksr/shadowsocksr.git
-    执行完毕后此目录会新建一个shadowsocksr目录，
-        其中根目录的是多用户版（即数据库版），
-        子目录中的是单用户版。(即shadowsocksr/shadowsocks)。
-
-    以下是相对路径，比如你在 /root 目录下执行上面的代码，那你的SS根目录就是 /root/shadowsocksr 。
-    根目录即 shadowsocksr
-    子目录即 shadowsocksr/shadowsocks
-
-
 🔵 服务端配置: 
-    📌 进入根目录 并 初始化项目  🔅 cd /root/shadowsocksr && bash initcfg.sh
-    📌 修改 🔅 vi userapiconfig.py
-          API_INTERFACE = 'sspanelv2'      //修改接口类型, 引号里改成sspanelv3ssr
-                需正确选择使用sspanelv2, sspanelv3, sspanelv3ssr之一
-                ssr 应该是多人版的意思.
-          
-
-    📌 修改:    🔅 vi usermysql.json
-        "host": "127.0.0.1",      //数据库地址 
-        "port": 3306,             //mysql端口
-        "user": "root",           //mysql用户名
-        "password": "..........", //你自己的 mysql密码
-        "db": "ss",               //数据库名
-        "node_id": 1              //节点ID.先在网页里添加一个节点.第一个节点在数据库 ss_node表下的id是1
-        因为是第一条数据啊....
 
     📌 去网页设置节点:
             登录管理员帐号 → 控制面板 → 节点管理 → 添加节点 → 
@@ -353,9 +193,7 @@ location /
         ❌注意1：host
         这里的数据库信息除了 host ，其他的必须和SS-Panel完全一致，服务端启动的时候会读取数据库信息！
         至于 host ，如果你的服务端和前端（SS-Panel）在一个VPS上，那就写localhost或者127.0.0.1，
-        如果不在一起，请写前端（SS-Panel）所在VPS的ip或者域名！
-        如果服务端和前端（SS-Panel）不在一个VPS上，那么数据库链接就属于远程链接了，
-        这时候需要开启数据库用户的远程链接功能！
+
 
         ❌注意2：node_id
         sspanelv3必须正确填写node_id才能正常使用
@@ -365,10 +203,6 @@ location /
 
 
 
-    📌 修改文件: 🔅 vi /root/shadowsocksr/user-config.json
-        "method":"aes-128-ctr",                  //加密方式,最好改成 aes-256-cfb. 很多客户端都不支持 ctr的!!!
-        "protocol": "auth_aes128_md5",           //修改成您要的协议插件名称. 一般不用改
-        "obfs": "tls1.2_ticket_auth_compatible", //修改成您要的混淆插件名称. 一般不用改
 
 
 
@@ -466,96 +300,6 @@ location /
 
 
 🔵 更换加密方式
-
-    加密需要时间,不同的加密方法加密时间不一样.加密强度也不一样.
-    加密时间短.网速自然就快了额. 
-    加密强度小了. 你的vps服务器的IP 可能会被GFW封掉!!!. 这后果很严重的.
-    推荐chacha20   可以说是目前性价比比较高的加密算法 .
-    但是系统默认是不支持 chacha20，需要额外安装 libsodium。
-
-        aes-128-cfb  0.368462085724s
-        aes-192-cfb  0.452577829361s
-        aes-256-cfb  0.418514966965s
-        cast5-cfb    0.859935045242s
-        cast5-ofb    0.911785125732s
-        chacha20     0.429271936417s
-        rc4          0.154517173767s
-        rc4-md5      0.169504165649s
-        salsa20      0.44139790535s
-
-
-    🔸 CentOS 6 安装:libsodium
-
-            yum install m2crypto gcc -y
-            wget -N --no-check-certificate https://download.libsodium.org/libsodium/releases/libsodium-1.0.10.tar.gz
-                下载链接如果失效去这里查下载地址: https://download.libsodium.org/libsodium/releases/
-                注意要选择 .tar.gz 结尾的
-
-            tar zfvx libsodium-1.0.10.tar.gz
-            cd libsodium-1.0.10 && ./configure
-            make && make install
-            echo "include ld.so.conf.d/*.conf" > /etc/ld.so.conf
-            echo "/lib" >> /etc/ld.so.conf
-            echo "/usr/lib64" >> /etc/ld.so.conf
-            echo "/usr/local/lib" >> /etc/ld.so.conf
-            ldconfig
-
-
-        安装好后需要修改默认的自定义加密方法
-        去数据库 → user表 → 结构 → method → 修改 → 改成: chacha20
-        
-        然后注册一个新用户去. 
-        老用户就算本地改了加密方式也连不上去.不知为什么.不管.
-
-
-        修改 Shadowsocks 的配置文件。把加密方式（method）改为 "chacha20" 或着你想要的加密方式，
-        记得客户端的加密方式也要一并改成一样的。
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-再说一句. 这里整个翻墙系统就算搭建好了,请务必做快照备份!!!!!
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 

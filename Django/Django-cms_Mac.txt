@@ -402,24 +402,6 @@
 
 🔵  DjangoCMS 环境搭建:
 
-    ⦿ virtualenv 简介
-        必须学会使用虚拟环境.既然学技术.肯定要搭建很多环境.
-        virtualenv 能让你“项目X使用版本1.x、项目Y使用版本4.x”、系统默认使用3.X.
-        有的项目要只能用python 2.7  不能用python 3+;  有的只能用python 3+  但是不兼容python2+
-        有的项目要只能用django 1.11 不能用django 1.8; 有的只能用django 1.8 但是不兼容django 1.11
-        本文遇到的Django-cms就是第二种情况. 那就得用虚拟环境了!
-
-    ⦿ virtualenv 安装: pip install --upgrade virtualenv
-                  先升级(更新)pip, 再安装virtualenv
-
-    ⦿ virtualenv 使用流程:
-        1. virtualenv env              用python2+创建名叫venv的虚拟环境
-           virtualenv -p python3 env   用python3+创建名叫venv的虚拟环境
-
-        2. source env/bin/activate    激活 venv 这个虚拟环境: 终端前缀多出(venv)
-        3. 安装项目依赖....
-        4. deactivate                  退出虚拟环境.
-
 
     🔸 Django-cms 虚拟环境搭建实例
 
@@ -487,13 +469,6 @@
 ⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️------⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️
 🔵 PostgreSQL 版本升级
 
-    查看版本: 
-        postgres --version   
-            Mac: 9.6.2   
-            CentOS: 9.4.12 
-            最新版本: 9.6.3  2017-06-18-13 
-
-
     版本升级:
         数据库里如果有数据麻烦点. 没数据先卸载再安装就可以了.我们选择卸载再重装
         官网:  https://www.postgresql.org/download/
@@ -537,71 +512,6 @@
         然后重启zsh. 现在用 postgres -V 就出来9.6.3 了.
         ✘✘∙𝒗 Desktop type postgres
         postgres is /Library/PostgreSQL/9.6/bin/postgres
-
-
-
-🔸 Centos 
-
-    ⦿ 卸载
-        三种安装方式: RPM包安装、 yum 安装、 源码包安装.
-
-        也许你也忘了到底用哪种方式安装的.
-        RPM 检查PostgreSQL 是否已经安装
-        ➜  ~ rpm -qa|grep postgres
-        出来如果有数据处理就说明是用 rpm 安装的.
-
-
-        查看PostgreSQL状态   /etc/init.d/postgresql-9.4 status
-        停止PostgreSQL服务   /etc/init.d/postgresql-9.4 stop
-        查看已安装的包       rpm -qa|grep postgres
-            postgresql94-libs-9.4.12-1PGDG.rhel6.i686
-            postgresql94-9.4.12-1PGDG.rhel6.i686
-            postgresql94-devel-9.4.12-1PGDG.rhel6.i686
-            postgresql94-server-9.4.12-1PGDG.rhel6.i686
-
-        然后用 rpm -e 命令卸载.
-            rpm -e postgresql94-devel-9.4.12-1PGDG.rhel6.i686
-            rpm -e postgresql94-server-9.4.12-1PGDG.rhel6.i686
-            rpm -e postgresql94-9.4.12-1PGDG.rhel6.i686
-            rpm -e postgresql94-libs-9.4.12-1PGDG.rhel6.i686
-
-        卸载可能有问题.可以不管它
-
-        如果不是rpm装的. 一般是用yum安装的
-        用yum 卸载非常方便.一个命令就搞定了
-        yum remove ​postgresql
-        如果不能卸载. 那么基本就是 编译安装的了.
-        这个卸载很麻烦.. 尽量避免编译安装软件..
-        包管理器就是为了方便安装和卸载的.
-
-
-
-
-
-    ⦿ RPM 安装
-
-        注意: 这个下载链接只适合 centos6 x86 的 而且安装的是 9.6.3 
-
-        wget https://download.postgresql.org/pub/repos/yum/9.6/redhat/rhel-6-i386/pgdg-centos96-9.6-3.noarch.rpm
-
-
-        rpm -ivh pgdg-centos96-9.6-3.noarch.rpm
-
-        yum update
-        yum install postgresql96-server postgresql96-devel postgresql96
-
-
-
-        bash 环境路径配置
-            echo export PATH=/usr/pgsql-9.6/bin:\$PATH >> /etc/bashrc
-            重新加载bash配置  source ~/.bashrc
-
-        zsh 环境路径配置(可选)
-            就修改 .zhsrc
-            添加这行内容进去就可以  
-
-        现在服务器查看 postgres --version 就是 9.6.3 了 
-
 
 
 
@@ -698,33 +608,7 @@ GRANT ALL PRIVILEGES ON DATABASE exampledb to syncUser;
 
 
 
-    🔸 远程访问
 
-        默认情况下，外网电脑无法连接本地 postsql，
-        想要开启远程访问需要设置两个地方.
-        postgresql.conf > 允许外网访问5432端口
-        pg_hba.conf > 允许外网用某种加密方式连接服务器
-
-
-        ⦿ postgresql.conf 配置
-
-            1.) vi /var/lib/pgsql/9.6/data/postgresql.conf
-                添加一行 listen_addresses = '*'
-
-            2.) 重启数据库
-            sudo service postgresql-9.6 stop && service postgresql-9.6 start
-
-        ⦿ pg_hba.conf 配置
-
-            1.) vi /var/lib/pgsql/9.6/data/pg_hba.conf
-                host    all             all        127.0.0.1/32            ident
-                行下面添加下面行
-                host    all             all        0.0.0.0/0               md5
-
-            2.) 重启数据库
-                sudo service postgresql-9.6 stop && service postgresql-9.6 start
-
-            3.) 测试Navicast 连接
 
 
 
