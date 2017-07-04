@@ -75,6 +75,7 @@
         location  (URL匹配)
         upstream  (负载均衡服务器设置)
 
+
 🔸 Server {} 大模块详解
     这个大模块有很多小模块组成. 最重要的是
     其实每个虚拟主机的配置文件都是一个 server{}模块.
@@ -231,6 +232,122 @@
     • 列/增/删虚拟主机: lnmp vhost list/add/del
 
     重启nginx : /usr/local/nginx/sbin/nginx –s reload
+
+
+
+❤️ 胡言乱语:
+
+    国外vps服务器上安装个 ShadowSocks 稍微配置下就能翻墙了.
+
+    服务器上的流量用不完,想分享给朋友使用.
+    那就需要进行帐号管理.最好还能看每个人用了多少流量等等功能.
+    这就需要一个前端的网页,来进行各种操作.这个网页就是前端. 已经有人帮我们写好这个网页了.这就是 SS-Panel.
+
+
+    🔵 主要目的: 
+        搭建一个ShadowSocks后端服务器: 可以提供很多帐号给别人翻墙用, 
+        搭建一个SS-Panel 前端网站! 可以注册帐号. 并进行各种管理.
+
+    🔵 前端+后端.
+        前端:  就是一个网页.
+        后端:  后端就是实现翻墙功能的. 
+
+        后端有好几种. 最官方的是ShadowSocks项目.其他的还有SSR 等等....
+    
+    个人使用. 只需要几个帐号,不需要数据库.
+    多人使用. 这就需要用到数据库了.
+
+
+    其实 SS-panel 的前端和后端是可以分开的,前端安装在本地. 后端安装在服务器.
+    前端只要能连上后端的数据库就可以了,一般情况都是两者同时安装在服务器上的.我们教程的前后端都是安装在服务器上的.
+
+
+    📌 前端: SS-Panel 
+        是由Orvice写的一款前端网页。可以配合下面这些SS后端:
+            shadowsocks manyuser
+            shadowsocks-go mu
+            shadowsocksR
+        这货是用PHP写的，所以你需要一个php 环境,而且必须 ❗️PHP5.6❗️以上的版本。
+        这是个网页.你要访问网页就要有 web服务器. nginx/apache 随便选. 一般教程都是用❗️Nginx❗️ 就选这个吧.
+        当然为了存储用户数据还需要 ❗️MySQL5.5+❗️的版本
+        这三个环境加起来. 就是所谓的 LNMP/LAMP架构:  Linux、Nginx/Apache、MySQL、PHP
+        ❗️❗️LNMP 环境快速安装推荐1 LNMP.org  一键安装包.     https://lnmp.org/install.html    推荐. 本教程使用这个.具体看LNMP.txt教程.
+        ❗️❗️LNMP 环境快速安装推荐2 OneinStack 一键安装工具.  https://oneinstack.com/
+
+
+    📌 后端: shadowsocks-manyuser有许多版本:
+            ssr版:    git clone -b manyuser https://github.com/breakwa11/shadowsocks.git
+            rm版:     git clone -b manyuser https://github.com/mengskysama/shadowsocks-rm.git
+            普通版:   git clone -b manyuser https://github.com/mengskysama/shadowsocks.git
+            
+          ❗️我们用SSR❗️
+
+
+
+    📌 注:
+          SSR: Shadowsocks原作者被喝茶 放弃此项目，由ShadowsocksR作者接手. 所以SS项目不再更新, 推荐用 SSR 
+          在CentOS上搭建ss-panel（前端）和ssr（后端）以及chacha20（加密）的梯子，帮助自己和朋友登高远望。
+
+            SSR 相比 SS 优点:
+                可以直接启用chacha20加密，在移动设备上比较好使
+                TFO(TCP Fast Open)直接自带，减少握手次数。
+                二次混淆和抗重放等附加功能,减少被封概率.
+                Github 官网 https://github.com/breakwa11/shadowsocks-rss
+
+
+
+
+    📌📌 多人翻墙服务器整体搭建流程:
+          1. 安装 LNMP 环境.         
+          2. 安装 SS-panel 前端部分
+          3. 安装 SSR 后端部分
+
+          ❗️正常情况用 LNMP.org 网站里面的一键安装脚本.安装好后.
+          ❗️就可以在本地浏览器用服务器IP 直接访问服务器上的一个默认网站. 
+          ❗️还可以在本地浏览器用服务器IP/phpmyadmin 直接访问服务器上的数据库.
+          ❗️如果这两个出现问题. 请先自行解决这两个问题.
+              LNMP安装过程中你可以不新建虚拟主机. 
+              你只要把虚拟主机的环境安装上,也就是 Nginx
+              增删虚拟主机都是可以改的.关系不大.
+
+
+    📌 SS-Panel Github链接  https://github.com/orvice/ss-panel/tree/master
+    📌 本教程 只适合CentOS6. 其他系统 可以参考本教程的思路.具体命令肯定有区别的.
+    📌 本教程 带有🔅 都是要执行的命令.
+    📌 本教程 安装的是 官方的 v3.4.5 版本. 2017-04-2-09. 亲测可用.
+    📌 本教程 需要一个域名. 
+          首先你要去 域名注册商那里 添加一个www记录 (也就是把你的域名 对应到你的服务器IP)
+          这步完成了. 你还不能访问服务器上的网页的. 至少Nginx 这个web服务器需要一些设置 
+          才能通过你的域名 访问 服务器上的网页.
+
+          没有域名的 看这个教程.https://doub.io/ss-jc13/  这个教程安装的是v2版本
+
+
+
+
+
+
+        服务器防火墙:
+
+            📌📌 查看防火墙状态
+            🔅 iptables -L
+
+
+            这里可以看到默认的防火墙 mysql 对应的是drop.
+            也就是如果有互联网上有数据包要发到你电脑的mysql这个程序.那么就丢弃这个数据包.
+            所以只要你防火墙不允许. 你是永远连不上服务器上的数据库的....
+
+        📌📌 清空所有防火墙设置.
+            🔅 iptables -F
+            这下所有的数据都能进入到服务器了.
+
+            其实如果整个系统搭建成功后.
+            每个帐号都是单独一个端口的.
+            管理员是 10000端口. 
+            第一个注册的是 10001端口 ... 类推...
+            为了安全起见.不建议清空所有的防火墙.
+            开发某些端口就可以了. 这个另外说. 防火墙也麻烦的.
+
 
 
 
@@ -846,7 +963,6 @@ host "127.0.0.1" 改成 "104.224.139.45"
 就完成了.
 
 
-那么现在 就vps2 完全从零开始 设置一遍吧... 
 
 
 

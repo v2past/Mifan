@@ -148,17 +148,379 @@
 
 
 
+
+
+
 ⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️------⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️
 基础设置
 ⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️------⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️
 
 
-🔸 初始设置
+🔸 初始设置 Mac
     ⦿ 更新本地 known_hosts ( Mac 如果连不上!)
         vi /Users/v/.ssh/known_hosts  >删除带你要ssh服务器IP的行 如: > [104.224.139.45]
 
     • Mac sed 删除 所有包含104.224.139.45的行 ??? ❓
         sed -i 's/104.224.139.45//g' /Users/v/.ssh/known_hosts   ?
+
+
+
+
+🔸 SSH 端口修改
+
+    ⦿ 登录VPS:    
+        ssh -p 27401 root@23.105.192.96
+        27401 改成你自己的ssh初始端口,23.105.192.96 改成你服务器的外网IP
+
+    ⦿ 改ssh(root)密码:  🔅 passwd     输入两次密码 就改掉了.
+
+    ⦿ 改ssh端口成2222
+        • vi /etc/ssh/ssh_config   取消Port 22 前的注释，并将22改成2222
+            🔅 sed -i 's/^#...Port.22/Port 2222/g' /etc/ssh/ssh_config
+        • vi /etc/ssh/sshd_config  取消Port 22 前的注释，并将22改成2222
+            🔅 sed -i 's/^Port.22/Port 2222/g' /etc/ssh/sshd_config
+
+    ⦿ 重启sshd  
+        🔅 systemctl restart sshd.service   CentOS7 的重启方法.
+        🔅 service sshd restart             CentOS6 的重启方法
+
+    ⦿ 重新登录
+        ssh -p 2222 root@198.74.49.76
+
+
+🔸 系统用户设置
+
+    ⦿ 简介
+        默认的管理员 用户名是root. 密码虽然可以自己设置.但是用户名永远是root.
+        别人只要猜对你密码就可以登录你ssh了. 我们必须添加额外一个管理员账户. 用户名和密码都自己设置. 这样安全性能大大提高.
+
+        让新建的用户有和 root 一样的权限.只需要把v加入到和root相同的组里去就可以了.
+
+
+    ⦿ 常用命令
+        • 用户信息: id root    ➜ uid=0(root) gid=0(root) groups=0(root)
+        • 添加用户: 🔅 useradd v  ➜ id v ➜ uid=1002(v) gid=1002(v) groups=1002(v)
+        • 修改密码: 🔅 passwd v
+        • 改用户组: 🔅 usermod -g root v  ➜ 把v加到root组里; usermod -g 用户组名 用户名
+
+    ⦿ 相关文件
+        /etc/passwd 注：用户（user）的配置文件；
+        /etc/shadow 注：用户（user）影子口令文件；
+
+        /etc/group 注：用户组（group）配置文件；
+        /etc/gshadow 注：用户组（group）的影子文件；
+
+
+
+
+🔸 SSH 密钥登录
+
+    ❗️❗️❗️  Mac 本地的公钥是放在服务器用户目录下的. 也就是说一个用户就要进行一次密钥上传操作.
+    ❗️❗️❗️  比如你要在mac上 同时用密钥登录 root账户和 v账户. 那么就需要执行两次操作!
+
+    ⦿ 流程:
+        1. 本地生成一对密钥(公钥+私钥).
+        2. 服务器用户目录建立 .ssh 文件夹, 并给700权限
+        3. 把本地的公钥用scp命令传到服务器
+        4. 服务器上把公钥加到公钥验证列表.
+
+
+    ⦿ 密钥配置
+        🔅VPS: cd && mkdir .ssh && chmod 700 .ssh
+        🔅Mac: cd /Users/v/.ssh/ && ls && scp -P 2222 -r id_rsa.pub root@104.224.139.45:~/.ssh/
+        🔅VPS: cat ~/.ssh/id_rsa.pub >> ~/.ssh/authorized_keys && systemctl restart sshd.service
+
+    ⦿ 测试     ssh -p 2222 root@104.224.139.45
+    
+
+    ⦿ Misc
+            Mac OS 密钥默认生成路径: /Users/v/.ssh/
+            里面如果有个 id_rsa.pub 就说明生成成功了.
+
+
+        • 客户端: 上传公钥文件(id_rsa.pub):
+             cd /Users/v/.ssh/
+             scp -P 2222 -r id_rsa.pub root@23.105.192.96:~/.ssh/
+                    P             必须大写.
+                    2222         服务器的SSh端口     
+                    root          服务器的ssh用户名
+                    23.105.192.96 服务器IP
+                
+        • 注册公钥文件: 把你的公钥添加到公钥验证列表.
+             cat ~/.ssh/id_rsa.pub >> ~/.ssh/authorized_keys
+            作用就是把id_rsa.pub文件里的内容 全部追加到authorized_keys这个文件 后面.
+            如果没有 authorized_keys这个文件会自动帮你建立的.
+            用这种方法 一台服务器可以有很多人都ssh 免密码登录.
+            因为authorized_keys这个身份验证文件中可以添加很多人的公钥(id_rsa.pub)
+
+            也可以直接重命名上传的文件.   mv id_rsa.pub authorized_keys
+            这种方法 整个验证列表中 只有你的公钥.这个服务器只有你能ssh 免密码登录.
+
+
+
+🔸 禁止 root 登录ssh (可选)
+    • vi /etc/ssh/sshd_config
+        PermitRootLogin yes  ➜ 改为➜ PermitRootLogin no
+    • 重启sshd服务: service sshd restart
+
+
+🔸 禁止密码登录(只能用 密钥登录)
+    • vim /etc/ssh/sshd_config
+        PasswordAuthentication no ➜ 去掉注释,并改为no
+    • 重启ssh服务  service sshd restart
+
+
+🔸 备份 Mac 公私密钥
+
+🔸 ssh 密钥权限
+
+
+
+
+🔸 锁定重要文件
+    ⦿ chattr 简介
+        查看文件额外属性: lsattr filepath
+        在Linux系统里，文件有i选项则表示不得对其做任何的修改
+        
+        不让用户 修改、输出、移动重要文件!! 
+        锁定文件用:   chattr +i filepath
+        解锁文件用:   chattr -i filepath
+
+
+    ⦿ 禁止修改密码
+        chattr +i /etc/passwd 
+        chattr +i /etc/shadow
+        假如你锁定了 /etc/shadow 这个文件是修改用户密码的. 
+        一旦锁定 你就无法用passwd 来修改密码
+
+    ⦿ 禁止修改用户组
+        chattr +i /etc/group
+        chattr +i /etc/gshadow
+
+
+
+🔸 让系统日志只能增加数据
+
+    chattr +a /var/log/messages，
+    让系统日志只能增加数据，而不能删除也不能修改数据。
+
+
+
+🔸 防火墙配置 ???
+
+
+
+    # 清除已有iptables规则
+    iptables -F
+    # 允许本地回环接口(即运行本机访问本机)
+    iptables -A INPUT -i lo -j ACCEPT
+    # 允许已建立的或相关连的通行
+    iptables -A INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
+    #允许所有本机向外的访问
+    iptables -A OUTPUT -j ACCEPT
+    # 允许访问22222(SSH)端口，以下几条相同，分别是22222,80,443端口的访问
+    iptables -A INPUT -p tcp --dport 22222 -j ACCEPT
+    iptables -A INPUT -p tcp --dport 80 -j ACCEPT
+    iptables -A INPUT -p tcp --dport 443 -j ACCEPT
+    #如果有其他端口的话，规则也类似，稍微修改上述语句就行
+    #允许ping
+    iptables -A INPUT -p icmp -m icmp --icmp-type 8 -j ACCEPT
+    #禁止其他未允许的规则访问（注意：如果22端口未加入允许规则，SSH链接会直接断开。）
+    iptables -A INPUT -j REJECT 
+    iptables -A FORWARD -j REJECT
+    #保存防火墙规则
+    service iptables save
+    #设置防火墙开机启动
+    chkconfig --level 345 iptables on
+
+
+
+
+    ⦿ Centos 7 常用命令
+
+        • 查看当前防火墙 iptables -L
+
+        • 防火墙开机启动:
+
+
+
+
+
+
+
+
+
+    # 避免放大攻击
+    net.ipv4.icmp_echo_ignore_broadcasts = 1
+
+    # 开启恶意icmp错误消息保护
+    net.ipv4.icmp_ignore_bogus_error_responses = 1
+
+    # 开启SYN洪水攻击保护
+    net.ipv4.tcp_syncookies = 1
+
+    # 开启并记录欺骗，源路由和重定向包
+    net.ipv4.conf.all.log_martians = 1
+    net.ipv4.conf.default.log_martians = 1
+
+    # 处理无源路由的包
+    net.ipv4.conf.all.accept_source_route = 0
+    net.ipv4.conf.default.accept_source_route = 0
+
+    # 开启反向路径过滤
+    net.ipv4.conf.all.rp_filter = 1
+    net.ipv4.conf.default.rp_filter = 1
+
+    # 确保无人能修改路由表
+    net.ipv4.conf.all.accept_redirects = 0
+    net.ipv4.conf.default.accept_redirects = 0
+    net.ipv4.conf.all.secure_redirects = 0
+    net.ipv4.conf.default.secure_redirects = 0
+
+    # 不充当路由器
+    net.ipv4.ip_forward = 0
+    net.ipv4.conf.all.send_redirects = 0
+    net.ipv4.conf.default.send_redirects = 0
+
+    # 开启execshild
+    kernel.exec-shield = 1
+    kernel.randomize_va_space = 1
+
+    # IPv6设置
+    net.ipv6.conf.default.router_solicitations = 0
+    net.ipv6.conf.default.accept_ra_rtr_pref = 0
+    net.ipv6.conf.default.accept_ra_pinfo = 0
+    net.ipv6.conf.default.accept_ra_defrtr = 0
+    net.ipv6.conf.default.autoconf = 0
+    net.ipv6.conf.default.dad_transmits = 0
+    net.ipv6.conf.default.max_addresses = 1
+
+
+
+    # 增加系统IP端口限制
+    net.ipv4.ip_local_port_range = 2000 65000
+
+
+
+
+
+🔸 Fail2Ban
+
+    ⦿ 简介
+        监控系统日志. 执行相应的屏蔽动作. 用e-mail 通知管理员.
+        如:当有人在试探你的SSH、SMTP、FTP密码，只要达到你预设的次数，fail2ban就会调用防火墙屏蔽这个IP，而且可以发送e-mail通知系统管理员，是一款很实用、很强大的软件！
+
+
+
+    ⦿ 安装1
+        wget https://github.com/fail2ban/fail2ban/archive/0.9.7.tar.gz
+        tar xvfj fail2ban-0.10.0.tar.bz2
+        cd fail2ban-0.10.0
+        python setup.py install
+
+    ⦿ 安装2
+        yum install epel-release
+        yum install fail2ban -y
+
+    ⦿ 要求     python 2.6+
+
+
+    ⦿ 使用:
+
+        启用(非启动) systemctl enable fail2ban
+        查询状态：  fail2ban-client status
+        重启fail2ban： systemctl restart fail2ban
+
+
+    ⦿ 配置:
+
+        Fail2ban服务的配置文件在/etc/fail2ban目录。
+        在其中可以找到jail.conf配置文件，我不会直接编辑这个文件，因为在升级软件包时，会覆盖这个文件，使配置失效。我们应该创建一个新文件jail.local，在jail.local定义的值会覆盖jail.conf中的值。
+
+
+        vim /etc/fail2ban/jail.local
+
+        [DEFAULT]
+        # 禁止一个IP一小时
+        bantime = 3600
+        
+        # 覆写 /etc/fail2ban/jail.d/00-firewalld.conf:
+        banaction = iptables-multiport
+        
+        [sshd]
+        enabled = true
+
+        上面覆写了三个配置，bantime，使用iptables，开启sshd。
+        配置完成之后，重启fail2ban： 
+
+
+
+    ⦿ 其他命令
+        最近一次启动，fail2ban日志：
+
+        # journalctl -b -u fail2ban
+        实时跟踪显示fail2ban日志：
+
+        # tail -F /var/log/fail2ban.log
+        显示防火墙规则：
+
+        # iptables -L
+        显示防火墙规则对应的命令：
+
+
+🔸 ssh 日志
+
+    cat /var/log/auth.log
+    more /var/log/secure
+    who /var/log/wtmp
+
+
+🔸 禁用ipv6
+
+    #编辑/etc/sysconfig/network添加行：
+    NETWORKING_IPV6=no
+    #修改/etc/hosts,把ipv6本地主机名解析的注释掉（可选）：
+
+    #::1 localhost localhost6 localhost6.localdomain6
+
+    #禁止系统加载ipv6相关模块，创建modprobe关于禁用ipv6的设定文件/etc/modprobe.d/disable_ipv6.conf(名字随便起)（RHEL6.0之后没有/etc/modprobe.conf这个文件），内容如下，三选其一（本次使用的第一种）：
+    alias net-pf-10 off
+    options ipv6 disable=1
+    #禁止开机启动
+    chkconfig ip6tables off
+    #查看ipv6是否被禁用
+    lsmod | grep -i ipv6
+    ifconfig | grep -i inet6
+
+
+
+
+🔸 阻止百度收录真实位置 恩，免得上门查水表
+
+    vim /etc/hosts
+
+    0.0.0.0 api.map.baidu.com
+    0.0.0.0 ps.map.baidu.com
+    0.0.0.0 sv.map.baidu.com
+    0.0.0.0 offnavi.map.baidu.com
+    0.0.0.0 newvector.map.baidu.com
+    0.0.0.0 ulog.imap.baidu.com
+    0.0.0.0 newloc.map.n.shifen.com
+
+    :: api.map.baidu.com
+    :: ps.map.baidu.com
+    :: sv.map.baidu.com
+    :: offnavi.map.baidu.com
+    :: newvector.map.baidu.com
+    :: ulog.imap.baidu.com
+    :: newloc.map.n.shifen.com
+
+
+
+
+
+
+
 
 
 🔸 必备
@@ -170,70 +532,56 @@
     🔅🔅 
     yum update -y && yum install tree -y && yum group install "Development Tools" -y
 
+
 🔸 SELinux (可选)
     /usr/sbin/sestatus -v      
     enabled即为开启状态, 确保这里是Disabled 
 
+
 🔸 VI 配置 (防止打开文件乱码)
     ⦿ 中文乱码
         ~/.vimrc 添加3行
+
         set fileencodings=utf-8,gb2312,gb18030,gbk,ucs-bom,cp936,latin1
         set enc=utf8
         set fencs=utf8,gbk,gb2312,gb18030
 
-     echo "set fileencodings=utf-8,gb2312,gb18030,gbk,ucs-bom,cp936,latin1" >> ~/.vimrc
-     echo "set enc=utf8" >> ~/.vimrc
-     echo "set fencs=utf8,gbk,gb2312,gb18030" >> ~/.vimrc
+        echo "set fileencodings=utf-8,gb2312,gb18030,gbk,ucs-bom,cp936,latin1" >> ~/.vimrc
+        echo "set enc=utf8" >> ~/.vimrc
+        echo "set fencs=utf8,gbk,gb2312,gb18030" >> ~/.vimrc
 
     ⦿ 显示行号
-     echo ":set nu" >> ~/.vimrc && cat ~/.vimrc
+         echo ":set nu" >> ~/.vimrc && cat ~/.vimrc
 
-
-    ⦿ else
-
-
-    # 设置行号
-    set nu
-    set fileencodings=utf-8,gb2312,gbk,gb18030
-    set termencoding=utf-8
-    set fileformats=unix
-    set encoding=prc
-    # 设置缩进
-    set ts=4
-    set expandtab
-    set autoindent
-
-
-
-
+    ⦿ 设置缩进
+        echo "set ts=4" >> ~/.vimrc && cat ~/.vimrc
+        echo "set expandtab" >> ~/.vimrc && cat ~/.vimrc
+        echo "set autoindent" >> ~/.vimrc && cat ~/.vimrc
 
     🔅🔅
     echo "set fileencodings=utf-8,gb2312,gb18030,gbk,ucs-bom,cp936,latin1" >> ~/.vimrc && echo "set enc=utf8" >> ~/.vimrc && echo "set fencs=utf8,gbk,gb2312,gb18030" >> ~/.vimrc && echo ":set nu" >> ~/.vimrc && cat ~/.vimrc
 
-🔸 SSH 配置
 
-    ⦿ 改ssh(root)密码:  🔅 passwd 
-
-    ⦿ 改ssh端口成2222
-        • 🔅 vi /etc/ssh/ssh_config   取消Port 22 前的注释，并将22改成2222
-        • 🔅 vi /etc/ssh/sshd_config  取消Port 22 前的注释，并将22改成2222
-
-    ⦿ 重启sshd    🔅 service sshd restart
-    ⦿ 测试           ssh -p 2222 root@104.224.139.45
-
-    ⦿ 密钥配置
-        🔅VPS: cd && mkdir .ssh && chmod 700 .ssh
-        🔅Mac: cd /Users/v/.ssh/ && ls && scp -P 2222 -r id_rsa.pub root@104.224.139.45:~/.ssh/
-        🔅VPS: cat ~/.ssh/id_rsa.pub >> ~/.ssh/authorized_keys && systemctl restart sshd.service
-
-    ⦿ 测试     ssh -p 2222 root@104.224.139.45
-    
 
 
 
 🔸 ZSH 配置
 
+
+    ⦿ ZSH 简介
+        默认的shell 太难看. 黑白的,废话不多说. 直接用全世界公认的最好的shell: ZSH.
+        ZSH 配置有点麻烦. 这也不是事情.有人早把你配好了.这人就是 oh-my-zsh
+
+
     ⦿ ZSH 安装
+
+    🔅 sh -c "$(wget https://raw.github.com/robbyrussell/oh-my-zsh/master/tools/install.sh -O -)"
+
+        - 查看当前已装 shell   🔅 cat /etc/shells
+        - 设置zsh为默认shell   🔅 chsh -s /bin/zsh
+
+
+
          yum install zsh -y && yum install git -y
 
          sh -c "$(wget https://raw.github.com/robbyrussell/oh-my-zsh/master/tools/install.sh -O -)"
@@ -242,33 +590,121 @@
         yum install zsh -y && yum install git -y && sh -c "$(wget https://raw.github.com/robbyrussell/oh-my-zsh/master/tools/install.sh -O -)"
 
 
-    ⦿ Autojump 插件安装
+🔸 Autojump (zsh 插件)
+    
+    ⦿ 简介
+        autojump插件使你能够快速切换路径，
+        再也不需要逐个敲入目录，只需敲入目标目录，就可以迅速切换目录。
+
+        📌 最终效果:
+            ➜  crypto git:(manyuser) ✗ pwd
+            /root/shadowsocksr/shadowsocks/crypto
+            ➜  crypto git:(manyuser) ✗ cd /
+            ➜  / j cry
+            /root/shadowsocksr/shadowsocks/crypto
+            ➜  crypto git:(manyuser) ✗
+
+            4个命令.  
+            第一个: 输出当前目录.
+            第二个: 跳转到根目录.
+            第三个: 使用 j 快速跳转.
+            第四个: 看到没. 只输入了 j cry 就跳转过去了.
+            你手速慢,估计得输入半天吧.... 
+            安装好autojump 就可以使用j 命令了.
+
+    ⦿ 安装
+
          git clone https://github.com/joelthelion/autojump.git && cd autojump && ./install.py
+         
+                ❗️❗️❗️ 注意安装完最后的提示!!! ❗️❗️❗️
+                Please manually add the following line(s) to ~/.zshrc:
+                        [[ -s /root/.autojump/etc/profile.d/autojump.sh ]] && source /root/.a
+                utojump/etc/profile.d/autojump.sh
+                        autoload -U compinit && compinit -u
+                Please restart terminal(s) before running autojump.
 
-        • ~/.zshrc 添加下面几行到行尾
-            [[ -s /root/.autojump/etc/profile.d/autojump.sh ]] && source /root/.autojump/etc/profile.d/autojump.sh
-                            autoload -U compinit && compinit -u
+                就是让你手动把下面两行 加到  ~/.zshrc 中行尾.
 
-        •  echo "[[ -s /root/.autojump/etc/profile.d/autojump.sh ]] && source /root/.autojump/etc/profile.d/autojump.sh
-                            autoload -U compinit && compinit -u" >> ~/.zshrc
+            vi ~/.zshrc
+                [[ -s /root/.autojump/etc/profile.d/autojump.sh ]] && source /root/.autojump/etc/profile.d/autojump.sh
+                autoload -U compinit && compinit -u
 
-        • 删除安装包  cd .. && rm -R autojump
-        • 重连ssh测试
+                注意是两行!!!! 有时候终端不够宽.会自动把你分成多行, 给你添加几个空格.就会出错!!!
+                让后重启shell.如果是远程vps的话.直接断开ssh 重连就可以.
 
-        🔅🔅
-        git clone https://github.com/joelthelion/autojump.git && cd autojump && ./install.py && echo "[[ -s /root/.autojump/etc/profile.d/autojump.sh ]] && source /root/.autojump/etc/profile.d/autojump.sh
+                然后就可以用 j 命令了. 只要你cd 过某个文件夹. 这个插件就会记住这个路径.
+
+
+            🔅🔅
+                git clone https://github.com/joelthelion/autojump.git && cd autojump && ./install.py && echo "[[ -s /root/.autojump/etc/profile.d/autojump.sh ]] && source /root/.autojump/etc/profile.d/autojump.sh
                                     autoload -U compinit && compinit -u" >> ~/.zshrc && cd .. && rm -R autojump
 
 
 
 
-    ⦿ 提示符配置
-        提示符就是一个变量 输入: echo “$PS1”  就能显示当前提示符.
-        🔅 vi ~/.zshrc 添加
-        PS1="%F{red}✘✘%F{black}∙%f%B%F{magenta}𝒗2%f%b %{$fg[cyan]%}%c%{$reset_color%} %{$reset_color%}${ret_status}"
+🔸 Shell 提示符
 
-        这里的xx、v 可以自定义最后重连ssh 就生效了. 原来的 ~ 就变成 ✘✘∙𝒗2 ~ 了
-        注意 这里用echo 可能会失败. 还是手动输入吧.
+    提示符就是一个变量 输入: echo “$PS1”  就能显示当前提示符.
+    🔅 vi ~/.zshrc 添加
+    PS1="%F{red}✘✘%F{black}∙%f%B%F{magenta}𝒗2%f%b %{$fg[cyan]%}%c%{$reset_color%} %{$reset_color%}${ret_status}"
+
+    这里的xx、v 可以自定义最后重连ssh 就生效了. 原来的 ~ 就变成 ✘✘∙𝒗2 ~ 了
+    注意 这里用echo 可能会失败. 还是手动输入吧.
+
+
+
+
+🔸 ssh 自定义欢迎界面 
+     _        _    ___ ______   _  ___   ___  ____   ____
+    | |      / \  / _ \__  / | | |/ _ \ / _ \|  _ \ / ___|
+    | |     / _ \| | | |/ /| | | | | | | | | | |_) | |  _
+    | |___ / ___ \ |_| / /_| |_| | |_| | |_| |  _ <| |_| |
+    |_____/_/   \_\___/____|\___/ \___(_)___/|_| \_\\____|
+
+    类似这种 都是用  figlet 工具生成的.
+    在任何电脑安装这个 figlet 工具, 然后自定义内容, 复制文字内容到服务器就可以.
+
+
+    ⦿ figlet 安装.
+
+        cd /usr/local/src/ && wget ftp://ftp.figlet.org/pub/figlet/program/unix/figlet-2.2.5.tar.gz && 
+        tar -zxvf figlet-2.2.5.tar.gz && cd figlet-2.2.5 && make figlet
+
+
+    ⦿ figlet 使用
+
+        cd /usr/local/src/figlet-2.2.5
+        语法: ./figlet 生成内容 -f 指定字体
+        字体: 在 fonts 文件夹下 以.flf 结尾的都是.
+
+        ⦿ ./figlet Xu.jian -f fonts/standard.flf
+        __  __        _ _
+        \ \/ /   _   (_|_) __ _ _ __
+        \  / | | |  | | |/ _` | '_ \
+        /  \ |_| |_ | | | (_| | | | |
+        /_/\_\__,_(_)/ |_|\__,_|_| |_|
+                |__/
+
+
+        ⦿ ./figlet Xu.jian -f fonts/bubble.flf
+        _   _   _   _   _   _   _
+        / \ / \ / \ / \ / \ / \ / \
+        ( X | u | . | j | i | a | n )
+        \_/ \_/ \_/ \_/ \_/ \_/ \_/
+
+
+        ⦿ ./figlet Xu.jian -f fonts/digital.flf
+        +-+-+-+-+-+-+-+
+        |X|u|.|j|i|a|n|
+        +-+-+-+-+-+-+-+
+
+
+    ⦿ SSH 登录界面修改.
+
+        vi /etc/motd           motd即messageoftoday（布告栏信息）
+        添加要显示的文字然后重连ssh
+        就可以了.
+
 
 
 
@@ -287,7 +723,7 @@
         想要服务器定时给客户端发数据需要配置服务器的 ssh 配置文件.
     
     ⦿ sshd_config
-        服务器 sshd 配置文件路径 /etc/ssh/sshd_config
+        服务器 sshd 配置文件路径 vi /etc/ssh/sshd_config
 
         三个重要参数解释:
 
@@ -311,8 +747,9 @@
 
     ⦿ PS
         如果你对服务器没有控制权限. 那么就只能让客户端定时给服务器发数据了
-        在Mac的 /etc/ssh/ssh_config 下添加行 ServerAliveInterval 30
-        就会 每隔30秒自动给服务器发数据 
+        在Mac的 sudo vi /etc/ssh/ssh_config 下添加行 
+        ServerAliveInterval 30  就会 每隔30秒自动给服务器发数据 
+        ServerAliveCountMax 6000
 
         sudo echo "ServerAliveInterval 30" >> /etc/ssh/ssh_config
         用这个命令你会报错, 没权限! 
@@ -341,7 +778,8 @@
 
 
 
-🔵 NetSpeed 网络加速 
+🔵 NetSpeed 网络加速 (可选)
+
     ❗️❗️❗️ 安装开启后，VPN不能使用!!! ❗️❗️❗️
     官方中文教程 https://github.com/snooda/net-speeder
 
@@ -414,7 +852,11 @@
 
 
 
-🔵 LNMP
+
+⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️------⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️
+⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️------⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️
+
+🔵 LNMP 环境
 
     Mysql 三个最常见版本: 5.1、5.5、5.7
         5.1 运行内存 20M -
@@ -423,6 +865,14 @@
 
     一般的vps 也就512/1G内存, 就算你装好 Mysql5.7 其他什么都不干 也卡死的.
   ❗️❗️❗️ 内存小于等于 1G 的服务器 mysql 只能选择 5.5、5.1 ; 我们选 5.5 ❗️❗️❗️
+  ❗️❗️❗️ 内存小于等于 1G 的服务器 mysql 只能选择 5.5、5.1 ; 我们选 5.5 ❗️❗️❗️
+
+  ❗❗️❗️ php 尽量选择最新版本 7+, 必须 选择 5.6+ 版本 ❗️❗️❗️
+  ❗❗️❗️ php 尽量选择最新版本 7+, 必须 选择 5.6+ 版本 ❗️❗️❗️
+        最新版本 7.1  尽量用最新版.不像mysql有内存要求.
+    ⦿ phpinfo()  ➜  http://104.224.139.45/phpinfo.php  这里显示各种信息
+
+
 
     直接运行下面命令就会自动安装LNMP环境了.
     🔅 wget -c http://soft.vpser.net/lnmp/lnmp1.4.tar.gz && tar zxf lnmp1.4.tar.gz && cd lnmp1.4 && ./install.sh lnmp
@@ -437,7 +887,81 @@
 
 
 
-🔵 Nginx
+    ⦿ 检验是否成功安装:
+
+        • 正常可以直接用 🔅 http://23.105.192.96/  登录服务器初始网站了. 这里IP地址改成你自己的就可以. 
+            这个网站是用nginx搭建的. 
+            网站内容是这个lnmp脚本自动生成的.
+            网站的默认根目录是 /home/wwwroot/default/index.php
+
+        • 正常可以直接用 🔅 http://23.105.192.96/phpmyadmin/  登录数据库了. 这里IP地址改成你自己的就可以.
+            📌 默认数据库是只能用网页登录的. 你要用别的工具 需要手动开启数据库的远程功能.
+
+
+        • 最好我们在本地机器 用nmap 来测试服务器到底开放了哪些端口.
+            ✘✘∙𝒗 Desktop nmap 23.105.192.96
+
+            Starting Nmap 7.25BETA1 ( https://nmap.org ) at 2017-03-31 09:51 CST
+            Nmap scan report for 23.105.192.96.16clouds.com (23.105.192.96)
+            Host is up (0.17s latency).
+            Not shown: 992 closed ports
+            PORT     STATE    SERVICE
+            53/tcp   open     domain
+            80/tcp   open     http
+            111/tcp  filtered rpcbind
+            443/tcp  open     https
+            1723/tcp filtered pptp
+            2190/tcp open     tivoconnect
+            3306/tcp open     mysql
+            6666/tcp open     irc
+
+            Nmap done: 1 IP address (1 host up) scanned in 19.65 seconds
+
+            发现有个 3306 的数据库端口.说明数据库正常启动了.
+
+
+
+
+    ⦿ LNMP状态管理命令：
+
+        LNMP 1.2+状态管理:     lnmp {start|stop|reload|restart|kill|status}
+        LNMP 1.2+各个程序状态: lnmp {nginx|mysql|mariadb|php-fpm|pureftpd} {start|stop|reload|restart|kill|status}
+        Nginx状态管理：        /etc/init.d/nginx {start|stop|reload|restart}
+        MySQL状态管理：        /etc/init.d/mysql {start|stop|restart|reload|force-reload|status}
+        Memcached状态管理：    /etc/init.d/memcached {start|stop|restart}
+        PHP-FPM状态管理：      /etc/init.d/php-fpm {start|stop|quit|restart|reload|logrotate}
+        PureFTPd状态管理：     /etc/init.d/pureftpd {start|stop|restart|kill|status}
+        ProFTPd状态管理：      /etc/init.d/proftpd {start|stop|restart|reload}
+        Redis状态管理：        /etc/init.d/redis {start|stop|restart|kill}
+            如重启LNMP，1.2+输入命令：lnmp restart 即可；
+            单独重启mysql：/etc/init.d/mysql restart 也可以 lnmp mysql restart ，两个是一样的。
+
+
+
+
+    ⦿ 各种版本升级方法 https://lnmp.org/faq/lnmp1-2-upgrade.html
+        ❗️❗️❗️以下操作均需要在lnmp压缩包解压后的目录里运行
+
+        • PHP 升级:
+             ./upgrade.sh php          回车
+             输入一个 版本号 如 7.1.3  回车，再次回车确认即可开始升级。
+            到http://www.php.net/downloads.php 获取版本号， 
+            这个升级非常慢!!! 操 几乎就是安装整个LNMP环境的时间了....
+
+
+        • Mysql 升级 5.6
+            cd 到lnmp的解压包
+            (升级前 不能关闭数据库.)
+            ./upgrade.sh mysql 
+            输入root密码
+            输入版本号 5.7.18
+
+
+
+    ❗️❗️❗️❗️❗️ 最后, 搭建好基础的环境后. 务必务必 去控制面板 做系统快照. ❗️❗️❗️❗️❗️
+    https://kiwivm.64clouds.com/main.php
+    → Snapshots → 快照就是系统备份.   备份和恢复只要几秒钟!!!!! 
+    再也不用担心服务器被你折腾坏了. 
 
 
 
@@ -445,6 +969,14 @@
 
 
 
+
+
+
+
+
+
+⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️------⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️
+⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️------⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️
 
 
 🔵 Mysql 远程访问
@@ -527,17 +1059,6 @@
 
 
 
-🔵 PHP (可选)
-
-    最新版本 7.1 . 尽量用最新版.不像mysql有内存要求.
-
-    PHP5.4+ 就内置了功能齐全的web服务器.
-    开发方法: 进入项目的web根目录. • php -S 0.0.0.0:8000
-    然后就可以用任何电脑 访问服务器 23.105.192.96:8000 访问了.
-
-    ⦿ phpinfo()
-        http://104.224.139.45/phpinfo.php
-        这里显示各种信息
 
 
 
@@ -1002,6 +1523,18 @@
 
 到这里是最基础设置. 设置好后去备份服务器. 方便还原. 
 帮瓦工的vps几秒就能系统还原.非常牛逼! 
+
+
+
+
+🔸 网络配置
+
+
+
+
+
+
+
 
 
 
@@ -1681,10 +2214,30 @@ wget --no-check-certificate https://raw.githubusercontent.com/mmmwhy/LKL_BBR/mas
 
 
 
+⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️------⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️
+⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️------⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️
 
 
 
 
+
+🔸 HTOP 2.0
+    最流行监控工具, 一般yum 安装的都是1+版本.如果要安装2+ 版本 需要配置源.
+    下面是 centos7 x64 安装 HTOP2.0 的方法.
+
+    wget http://dl.fedoraproject.org/pub/epel/7/x86_64/e/epel-release-7-9.noarch.rpm
+    rpm -ihv epel-release-7-9.noarch.rpm 
+    yum install htop
+
+
+🔸 SFTP
+
+
+
+
+
+🔸 Go 
+https://www.howtoing.com/how-to-install-go-1-7-on-centos-7/
 
 
 

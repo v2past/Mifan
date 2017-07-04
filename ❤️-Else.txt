@@ -1,0 +1,802 @@
+⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️------⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️
+⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️------⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️
+Linux 神器
+
+
+
+
+
+🔵 ag
+Ag > Ack > Grep Vim下面我用了长时间的 grep ，真是伤不起啊。
+
+
+全局代码搜索 比较快... 但是文件就不一定了 ..
+
+
+
+Ag(The Silver Searcher)和Ack都是 CLI 的全局搜索工具，其中Ag更快一些，而Ack也比Vim自带的grep快很多。这些工具的Vim插件可以通过Vim Quickfix窗口来提供代码搜索的结果。 本文便来详细介绍如何在Vim中使用Ag全局搜索。
+
+
+
+比grep、ack更快的递归搜索文件内容。
+https://github.com/ggreer/the_silver_searcher
+
+
+⦿ Mac OS  安装:  brew install the_silver_searcher
+⦿ Centos7 安装:  yum install the_silver_searcher -y
+
+
+
+⦿ 使用
+  ag 'hx' /www/t086.com
+
+  常用参数
+  -i 忽略大小写
+  -l 只列出文件名
+  -g 文件名匹配
+  --php 只搜索php文件
+  --ignore-dir 忽略目录
+
+
+  • 用法 man ag
+  • 版本 ag -V
+
+
+
+
+如：ag --ignore-dir sitedata --php hx /www/9enjoy.com
+
+更多
+-h 看帮助吧
+
+
+
+
+
+
+ag HelloWorld
+就会搜索 所有文件　
+
+
+
+
+
+
+
+
+🔵 tig
+https://github.com/jonas/tig
+终端下查看... git 项目..
+
+⦿ Mac OS  安装:  brew install tig
+⦿ Centos7 安装:  yum install tig
+
+
+
+
+
+
+
+🔵 mycli
+
+mysql 命令行客户端，支持语法高亮和命令补全
+详细使用方法 https://github.com/dbcli/mycli
+
+❗️❗️ 每输入一次命令 都要按 q 按钮来退出. ❗️❗️
+
+⦿ Mac 安装  brew install mycli
+⦿ Centos 7
+    yum install python-devel
+    pip install -U mycli
+
+
+⦿ 使用
+• mycli -u root -p xxxx
+
+• mycli ss
+直接进入ss数据库. 要输入root密码.
+
+
+
+• mycli -h 104.224.139.45 -P 3306 -u root
+Mac 如果安装了mycli 也能直接控制服务器. 不需要在服务器上安装.
+
+
+
+
+
+mycli -h 104.224.139.45 -P 3306 
+
+
+
+
+
+
+
+
+🔵  shellcheck：
+  shell脚本静态检查工具，能够识别语法错误以及不规范的写法。
+  https://github.com/koalaman/shellcheck
+
+  很多使用方法.
+  可以在网页上写脚本.然后在线检查.
+  可以在终端上检测, 还能在编辑器如 vscode  上检查.
+
+  ⦿ 网页在线检测.  http://www.shellcheck.net/
+
+  ⦿ Mac 安装  
+    • brew install shellcheck
+    • vsc 插件安装. 找 shellcheck 然后安装.
+
+
+
+
+🔵 yapf：
+Google开发的python代码格式规范化工具，支持pep8以及Google代码风格。
+https://github.com/google/yapf
+⦿ 安装 pip install yapf
+
+
+
+
+
+🔵  Mosh
+https://mosh.org/
+
+❗️❗️ 网络断线能自动恢复SSH连接,  还能消除卡顿????????? ❗️❗️
+❗️❗️ 网络断线能自动恢复SSH连接,  还能消除卡顿????????? ❗️❗️
+
+
+
+Mosh 是一个替代 SSH 的免费软件，它最大的特点是支持网络漫游和间歇性连接。
+
+与常规 SSH 连接不同的是，Mosh 会不断的同步您本地和远程计算机的连接会话，以确保计算机在切换无线连接或休眠后可以自动重新连接到服务器。
+
+
+持续连接：如果您的网络中断，Mosh将会在新网络可用的时候自动重新连接服务器。
+减少网络延时：SSH 需要等待服务器响应后，才显示您的输入内容。而 Mosh 会马上显示您的输入，编辑，删除等内容。
+像 SSH，但比 SSH 更好：Mosh 会通过 SSH 登录到服务器，然后运行普通终端应用程序。
+
+需要服务器和本地同时安装 mosh
+
+Centos7 安装 Mosh   yum install mosh
+Mac OS  安装 Mosh   https://mosh.org/
+
+⦿ 使用.
+
+可以用 udp端口. 还能用... ssh端口.
+
+mosh root@104.224.139.45
+  mosh 用户名@服务器IP
+
+mosh root@104.224.139.45 --ssh="ssh -p 2222" 
+  如果用其他ssh端口. 要加ssh参数.
+
+
+
+
+
+
+
+🔵 htop
+
+
+
+
+
+
+🔵 axel
+多线程下载工具，下载文件时可以替代curl、wget。
+
+
+
+
+🔵 tmux：
+
+⦿ 参考文章
+    https://mba811.gitbooks.io/mac-dev/content/iTerm/tmux.html
+    http://wdxtub.com/2016/03/30/tmux-guide/
+    http://mingxinglai.com/cn/2012/09/tmux/
+
+
+
+🔸 简介
+
+tmux使用C/S模型构建，主要包括以下单元模块：
+server服务器。输入tmux命令时就开启了一个服务器。
+session会话。一个服务器可以包含多个会话
+window窗口。一个会话可以包含多个窗口。
+pane面板。一个窗口可以包含多个面板。
+
+
+
+
+    iTerm是一个GUI软件，它的窗格只是窗格而已！
+    而Tmux是终端复用，在一个命令行窗口中不仅可以显示多个Shell的内容，而且可以保持多个会话
+
+    Tmux 和 screen 有什么区别？
+    功能差不多 但是 tmux 强大很多..
+
+    tmux是linux中一种管理窗口的程序。那么问题来了：Mac自带的Iterm2很好用啊。既支持多标签，也支持窗体内部Panel的分割，为什么还要用tmux？其实，多标签和分割窗体只是tmux的部分功能。用tmux的主要原因是它提供了一个窗体组随时存储和恢复的功能。看看以下的使用场景是否适合你：
+
+    公司台式机开了一堆vim和log打印窗口下班了。到家后灵感突发，想要继续coding，登陆VPN，SSH连上台式后发现又要重新打开各种窗口，瞬间没心情了。。。FML！这个时候你就可以在你的公司台式机上装个tmux。同一组工作环境，在多处共享。
+    公司服务器上调试程序，开了一堆窗口。出去吃了个饭，发现SSH超时了，broken pipe。重头开始。。。FML！如果你之前使用了tmux就不会有这样的问题，attach就能找回原来打开的那些窗口。
+
+
+
+
+    终端复用工具，替代screen、nohup。
+    比如在 iterm 下要在vps2下开多个窗口.  要么一次次的ssh.
+    要么就 用 tmux . 这个是安装在服务器端的.
+
+    安装好后 . 在终端输入 tmux 就启动了. .
+    启动之后，可以看到命令行最底部多了一条绿色的状态条，上面显示了一些信息，比如计算机名和时间等。 要退出 tmux，可以输入 exit 回车或者按下组合键 [Ctrl+d] 。
+
+🔸 安装
+  brew install tmux
+  yum install tmux -y
+
+
+
+🔸 基本操作.
+
+tmux              新建会话.
+tmux new -s vps1  新建名为 vps1 的会话
+tmux show -g      tmux当前配置,需进入tmux操作  可查看前置快捷键是 prefix C-b
+tmux ls           当前有哪些Session
+tmux a -t name    恢复某个session
+
+c           新建窗口.  新窗口是没有tab的. 只会在底下绿色栏目里显示.
+0-9         切换到几号窗口. 当前窗口底部绿栏有个星号表示.
+n           跳到下一个窗口
+
+"(shift+')  水平新建panel
+%(shift 5)  垂直新建panel
+o           鼠标跳到下一个panel.  
+
+空格        自动切换panel布局排列
+
+!(shift 1)  当前panel 变成新窗口
+
+
+C-方向键   调整panel大小 
+
+
+t          显示时钟
+
+x  关闭panle
+&  关闭窗口
+d  后台运行当前会话.
+
+
+
+
+🔸 前置快捷键修改.
+
+  默认快捷键是 ctrl b  不喜欢可以改... 
+  新建配置文件. vi ~/.tmux.conf
+
+  #解除Ctrl+b 与前缀的对应关系
+  unbind C-b
+
+  #设置前缀为Ctrl + a
+  set -g prefix C-a
+
+  要使得配置生效得重新加载 配置文件. 不等于重启 iterm!!!
+  在 tmux 里面输入  ⌃+b shift+; 就能进入tmux的命令行模式了, 
+  输入source-file ~/.tmux.conf 就能重新加载 tmux 配置文件了.
+  然后再进入 tmux 用 tmux show -g 看快捷键就改掉了.!!
+
+
+🔸 快捷键修改
+
+#up
+bind-key k select-pane -U
+#down
+bind-key j select-pane -D
+#left
+bind-key h select-pane -L
+#right
+bind-key l select-pane -R
+
+之后就能用 快捷键+hjkl 来切换panel了.
+
+
+
+
+
+⦿ 分离会话
+退出 tmux 可以使用 exit 命令或者 [Ctrl+d] 组合键，退出 tmux 会把会话结束掉，就像平常关闭终端程序一样。但是在实际应用中，可能你并不希望这样，因为有些程序是要保持运行的，例如 rails 的测试服务、telnet连接远程服务器等等。
+
+
+分离后 . 可以一直运行... 哪怕你把 iterm程序关闭...
+
+如果你想知道当前tmux的设置，可通过tmux show -g来查看（该命令需要tmux正在运行）。 你可能会需要把这些设置导出为文件：
+
+
+
+
+
+
+tmux list-keys 列出所有可以的快捷键和其运行的 tmux 命令
+tmux list-commands 列出所有的 tmux 命令及其参数
+tmux info 流出所有的 session, window, pane, 运行的进程号，等。
+
+
+
+
+
+
+
+
+
+
+
+
+
+🔵 you-get
+
+下载工具..
+
+
+
+🔵 thefuck
+
+⦿ 安装
+brew install thefuck
+pip install thefuck
+
+
+⦿ 使用
+
+
+
+🔵 screenfetch
+查看系统信息
+✘✘∙𝒗2 screenFetch ➜ ./screenfetch-dev
+                   ..                    root@localhost.localdomain
+                 .PLTJ.                  OS: CentOS
+                <><><><>                 Kernel: x86_64 Linux 2.6.32-042stab123.3
+       KKSSV' 4KKK LJ KKKL.'VSSKK        Uptime: 1d 23h 20m
+       KKV' 4KKKKK LJ KKKKAL 'VKK        Packages: 530
+       V' ' 'VKKKK LJ KKKKV' ' 'V        Shell: zsh 5.0.2
+       .4MA.' 'VKK LJ KKV' '.4Mb.        CPU: Intel Xeon E3-1275 v5 @ 3.6GHz
+     . KKKKKA.' 'V LJ V' '.4KKKKK .      RAM: 340MiB / 1024MiB
+   .4D KKKKKKKA.'' LJ ''.4KKKKKKK FA.
+  <QDD ++++++++++++  ++++++++++++ GFD>
+   'VD KKKKKKKK'.. LJ ..'KKKKKKKK FV
+     ' VKKKKK'. .4 LJ K. .'KKKKKV '
+        'VK'. .4KK LJ KKA. .'KV'
+       A. . .4KKKK LJ KKKKA. . .4
+       KKA. 'KKKKK LJ KKKKK' .4KK
+       KKSSA. VKKK LJ KKKV .4SSKK
+                <><><><>
+                 'MKKM'
+
+
+
+安装: 
+git clone https://github.com/KittyKatt/screenFetch.git
+cd screenFetch
+chmod +x screenfetch-dev
+./screenfetch-dev
+
+
+
+
+🔵 NetHogs
+NetHogs——Linux下按进程实时统计网络带宽利用率
+
+
+网上有很多适用于Linux操作系统的开源网络监视工具.
+你可以用命令iftop来检查带宽使用情况. 
+netstat用来查看接口统计报告,
+还有top监控系统当前运行进程.
+但是如果你想要找一个能够按进程实时统计网络带宽利用率,那么NetHogs就是你所需要的唯一工具.
+
+
+
+⦿ 安装   yum install nethogs -y
+
+⦿ 使用: 
+
+sudo nethogs
+sudo nethogs -d 5  刷新频率.
+
+
+
+
+🔵 nload
+❗️❗️❗️❗️ 监控主机网络流量 ❗️❗️❗️❗️
+
+⦿ 安装:  yum install nload -y
+
+⦿ 使用
+
+nload          左右方向键 可以切换网卡!!
+nload -t 500   刷新值
+
+
+nload -u b 显示单位
+nload -u k 显示单位
+nload -u m 显示单位
+nload -u g 显示单位
+
+
+
+
+🔵 iotop
+iotop命令是专门显示硬盘IO的命令，界面风格类似top命令
+需要 2.6.20+的内核才行. Centos6 是不行的. Centos7 才可以.
+
+
+⦿ 安装   yum install iotop -y
+⦿ 使用  iotop
+
+
+
+
+🔵 arpwatch
+arp活动监视器
+
+
+
+查看 arp的...
+yum install arpwatch -y
+
+
+启动.
+/etc/init.d/arpwatch start
+
+
+
+
+
+
+🔵 bwm-ng
+
+实时网速查看
+$ sudo yum install bwm-ng
+
+
+
+  bwm-ng v0.6.1 (probing every 0.500s), press 'h' for help
+  input: /proc/net/dev type: rate
+  |         iface                   Rx                   Tx                Total
+  ==============================================================================
+               lo:           0.20 KB/s            0.20 KB/s            0.41 KB/s
+           venet0:           0.20 KB/s            0.75 KB/s            0.95 KB/s
+  ------------------------------------------------------------------------------
+            total:           0.41 KB/s            0.95 KB/s            1.36 KB/s
+
+
+
+
+
+
+🔵 极速蜗牛：apt-fast
+
+如果你在Debian或Ubuntu系统上经常感觉到apt-get 或 aptitude包安装速度过慢，那么这里就有几种改善这一情况的方法。你有没有考虑过改变正被使用的默认镜像站点？你有没有排除因特网连接的上游带宽成为瓶颈的可能？
+
+它能加速包的下载速度。apt-fast本质上采用aria2下载工具，这款工具能够以“块”的方式从多个镜像并行下载一个文件（就像BitTorrent下载）。
+
+
+
+
+
+🔵 ngxtop
+Nginx日志实时监控、排查整理工具 - ngxtop
+
+
+要实时查看日志文件变动我们首先想到的应该是tail -f /path/to/log，
+但是这样看网站的访问日志是相当崩溃的，好一点可以写个脚本进行筛选，但是大部分人还是不擅长的，
+今天就推荐给大家一个Nginx日志工具：ngxtop。
+
+说起top工具有很多如：iftop、htop、ntop等，今天说的ngxtop功能也毫不逊色，不仅能实时监控Nginx日志的访问还可以对以前的日志进行排查整理。
+
+
+⦿ 安装: pip install ngxtop
+
+
+⦿ 使用
+
+实时监控日志
+ngxtop -l /home/wwwlogs/www.vpser.net.log
+
+
+
+
+
+🔵 fping/hping
+ping 只能ping 一个主机.
+如果是大量服务器 就得用 fping.
+
+sudo yum install fping -y
+
+brew install fping
+
+
+
+
+
+🔵 ip 
+新工具 ifconfig会被这个所淘汰！比如 ip route list 查看当前主机路由表。
+
+
+
+
+🔵 pkill 按进程的名称杀死进程！（这个工具我很惊讶！）
+
+
+
+
+
+
+
+🔵 iptraf （网卡监听工具）神器！
+
+yum install iptraf -y
+
+
+
+
+
+
+🔵 swaks
+Swaks是由John Jetmore编写和维护的一种功能强大，灵活，可脚本化，面向事务的SMTP测试工具。可向任意目标发送任意内容的邮件。
+
+“swaks”这个名字是”SWiss Army Knife Smtp”的首字母缩略词.
+
+邮件伪造
+
+
+http://www.freebuf.com/sectool/92397.html
+
+
+
+
+
+🔵 cv
+cp 复制是没有进度条的 用cv 就有.
+
+需要自己编译安装.https://github.com/Xfennec/progress
+
+
+
+🔵 powerline-shell
+好看的 终端条
+https://github.com/banga/powerline-shell
+
+
+🔸 Mac 安装方法
+
+任意目录下载.
+git clone https://github.com/milkbikis/powerline-shell && cd powerline-shell
+
+复制文件
+cp config.py.dist config.py
+
+运行
+./install.py
+
+会生成一个 powerline-shell.py 文件. 把这个文件放到 用户根目录下去.
+
+然后就看你是使用 bash 还是 zsh . zsh的话 把 下面内容追加到 ~/.zshrc 就可以
+function powerline_precmd() {
+    PS1="$(~/powerline-shell.py $? --shell zsh 2> /dev/null)"
+}
+
+function install_powerline_precmd() {
+  for s in "${precmd_functions[@]}"; do
+    if [ "$s" = "powerline_precmd" ]; then
+      return
+    fi
+  done
+  precmd_functions+=(powerline_precmd)
+}
+
+if [ "$TERM" != "linux" ]; then
+    install_powerline_precmd
+fi
+
+
+⦿ 重启zsh 测试
+
+
+
+
+
+
+🔵 hydra九头龙 暴力破解
+
+
+
+
+🔵 last lastlog（运维神器和我们普通用户没关系）
+
+
+
+
+🔵 iftop  网络流量 
+iftop是类似于top的实时流量监控工具。
+iftop可以用来监控网卡的实时流量（可以指定网段）、反向解析IP、显示端口信息等，详细的将会在后面的使用参数中说明。
+
+
+yum install flex byacc  libpcap ncurses ncurses-devel libpcap-devel
+yum install iftop
+
+
+
+🔵 brctl网桥工具
+
+🔵 mtr网络诊断工具
+
+
+
+
+
+🔵 Nessus的漏洞扫描 
+
+
+🔵 route-n（查看ip与路由） cat/proc/net/arp（查看arp）cat /proc/net/netlink（查看哎呀忘了）
+
+
+
+
+
+🔵 tldr
+
+命令用法.  man 里面那么长.  懒得看.  用 tldr : too long don't read 
+会给你该命令的用法举例!!! 一般人都能看懂的 ... 
+
+⦿ 安装 pip install tldr
+
+⦿ 使用 tldr + 命令
+如
+tldr ls
+tldr ssh
+tldr tar
+
+
+🔵 PM2 
+http://pm2.keymetrics.io/
+
+Nodejs服务工具可以在服务因异常或其他原因被杀掉后进行自动重启。 
+由于Node的单线程特征，自动重启能很大程度上的提高它的健壮性。
+
+
+
+
+
+
+🔵 HTTPie
+
+https://httpie.org/
+
+安装:  brew install httpie
+        sudo yum install httpie
+
+
+
+之前在命令行下进行HTTP服务的调试和信息查看都是使用经典的cURL，不过前段时间发现一个交互更加友好的工具，就是HTTPie。
+
+
+如果你经常需要用终端以非交互模式访问网络服务器（比如，下载文件、测试REST服务），可能你会选择的工具是wget或curl，通过大量的选项，这两种工具也都可以处理很多非交互网络访问的情况（比如，如何通过wget下载多个文件，如何在wget中设置自定义的http头，如何在curl中设置自定义的HTTP头）。然而，除非你很精通这些繁复的语法细节，这些工具对于你来说，不过是简单的下载工具而已。
+
+
+
+HTTPie则在使用时的表现力、人性化做得比wget、curl好得多，就像在官网上宣传的那样，它追求的是人性化、简单自然的语法，以及彩色的输出。而且HTTPie还有一些不错的优点，比如对JSON的良好支撑、持久性会话等特性。
+
+
+
+
+
+
+
+
+🔵 nmon，性能监控，CPU，内存，磁盘IO，网络IO
+
+
+
+
+🔵 jq，命令行的json查询和格式化工具，适合查看rest接口的输出
+
+
+
+🔵 nohup，在后台运行程序，程序不会随着shell关闭而退出。
+
+
+
+
+
+
+
+
+
+
+
+🔵 musicbox  网易云音乐 命令行版本
+https://github.com/darknessomi/musicbox
+
+macOS安装
+
+$ pip3 install NetEase-MusicBox
+$ brew install mpg123
+
+使用
+
+
+
+
+🔵 cowsay
+https://gist.github.com/dakull/6615458
+
+
+
+使用方法 cowsay 显示内容
+
+cowsay helloacm
+ __________
+< helloacm >
+ ----------
+        \   ^__^
+         \  (oo)\_______
+            (__)\       )\/\
+                ||----w |
+                ||     ||
+
+
+
+
+
+🔵 lolcat
+彩色 cat 
+
+
+
+
+🔵 屏保 nyancat
+
+
+
+
+
+
+
+
+🔵 ffmpeg
+这玩意可以实现:视频拆帧，合并帧为视频，视频转gif，视频转码，分离音视频......
+
+
+
+
+
+🔵 Lynx  文本浏览器.
+http://chaishiwei.com/blog/708.html
+brew install lynx
+
+使用:..在公司里，别人浏览网站，都是用浏览器。
+
+用法: lynx + 网址.
+
+
+
+
+
+🔵 axel 
+
+各种网盘不限速下载 谁用谁知道&
+
+
+
+
+🔵 bmon 简单但非常强大的 网络监视和调试工具
+sudo yum install bmon -y
+
+使用 bmon 
+网络监控吧...
+
+
+
+
+

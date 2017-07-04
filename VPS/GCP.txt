@@ -1,0 +1,254 @@
+2、GCE云计算空间并不是免费的，也没有像GAE那样提供免费使用的配额，CPU、内存等都是按小时计费。
+
+
+
+
+🔸 GCP   google cloud platform
+
+它可以像VPS主机一样被管理和操纵，但是功能更为强大。
+
+其实就是云服务啦！现在只要绑定信用卡就送300刀，能免费用一年最低配置。
+申请地址：https://cloud.google.com/free/
+
+
+
+有双币卡信用卡就行.. 免费注册. (放心 不会自动续费的!! )
+好像5块钱淘宝买了张美国信用卡/虚拟信用卡也行????
+
+
+
+
+❗️❗️当梯子没必要，太贵了!! 求稳定和速度（网站应用）还行 
+
+
+🔸 流量费用
+❗️❗️ 到中国的流量是要收费的   $0.23/1GB  ️❗️
+❗️❗️ 到中国的流量是要收费的   $0.23/1GB  ️❗️
+
+
+
+
+
+🔸 地区选择
+
+官方区域详细介绍
+https://cloud.google.com/compute/docs/regions-zones/regions-zones#available
+
+❗️❗️ asia-east1-a 是台湾中部的 国内是最快的!! ️❗️
+❗️❗️ asia-east1-a 是台湾中部的 国内是最快的!! ️❗️
+
+
+asia-east1	      Taiwan
+asia-northeast1   Tokyo
+
+
+
+
+官方地图   https://cloud.google.com/about/locations/
+
+
+
+开了一台 asia-northeast1-a 的机子，本地 ping 100ms 左右，超级 ping 平均 100ms 左右，国内某些地区才 60ms 左右，感觉还不错。
+
+
+
+
+
+
+免费12个月.
+免费 300刀的 额度.
+
+❗️❗️Google Cloud Platform免费赠送300美元，可以使用使用12个月 ❗️❗️
+
+❗️❗️Google Cloud Platform永久免费的项目非常多，涉及到了Google Cloud Platform大部分产品，其中Google Compute Engine、Google Cloud Storage、Google Container Engine是最有价值的
+
+
+4、需要说明的是，Google Compute Engine免费配额是：
+
+1 f1-micro instance per month (US regions only)
+30 GB-months HDD, 5 GB-months snapshot
+1 GB network egress from North America to all region destinations per month (excluding China and Australia)
+5、Google Cloud Storage免费配额是：
+
+5 GB-months of Regional Storage (US regions only)
+5000 Class A Operations per month
+50000 Class B Operations per month
+1 GB network egress from North America to all region destinations per month (excluding China and Australia)
+6、Google Container Engine免费配额是：
+
+Basic cluster of 5 nodes or fewer
+The basic cluster is free but each node is charged at standard Compute Engine pricing
+
+
+🔸 问题.
+第一个问题就是VPS没有root权限。Google Cloud Platform安装的Ubuntu没有root权限，只能通过sudo来临时获取，这个对于我们平时管理VPS主机来说带来了不便。
+
+第二个问题就是VPS流量费用问题。文章中已经提到过了云计算和云存储有永久免费额度，但是流量这一块如果是流向国内或澳大利亚，那么就要收取费用，大家在使用过程中要特别注意。
+
+
+
+🔸 root 登录
+❗️❗️ 默认只允许 ssh 密钥登录.还禁用了root ❗️❗️
+
+sudo su 切换到root..
+
+
+
+
+🔸 用途
+
+几乎什么都可以安装. 
+是按照功能计算费用的. 
+比如 mysql 数据库. 大概是5刀一月.
+
+比如安装各种虚拟机...
+
+
+
+
+
+🔸 SSR+BBR教程
+https://suiyuanjian.com/124.html
+
+
+
+
+
+
+
+🔸 VPN 创建..
+
+
+
+
+🔸 ss 环境搭建
+
+⦿ 创建实例
+  地区: 台湾 asia-east1 
+  配置: ss 只要最低配: 0.6G + 10G硬盘.
+  系统: centos7 x64
+  允许 http流量 和 https 流量 .
+
+
+⦿ IP 设置.
+  默认是用动态IP的. 也就是IP会变. 所以必须设置静态ip
+  网络 > 外部IP地址 > 类型 > 静态
+
+⦿ 防火墙设置
+  网络 > 防火墙规则 > 创建规则
+
+
+⦿ 网页 SSH
+  可以使用自带的网页SSH 工具，进行搭建各种服务，非常方便。
+
+⦿ Mac ssh
+  先在mac 用ssh-keygen命令 生成一对密钥.   
+  公钥名 id_rsa.pub
+  公钥路径 ~/.ssh/id_rsa.pub
+  公钥内容 cat ~/.ssh/id_rsa.pub
+  ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQD4zh0AXPyIKlV+/TcBPIwJ4FoPxqEag3yRRonNWcGGQYLtizLKmiM4NqzLT6U13biHAD31qpwuHYeKwBPtTDGzJy5cFRBbmc2mIKJi+hoTCvyX5OGyb34+pU0FI5DWOOUA7VX7cAoNyIIclmsbh8IYerL/O4vpIOIDh18BLFHNWYqDMMVNm3tkkF+ztrErYoeV7eVy1SI0Hl8dgPXDuKWIoaFSbjtAbZgrQ+sWCApsj/AJGtjt7TFLGrPHSLlUS4C5RS57MGQQSqBPJ/i/EUqZjRn01h6rTcyn/6Hu3JjSWHaV+QZXXXGWAd7JR/w87ONMDvb/tzgCPYOqRBZVgign v@xu-jian.local
+
+  公钥内容 三部份组成
+  ssh-rsa  + key_value + 用户名
+
+
+  计算引擎 > 元数据 > SSH密钥 > 修改 > 粘贴公钥内容(3部分)到新框里. > 保存
+
+  测试 ssh v@35.189.183.108
+  这里注意 服务器用户名是v 而不是root.. 就是你生成密钥时候用的用户名
+
+
+
+
+🔸 ss 搭建
+
+  四合一脚本.
+  一键安装 Shadowsocks-Python， ShadowsocksR， Shadowsocks-Go， Shadowsocks-libev 版（四选一）服务端；
+  http://www.f2ecoder.com/688.html
+
+  我们选 Shadowsocks-Python 版本.
+
+
+  ⦿ ss 搭建 个人用 不要ssr了... 麻烦..
+
+  sudo yum update -y
+  sudo yum install wget -y
+
+  wget --no-check-certificate https://raw.githubusercontent.com/teddysun/shadowsocks_install/master/shadowsocks-all.sh
+
+  chmod +x shadowsocks-all.sh
+
+  sudo ./shadowsocks-all.sh 2>&1 | tee shadowsocks-all.log
+  按1 选择 Shadowsocks-Python
+  输入密码: xujian
+  输入端口: 1111
+
+  安装完成后，脚本提示如下
+
+  Congratulations, Shadowsocks-Python server install completed!
+  Your Server IP        :  35.......
+  Your Server Port      :  1111
+  Your Password         :  xujian
+  Your Encryption Method:  aes-256-cfb
+
+
+  ⦿ 启动脚本
+    Shadowsocks-Python 版：
+    /etc/init.d/shadowsocks-python start
+    /etc/init.d/shadowsocks-python stop
+    /etc/init.d/shadowsocks-python restart
+    /etc/init.d/shadowsocks-python status
+
+
+  ⦿ GCE 防火墙设置
+    这个不是centos的防火墙!  而是gce的防火墙!
+    默认GCE是组织所有连接到实例的数据的!!!
+    ss 客户端要 连接ss服务器的1111端口.
+    必须去网络 > 防火墙规则 > 添加一个规则 允许tcp:1111 
+
+  ⦿ Centos 防火墙设置
+    停止：systemctl stop firewalld
+
+
+  ⦿ 端口测试:
+    nmap -p1111 35.189.183.108  发现1111端口开了.
+
+  ⦿ ss 测试:
+    果然可以了...
+    
+
+
+
+🔸 vpn 搭建
+
+  从稳定性和速度来看，google Cloud VPN还是很有优势，但价格略贵.
+  ❗️❗️ PPTP 基于 GRE 隧道的， GCE 明确表示不支持. 用L2TP吧.
+
+  ⦿ Debian L2TP 安装脚本
+    wget https://git.io/vpnsetup -O vpnsetup.sh && sudo sh vpnsetup.sh 
+
+  ⦿ CentOS L2TP 安装脚本
+    wget https://git.io/vpnsetup-centos -O vpnsetup.sh && sudo sh vpnsetup.sh 
+
+  ❗️❗️ 脚本详解  https://github.com/hwdsl2/setup-ipsec-vpn/blob/master/README-zh.md
+
+  Server IP: 35.189.183.10
+  IPsec PSK: cvc6heCs5A3ETARu
+  Username: vpnuser
+  Password: cTa7AMS6ADixkwiA
+
+  ⦿ gce 防火墙
+    对于有外部防火墙的服务器（比如 EC2/GCE），请为 VPN 打开 UDP 端口 500 和 4500。
+
+  ⦿ 测试.
+    Mac 建议用 shimo 这个软件. 
+
+
+
+
+
+
+
+
+
+

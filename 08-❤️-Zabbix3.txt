@@ -10,6 +10,7 @@
 
 
 
+
     🔵 通讯方式
         要获取各种硬件的运行状态 就必须先和各种硬件建立连接.连接方式: agent、ssh/telnet、SNMP、IPMI、JMX
 
@@ -79,13 +80,12 @@
 
 🔵 zabbix-server 安装
 
-    🔅 yum install net-snmp-devel libxml2-devel libcurl-devel 
+    🔅 yum install net-snmp-devel libxml2-devel libcurl-devel mysql-devel
     🔅 cd /usr/local/src     
     🔅 wget https://superb-sea2.dl.sourceforge.net/project/zabbix/ZABBIX%20Latest%20Stable/3.2.4/zabbix-3.2.4.tar.gz
     🔅 tar xf zabbix-3.2.4.tar.gz && cd zabbix-3.2.4
     🔅 ./configure --prefix=/usr/local/zabbix-server --enable-server --with-mysql --with-net-snmp --with-libcurl --with-libxml2 --enable-agent   
     🔅 make && make install
-
 
         1. 必须先安装依赖组件,不然编译不成功
         2. 之后要下载zabbix源代码到 src . 其实下载到哪里都可以. 注意安装路径就可以了.
@@ -103,17 +103,15 @@
             ➜ 去浏览器 找出这个下载的真实地址 ➜  然后用 wget + 地址 下载到服务器....
 
 
-
-
 🔵 创建zabbix数据库
     zabbix server服务器端需要数据库，zabbix-angent被监控端不需要安装数据库。
     zabbix-server创建完zabbix数据库后还要导入3个sql文件!!这三个文件会自动帮你建很多很多表.
 
     假设:你安装好了MySQL，数据库用户名为root，密码为ttlsapwd
         👁‍🗨 注意下面三个命令中. 后面两个命令最后的;号千万不能忘记.
-    🔅mysql -uroot -pxujian                         ➜ 来进入服务器的数据库. (首先ssh进服务器.)
-    🔅create database zabbix default charset utf8;  ➜ 创建数据库, 加default charset utf8，不然中文乱码，
-    🔅quit;                                         ➜ 退出mysql. 这里目的只要创建一个zabbix 名称的数据库
+    🔅 mysql -u root -p                              ➜ 来进入服务器的数据库. (首先ssh进服务器.)
+    🔅 create database zabbix default charset utf8;  ➜ 创建数据库, 加default charset utf8，不然中文乱码，
+    🔅 quit;                                         ➜ 退出mysql. 这里目的只要创建一个zabbix 名称的数据库
 
 
 
@@ -188,7 +186,6 @@
 
 🔵 Zabbix-Web  安装
 
-
     网站很简单: 把一堆网页文件放到服务器指定的文件夹下.就可以通过服务器IP访问网站了
     这堆文件zabbix早就帮你写好了!!! 你要做的就是移动这堆文件的位置到服务器的某个文件夹下
     这堆文件就是zabbix源码解压文件夹下 forntends/php 下的所有文件.
@@ -199,34 +196,28 @@
     你只要先删除这个根目录下的所有文件. 然后把forntends/php下面的所有文件 都放到这个网站根目录.
     现在浏览器访问 23.105.192.96 就出现 zabbix-web 的网站了!!!
 
-    重点就是找到这个网站根目录的位置.下面就是怎么找网站根目录路径的
-
-    🔸apache. 
-        如果你用 apache.那就看 apache的配置文件.里面应该会指定网站根目录的路径.
-        apache配置文件路径:  vi /etc/apache2/httpd.conf
-            DocumentRoot "/Library/WebServer/Documents"  这行就是网站的根目录.  
+    重点就是找到这个网站根目录的位置.下面就是怎么找网站根目录路径的.
+    当然 网站根目录 不是一个好的办法.  最好的 还是新建个nginx虚拟主机..
 
 
-    🔸nginx
-        还是找nginx的配文件. 通过配置文件找到 网站的根目录.
-        nginx怎么找网站根目录我就不说了. 有新区你可以看我的 ss-panel.txt
-        比如我现在浏览器访问 www.0214.help 实际是是访问服务器上的
-        /home/wwwroot/www.0214.help/ss-panel/public/index.php
+    ⦿ 虚拟主机
+        ================================================
+        Virtualhost infomation:
+        Your domain: zabbix.0214.help
+        Home Directory: /home/wwwroot/zabbix.0214.help
+        Rewrite: none
+        Enable log: no
+        Create database: no
+        Create ftp account: no
+        ================================================
 
-        那么我们现在想要通过 www.0214.help/zabbix 来访问zabbix的网页.
-        只需要在 /home/wwwroot/www.0214.help/ss-panel/public/ 下新建一个zabbix文件夹.
-        然后把zabbix 源码解压文件夹下的 forntends/php下的所有文件都 
-        复制到 /home/wwwroot/www.0214.help/ss-panel/public/zabbix 就可以了!!!
-            🔅 cd /usr/local/src/zabbix-3.2.4/forntends/public
-            🔅 cp -r * /home/wwwroot/www.0214.help/ss-panel/public/zabbix
-            👁‍🗨 *号代表匹配当前文件夹下所有文件.
-            现在浏览器输入 http://www.0214.help/zabbix  就进入zabbix 控制页面了.
+    ⦿ 网页文件
+        cd /usr/local/src/zabbix-3.2.4/frontends/php
+        cp -r * /home/wwwroot/zabbix.0214.help/
 
-
-
-
-
-
+    ⦿ 停止 Apache  systemctl stop httpd.service
+    ⦿ 重启 Nginx   service nginx restart 
+    ⦿ 测试 zabbix.0214.help
 
 
 🔵 Zabbix-Web  配置1: php设置.
@@ -237,10 +228,9 @@
     👹 PHP option "max_input_time"	60	300	Fail
         60 是当前设置.   300是zabbix需要的设置. 那么就去改...php的配置文件.
 
-        🔅 vi /usr/local/php/etc/php.ini   ➜ 找到 max_input_time  把60改成300 保存
-        
-        🔅 killall php-fpm                                ➜ 重启php 方法1
-        🔅 /usr/local/php-5.2.17/sbin/php-fpm start|stop  ➜ 重启php 方法2
+        🔅 vi /usr/local/php/etc/php.ini   ➜ 396行的 max_input_time 60改成300  
+        🔅 service php-fpm restart         ➜ 重启php
+
 
 
     🔸 php 配置文件路径
@@ -281,18 +271,32 @@
             如果你确保 信息没填错. 那么肯定是你导入3个数据库文件的时候有报错.你没处理.
             解决办法: 删除现有的 zabbix 数据库 .重新导入. 解决导入过程出现的任何错误!!
 
+    ⦿ Zabbix server details     
+        默认就行. name 可以不写
 
 
 
 
 🔵 Zabbix-Web  配置3: 安装&登录
-    🔸Zabbix server details 这步可以只能按next. 不填无所谓的.
     🔸安装
         👹 Cannot create the configuration file.
-            可能是没有权限创建文件.  那就下载文件到本地点. 
+            可能是没有权限创建文件.  
+            那就下载配置文件(zabbix.conf.php)到本地点. 
             然后通过各种办法把这个文件放到提示的路径中.
-            Save it as "/home/wwwroot/www.0214.help/ss-panel/public/zabbix/conf/zabbix.conf.php"
-            我是用Mac下面的 yummy FTP软件的. 蛮好用的.一般都是拿来上传文件的.
+            /home/wwwroot/zabbix.0214.help/conf/zabbix.conf.php
+
+            ⦿ 方法1
+                cd /home/wwwroot/zabbix.0214.help/conf
+                wget http://zabbix.0214.help/setup.php?save_config=1
+                mv setup.php?save_config=1 zabbix.conf.php
+
+            ⦿ 方法2
+                我是用Mac下面的 yummy FTP软件的. 蛮好用的.一般都是拿来上传文件的.
+
+            ⦿ zabbix.conf.php 文件权限
+                是个php文件. 是需要执行权限的! 
+                chmod 755 zabbix.conf.php
+
 
     🔸登录
         安装完成后. 自动跳转到登录界面...
@@ -313,9 +317,21 @@
         需要你有分析问题的能力,而不是一味的跟着别人的教程.
         每台电脑的环境都是不一样的. 也不需要一样.只能告诉你多用日志这个神器.
 
+        zabbix-server 是需要配置过才能正常启动的.
+        编辑配置文件. 输入mysql 数据库相关信息.DBHost、DBName、DBUser、DBPassword
+        让 zabbix-server 可以连接到 你在mysql中建立的zabbix数据库.
+        上面网页设置中已经配置过一次数据库了.
+        但是 网页是网页. 网页要提取数据库中的信息. 前提是数据库中有信息.
+        数据库的信息是 server 负责写入的.(具体内容是agent负责提交给server的) 
+        所以 server 也要连接到数据库..
+        那么 zabbix-server的配置文件在哪呢!这个和zabbix的安装位置有关系.
+
+
+
 
     📌zabbix-server 启动命令:    /usr/local/zabbix-server/sbin/zabbix_server
         这坑爹的命令. 不管启动成功还是启动失败.没有半点提示的. 只能自己想办法判断是否启动成功..
+
 
     🔸首先我们判断启动命令是否正确.
         启动路径 其实就是 zabbix-server的安装路径.那么安装路径是什么呢... 
@@ -365,12 +381,12 @@
                     重点么 也就 数据库名称. 数据库端口. 帐号密码..
                     vi /usr/local/zabbix-server/etc/zabbix_server.conf
                         LogFile=/tmp/zabbix_server.log
-                        DBHost=localhost
+                        DBHost=localhost        79 行
                         DBName=zabbix
-                        DBUser=root
-                        DBPassword=xujian0219
-                        DBPort=3306             ➜  这个前面是有#号的. 必须手动删除 # 号.
-                        ListenIP=127.0.0.1      ➜ 这个前面的#号也删除 
+                        DBUser=root             103 行
+                        DBPassword=xujian0219   111行
+                        DBPort=3306             ➜  126 行. 必须手动删除 # 号.
+                        ListenIP=127.0.0.1      ➜  299 行. 这个前面的#号也删除 
 
                     再开 zabbix 服务 还是开起不来. 那就看第二个问题.
 
@@ -387,15 +403,33 @@
                         至少要开一个zabbix-agent 才能监控啊.
 
 
-🔵 ....
-        zabbix-server 是需要配置过才能正常启动的.
-        编辑配置文件. 输入mysql 数据库相关信息.DBHost、DBName、DBUser、DBPassword
-        让 zabbix-server 可以连接到 你在mysql中建立的zabbix数据库.
-        上面网页设置中已经配置过一次数据库了.
-        但是 网页是网页. 网页要提取数据库中的信息. 前提是数据库中有信息.
-        数据库的信息是 server 负责写入的.(具体内容是agent负责提交给server的) 
-        所以 server 也要连接到数据库..
-        那么 zabbix-server的配置文件在哪呢!这个和zabbix的安装位置有关系.
+
+
+            👹 ✘✘∙𝒗2 conf ➜ /usr/local/zabbix-server/sbin/zabbix_server
+                zabbix_server [15112]: user zabbix does not exist
+                zabbix_server [15112]: cannot run as root!
+                那就新建个zabbix用户. 然后切换到 zabbix 用户. 再运行..
+
+                useradd zabbix
+                su zabbix
+                /usr/local/zabbix-server/sbin/zabbix_server
+
+
+
+            👹 数据库问题...
+                重启数据库
+
+                ⦿ 重启 zabbix_server
+                top 找出pid . kill . 然后重启...
+                现在就能启动了.
+
+
+
+
+
+
+
+
 
 
 
