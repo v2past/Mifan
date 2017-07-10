@@ -540,7 +540,7 @@
 
 🔸 VI 配置 (防止打开文件乱码)
     ⦿ 中文乱码
-        ~/.vimrc 添加3行
+       vi ~/.vimrc 添加3行
 
         set fileencodings=utf-8,gb2312,gb18030,gbk,ucs-bom,cp936,latin1
         set enc=utf8
@@ -1304,7 +1304,8 @@
         我们先来弄简单的 也就是Centos7 安装pip 和 python3.6 
 
         ⦿ pip 安装
-            • wget https://bootstrap.pypa.io/get-pip.py && python get-pip.py
+            wget https://bootstrap.pypa.io/get-pip.py
+            python get-pip.py
             现在 pip -V 就显示 pip 9.0.1 ... (python2.7) 了
 
         ⦿ Python 3.6.1 安装
@@ -2216,23 +2217,6 @@ wget --no-check-certificate https://raw.githubusercontent.com/mmmwhy/LKL_BBR/mas
 
 ⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️------⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️
 ⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️------⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️
-
-
-
-
-
-🔸 HTOP 2.0
-    最流行监控工具, 一般yum 安装的都是1+版本.如果要安装2+ 版本 需要配置源.
-    下面是 centos7 x64 安装 HTOP2.0 的方法.
-
-    wget http://dl.fedoraproject.org/pub/epel/7/x86_64/e/epel-release-7-9.noarch.rpm
-    rpm -ihv epel-release-7-9.noarch.rpm 
-    yum install htop
-
-
-🔸 SFTP
-
-
 
 
 

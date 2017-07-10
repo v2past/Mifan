@@ -181,11 +181,11 @@ sync {
 }
 
 
-⦿ 启动  sudo lsyncd /etc/lsyncd.conf
+⦿ 启动❗️❗️❗️    sudo lsyncd /etc/lsyncd.conf
   用 lsyncd --help 查看 > 启动语法: lsyncd + 配置文件路径
 
-  -insist             Continues startup even if it cannot connect
-
+⦿ 后台运行  sudo lsyncd /etc/lsyncd.conf &
+⦿ 查看后台任务  jobs
 
 
 ⦿ 查看进程：  ps -ef | grep lsync
@@ -279,4 +279,20 @@ perms 默认保留文件权限。
 
 🔸 启动
 lsyncd -log Exec /usr/local/lsyncd-2.1.5/etc/lsyncd.conf
+
+
+
+
+
+
+
+
+🔸 排除文件
+这里的排除规则写法与原生rsync有点不同，更为简单：
+
+
+
+
+
+
 

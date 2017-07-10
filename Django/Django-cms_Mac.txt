@@ -1233,8 +1233,6 @@ https://startbootstrap.com/template-overviews/modern-business/
 
 {% load cms_tags menu_tags sekizai_tags staticfiles i18n %}
 <!--为了使用模板的基本功能. 首先需要在最上方添加这行-->
-
-
 <!DOCTYPE html>
 <html lang="en">
 <head>

@@ -459,6 +459,7 @@ python manage.py createsuperuser
             重新加载配置：uwsgi --reload uwsgi.pid
         
         🔸 新建 hello world的wsgi应用. 并保存到 test.py 文件中
+        ❗️❗️❗️ python 必须注意缩进❗️❗️❗️
             在django项目的根目录下创建test.py文件，添加源码如下(Python文件必须注意缩进)：
             def application(env, start_response):
                 start_response('200 OK', [('Content-Type','text/html')])
@@ -496,11 +497,11 @@ python manage.py createsuperuser
                 配置文件名: 最好写成uwsgi+端口号, 便于辨认..如:uwsgi3031.ini
 
                 [uwsgi]
-                 http=:3031
-                 wsgi-file=server.py
+                 http=:8800
+                 wsgi-file=test.py
      
 
-                ❗️❗️❗️ 然后就可以将启动命令简化为：uwsgi myapp.ini  等价于 uwsgi --http :3031 --wsgi-file test.py❗️❗️❗️
+                ❗️❗️❗️ 然后就可以将启动命令简化为：uwsgi myapp.ini  等价于 uwsgi --http :8800 --wsgi-file test.py❗️❗️❗️
                 现在浏览器访问 23.105.192.96:3031 还是可以看到 hello world
                 这个例子只是帮你理解 uwsgi的配置文件. 下面我们来开始 结合uwsgi和nginx 来真正的部署!
                 
@@ -606,26 +607,26 @@ python manage.py createsuperuser
 🔵 增加nginx配置.
 
     🔸 新建 uwsgi_params 文件:
-        新建或下载 uwsgi_params文件到项目文件夹下   👁‍🗨 这个文件 就叫:wsgi_params 没有任何后缀!!!  
+        新建或下载 uwsgi_params文件到项目文件夹下   👁‍🗨 这个文件 就叫:uwsgi_params 没有任何后缀!!!  
         下载地址 https://github.com/nginx/nginx/blob/master/conf/uwsgi_params
         下面是uwsgi_params文件内容
 
-        uwsgi_param  QUERY_STRING       $query_string;
-        uwsgi_param  REQUEST_METHOD     $request_method;
-        uwsgi_param  CONTENT_TYPE       $content_type;
-        uwsgi_param  CONTENT_LENGTH     $content_length;
+uwsgi_param  QUERY_STRING       $query_string;
+uwsgi_param  REQUEST_METHOD     $request_method;
+uwsgi_param  CONTENT_TYPE       $content_type;
+uwsgi_param  CONTENT_LENGTH     $content_length;
 
-        uwsgi_param  REQUEST_URI        $request_uri;
-        uwsgi_param  PATH_INFO          $document_uri;
-        uwsgi_param  DOCUMENT_ROOT      $document_root;
-        uwsgi_param  SERVER_PROTOCOL    $server_protocol;
-        uwsgi_param  REQUEST_SCHEME     $scheme;
-        uwsgi_param  HTTPS              $https if_not_empty;
+uwsgi_param  REQUEST_URI        $request_uri;
+uwsgi_param  PATH_INFO          $document_uri;
+uwsgi_param  DOCUMENT_ROOT      $document_root;
+uwsgi_param  SERVER_PROTOCOL    $server_protocol;
+uwsgi_param  REQUEST_SCHEME     $scheme;
+uwsgi_param  HTTPS              $https if_not_empty;
 
-        uwsgi_param  REMOTE_ADDR        $remote_addr;
-        uwsgi_param  REMOTE_PORT        $remote_port;
-        uwsgi_param  SERVER_PORT        $server_port;
-        uwsgi_param  SERVER_NAME        $server_name;
+uwsgi_param  REMOTE_ADDR        $remote_addr;
+uwsgi_param  REMOTE_PORT        $remote_port;
+uwsgi_param  SERVER_PORT        $server_port;
+uwsgi_param  SERVER_NAME        $server_name;
 
 
 
