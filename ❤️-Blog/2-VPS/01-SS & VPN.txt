@@ -967,3 +967,196 @@ host "127.0.0.1" 改成 "104.224.139.45"
 
 
 
+
+
+
+
+
+IPSec VPN 安装
+    详情参考流程:   https://doub.io/vpnzy-3/
+
+🔵 一键脚本安装:
+
+    wget --no-check-certificate https://raw.githubusercontent.com/quericy/one-key-ikev2-vpn/master/one-key-ikev2.sh
+    chmod +x one-key-ikev2.sh
+    bash one-key-ikev2.sh
+
+🔵 安装过程:
+
+  选择vps类型（OpenVZ还是Xen、KVM），选错将无法成功连接，请务必核实服务器的类型。
+  这里必须选择对. 我是 openvz  也就是输入2 然后一路回车.
+
+
+🔵 安装结果 
+
+    # [Install Complete]
+    # Version:1.2.0
+    # There is the default login info of your IPSec/IkeV2 VPN Service
+    # UserName: myUserName
+    # PassWord: myUserPass
+    # PSK: myPSKkey
+    # you should change default username and password in /usr/local/etc/ipsec.secrets
+    # you cert: //my_key/ca.cert.pem
+    # you must copy the cert to the client and install it.
+
+
+🔵 下载服务器上的 /root/my_key/ca.cert.pem 证书到本地
+    并把 ca.cert.pem 改名成 .cer 后缀的 比如:  ca.cer
+
+🔵 Mac OS 设置
+    双击ca.cer 导入证书... 证书导入的位置是  system.
+    导入后 必须去 证书软件 找到对应证书(一般带红叉的那个就是.) ➜ 右键 ➜ 信息 ➜  信任 ➜  都信任.... 这样才行!!!
+
+
+🔵 Mac客户端配置
+
+    网络设置 ➜  添加 ➜  vpn ➜  ikev2 ➜ 
+        📌server address : 23.105.192.96         这里是你服务器的ip
+        📌remote id:       23.105.192.96         这里是你服务器的ip
+        📌authentication settings ➜ username    选择 username认证模式
+                  Username: 输入安装结果中的 username  
+                  password: 输入安装结果中的 passeord
+                  Apply ➜  connect 就连接上了!!!
+
+
+
+
+
+
+🔵 查看版本: 
+
+    ➜  ~ ipsec --version
+
+🔵 启动IPsec
+
+    ipsec start.
+    Starting strongSwan 5.5.1 IPsec [starter]...
+    no netkey IPsec stack detected
+    no KLIPS IPsec stack detected
+    no known IPsec stack detected, ignoring!
+
+这算开启还是不开启啊....
+
+
+
+🔵 查看进程是否开启.  ???
+    ➜  ~ ps -aux | grep IPsec
+
+
+
+👹 有时候能连. 有时候不能连.为什么.. 我们用 wireshark来分析.
+
+    服务器ip 23.105.192.96
+    ipsec 使用端口 UDP 500
+
+        1. wireshark: 设置显示过滤器: ip==23.105.192.96  ➜ 然后开始抓包.
+        2. 开始连接vpn; 等vpn连接失败后 停止抓包.
+        3. 分析数据包.
+        点击wiresark中的任何一个数据包. 左边有会出现一个虚线.
+        一般发送一个数据包. 对方就要回复一个数据包的.相对于一个聊天.
+        虚线就是找到那个聊天的收发者..
+
+        错误信息 wireshark 会用黑色来显示. 
+        我们这里就是:
+
+        👹 icmp destination unreachable (port unreachable)
+
+        既然是端口不可达. 那么就扫描服务器端口先.
+        🔸 扫描服务器的 500 upd端口.
+            ✘✘∙𝒗 vps sudo nmap -sU -p 500 23.105.192.96
+
+            Starting Nmap 7.25BETA1 ( https://nmap.org ) at 2017-05-09 10:58 CST
+            Nmap scan report for mail.0214.help (23.105.192.96)
+            Host is up (0.18s latency).
+            PORT    STATE  SERVICE
+            500/udp closed isakmp
+
+            Nmap done: 1 IP address (1 host up) scanned in 0.50 seconds
+
+        端口确实没开. 要么是防火墙原因. 要么就是vpn服务没启动..
+        首先关闭服务器防火墙. service iptables stop
+        在 namp 500 udp端口. 还是没开.  那就是vpn服务本身的问题了.
+
+            ipsec start
+            再nmap下端口果然open了..
+            丫的 . 原来是服务器没有设置 开机启动vpn啊.
+            设置开机启动ipsec: vi /etc/rc.local  添加: ipsec start 
+
+        发现开启启动没用啊. top 没看到有charon的进程... 
+        google下. 原来加载 rc.local 文件的时候 环境路径的文件还没有加载!!! 
+        ❗️❗️❗️所以rc.local 里必须使用绝对路径!!!❗️❗️❗️
+        ❗️❗️❗️所以rc.local 里必须使用绝对路径!!!❗️❗️❗️
+        ❗️❗️❗️所以rc.local 里必须使用绝对路径!!!❗️❗️❗️
+        type ipsec 查看绝对路径. ipsec is /usr/local/sbin/ipsec
+        设置开机启动ipsec: vi /etc/rc.local  添加: /usr/local/sbin/ipsec start 
+
+        现在就好了!!!!
+
+
+
+
+
+
+
+
+
+
+
+
+⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️------⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️
+用kiwivm 自带的 一键安装openvpn功能...
+
+安装成功之后 就可以下载 openvpn keys.
+
+🔸 压缩包
+    vps 根证书 ca.crt
+    vps 密钥  ca.key
+    用户证书: client1.crt
+    用户私钥 client1.key
+    client1.csr 
+
+
+
+    然后再下载个 可以连接openvpn的工具.
+    mac 可以用 shimo 这个软件.
+
+    然后 解压证书. 里面有个 xxx.ovpn 后缀的文件.
+    这个文件用 shimo 打开就可以连接了....
+
+
+👹 连接不上...
+    MANAGEMENT: >STATE:1497535245,WAIT,
+
+    估计被运营商 block了..    估计只是block 1194 这个端口.
+    换端口试试...
+    服务器上 vi /etc/openvpn/server.conf  加一行 port 443
+    客户端的 .ovpn 里面  原来的1194 改成443 .
+    然后重启服务器的 openvpn service openvpn restart
+
+
+    现在发现能连上了. 但是接收到的数据... 只有一点点.. 总比没有好..
+    还是不行... 诶 ..... 防火墙太厉害了...
+
+不只是openvpn ipsec的vpn也被墙的... fuck...
+
+
+
+🔸 服务器配置.
+    openvpn 的配置目录:  /etc/openvpn/openvpn.conf
+
+    server 10.10.10.0 255.255.255.0
+    这个是连上vpn 后分配给你的ip地址. 也就是 dhcp服务器.
+
+
+🔸 开启 openvpn 服务
+    service openvpn start
+
+    可将此命令添加到/etc/rc.local使openvpn开机自启动
+
+
+
+
+
+
+
+

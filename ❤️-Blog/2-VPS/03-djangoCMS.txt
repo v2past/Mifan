@@ -742,3 +742,411 @@ push本地代码到远程仓库  git push -u origin master
 
 
 
+
+
+
+
+
+
+⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️------⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️
+aldryn-bootstrap3 插件
+⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️------⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️
+官方文档:  https://pypi.python.org/pypi/aldryn-bootstrap3/1.2.0
+官方文档:  https://pypi.python.org/pypi/aldryn-bootstrap3/1.2.0
+官方文档:  https://pypi.python.org/pypi/aldryn-bootstrap3/1.2.0
+
+插件就是一堆 html ... 只是预先写好一些代码而已.
+你可以在html中添加 class 来实现插件的功能.. 也能直接用插件...
+
+
+
+
+
+    🔸 导航栏: 网络安全 + 前端 + 后端 + Misc + 简历
+
+
+
+
+🔸 style    容器. div .  
+    容器也是有默认 边距的.
+    建议所有元素都放进 div 里面. 也就是 style 里面.
+
+    class name 选择 container.   
+    tag 选择  div ..
+
+
+🔸 Row  行.
+    create columns   
+    col-xs- offset-  push- pull-
+    col-md- offset-  push- pull-
+    col-lg- offset-  push- pull-
+
+    row 是创建行的意思.  一行分成12部分.
+    create columns   一行分成几列. 1 就是1
+
+    col-xs 是小屏幕   xs- 建议值 4. 
+    col-md 是中屏幕
+    col-lg 是大屏幕
+    这里填12 就是说小手机上为了充分利用屏幕宽度. 不留任何边距
+    不然的话 默认每行两边都有一定的默认 屏幕越大. 边距越大..
+
+    当然如果 row 是在 容器内 也就是 style 里面.
+    那么容器是有留默认边距的. 里面的row 再怎么利用 也不会超出容器.
+
+
+🔸 text       文字.  class="page-header" 可以加上一个下划线.
+
+文本内是可以添加图片/图标的. 可以用 代码模式编辑.
+<p><cms-plugin alt="Icon - glyphicon-time " id="821" render-plugin="true" title="Icon - glyphicon-time"></cms-plugin> <span> 2017-07-10-19 </span></p>
+
+比如一个时间图标.  加上 span 就可以在同行内添加时间
+
+比如星星图标. 
+<cms-plugin alt="Icon - glyphicon-star " id="822" render-plugin="true" title="Icon - glyphicon-star"></cms-plugin>
+
+重复5次就有5个星星了...
+
+
+
+
+⦿ ★★★★★ 居中显示
+<p style="text-align: center;"><cms-plugin alt="Icon - glyphicon-star " id="823" render-plugin="true" title="Icon - glyphicon-star"></cms-plugin><cms-plugin alt="Icon - glyphicon-star " id="823" render-plugin="true" title="Icon - glyphicon-star"></cms-plugin><cms-plugin alt="Icon - glyphicon-star " id="823" render-plugin="true" title="Icon - glyphicon-star"></cms-plugin><cms-plugin alt="Icon - glyphicon-star " id="823" render-plugin="true" title="Icon - glyphicon-star"></cms-plugin><cms-plugin alt="Icon - glyphicon-star " id="823" render-plugin="true" title="Icon - glyphicon-star"></cms-plugin></p>
+
+
+
+⦿ 时间图标 居中
+
+<p style="text-align: center;"><cms-plugin alt="Icon - glyphicon-time " id="824" render-plugin="true" title="Icon - glyphicon-time"></cms-plugin> 2017-07-10 </p>
+
+
+
+⦿ 行内 一左一右
+
+
+靠右
+
+<p>
+
+<span>sdfr&nbsp;</span>
+
+<span style="text-align: right;">sdfr&nbsp;</span>
+
+</p>
+
+
+⦿ 内联元素.
+html 块元素会重启一行. 内联元素则是一行内从左到右
+
+又有小伙伴问了，设置两个元素一左一右可以实现一行显示吗？当然可以：
+
+
+作者： 木晨 
+链接：http://www.imooc.com/article/2058
+来源：慕课网
+
+
+
+
+🔸 bkcokquote 引用.  右边有个引用的标志.
+🔸 Panel      面板.  标题 + 内容 + 页脚
+🔸 Carousel   图片轮播!!!
+🔸 Jumbotron  巨大的显示屏. (背景为灰色的 DIV)
+🔸 Lable      标签. 小按钮图标.
+🔸 tab        一行内 多个链接/按钮 ?
+
+
+🔸 well ... 
+🔸 file       文件下载   
+🔸 accordion  手风琴 点击下方会出现解释的.  不能居中是问题
+
+
+
+
+
+
+
+
+🔸 Content
+
+column:30、xs:4、sm:3、md:2、lg:2 
+        意思是 每行最长30列. 当宽度就自动换行.  
+        特小屏的时候. 每列占一行的4  也就是一行可以放 3列.
+        小屏幕的时候. 每列占一行的3  也就是一行可以放 4列.
+        中屏幕的时候. 每列占一行的2  也就是一行可以放 6列.
+        大屏幕的时候. 每列占一行的2  也就是一行可以放 6列.
+
+
+
+
+
+
+
+    🔸 博客页脚
+    style 
+        row
+            columns:1、col-xs:12
+                text > Copyright @ 2017 All rights reserved
+
+
+🔸 分类标签
+style: VPS
+    row1-1 > columb:1、xs:12
+        text > <h3 class="page-header" ><strong>VPS</strong></h3>
+
+
+    
+    🔸 重要博客模块 一排两个. 文字+图标、图标+文字
+    row1-1
+        cloumn2-1: 6666 > link > row ➜ 一行内的 左半部分.
+                cloumn 8888 > panel body > text   ➜ 左边的 左边部分    
+                column 4444 > image               ➜ 左边的 右边部分
+                    
+        column2-2: 6666 > link > row ➜  一行内的右半部分
+                column 4444 > image               ➜ 右边的 左边部分
+                cloumn 8888 > panel body > text   ➜ 右边的 右边部分 
+
+
+    🔸 次要博客模块 一排6个.
+    row6-1 > column:1、xs:4、sm:3、md:2、lg:2 
+        link/Button: button: Block
+        link/Button: link >www...
+            Panel
+                panel body
+                    image
+                panel footer
+                    text
+    row6-2 
+    row6-3 
+    row6-4 
+    row6-5 
+    row6-6 
+    
+    
+
+
+
+
+
+
+🔵  首页结构.
+
+🔸 Linux 
+
+
+bash
+
+Nmap
+
+
+
+Nginx
+Apache 
+
+三剑客 + 正则式.
+
+
+网络命令.
+
+
+
+supervisor
+
+
+
+
+
+
+
+
+sed 
+
+
+
+
+🔸 数据库
+
+
+
+
+
+🔸 vps 大类.
+NextCloud.
+lsync
+
+puppet
+zabbix
+ansible
+
+NTP 服务器.
+
+
+Redis ....
+
+
+
+
+
+🔸 Docker / VM /KVM
+
+
+
+🔸 Kali
+
+kali 
+
+
+MSF
+
+
+Hydra   
+
+
+🔸 Security 大类
+
+wifi-破解
+wireshark
+NMAP
+Nessus
+DDOS
+
+
+
+
+
+
+🔸 Mac Tooles 
+
+工具系列.
+
+
+🔸 Misc 
+暗网
+
+
+
+
+
+
+🔸 Python 
+爬虫..
+
+
+
+
+
+
+
+
+
+
+🔸 轮播图
+
+
+
+
+
+
+
+
+每个文章由 标题+图片+简介组成
+每个文章 都是一个链接.
+
+
+
+
+⦿ 创建大类标签
+    就是直接建立..  new page . 显示在顶部工具栏的...
+    然后在 大类标签小 手动建立小标签.
+    小标签里面 放具体博客txt链接
+    博客就是这样了..
+
+
+
+下面就该设置 网页链接了. 
+文件要有链接.  文件还要和本地保持一致..
+
+要么用xx网盘. 网盘的链接太麻烦了..
+要么用自己服务器搭 lsync... 要有个稳定的服务器..
+实在不行.. 用github ...经常手动 提交更新就可以保持文件最新...
+
+
+我们选择... 自己服务器把..
+还有就是路径问题...  服务器上的文件不是谁都可以访问的..
+简单简单点就 放在/home/mycms/media 文件夹里面..
+要么就自己建个FTP服务器 什么的 ....
+
+我们还是用git吧.... git安全.. 本地电脑坏了 还能服务器上找回来.
+
+
+
+
+
+
+⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️------⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️
+⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️------⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️
+⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️------⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️
+lsync 设置.
+虚拟环境单独安装. mac上安装一遍. vps上再安装一遍.
+mycms 文件夹 和 vps 文件夹则由mac 同步到服务器. 
+
+
+
+⦿ 配置.
+sudo vi /etc/lsyncd-gce.conf
+
+
+settings {
+        logfile = "/tmp/lsyncd-gce.log",
+        statusFile = "/tmp/lsyncd-gce.status",
+
+        insist = true,
+        nodaemon   = true,
+
+        inotifyMode = "CloseWrite or Modify",
+        -- 怎么才算一次修改. 是保存呢,还是任何修改.
+
+        statusInterval = 5,
+        --每隔5秒查看一次本地是否有修改.
+
+        maxDelays = 1,
+        -- 本地有多少次修改 才会触发同步.
+
+}
+
+sync {
+        default.rsyncssh,
+
+        source = "/Users/v/Desktop/gce",
+
+        host="35.194.128.92",
+
+        targetdir = "/root/gce",
+
+        excludeFrom = {
+            /Users/v/Desktop/gce/djangocms,
+            /Users/v/Desktop/gce/mycms,
+        },
+
+
+        rsync = {
+                binary = "/usr/local/bin/rsync",
+                archive  = true,
+                compress = true,
+                whole_file = false
+
+        },
+
+        ssh = {
+                port = 22,
+                identityFile ="/Users/v/.ssh/id_rsa",
+        }
+}
+ 
+
+
+⦿ ❗️❗️❗️ 运行 
+sudo lsyncd /etc/lsyncd-gce.conf
+
+
+
+
