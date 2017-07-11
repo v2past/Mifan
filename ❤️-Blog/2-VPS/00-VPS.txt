@@ -542,11 +542,7 @@
     ⦿ 中文乱码
        vi ~/.vimrc 添加3行
 
-        set fileencodings=utf-8,gb2312,gb18030,gbk,ucs-bom,cp936,latin1
-        set enc=utf8
-        set fencs=utf8,gbk,gb2312,gb18030
-
-        echo "set fileencodings=utf-8,gb2312,gb18030,gbk,ucs-bom,cp936,latin1" >> ~/.vimrc
+        echo "set fileencodings=utf-8,gb2312,gb18030,gbk" >> ~/.vimrc
         echo "set enc=utf8" >> ~/.vimrc
         echo "set fencs=utf8,gbk,gb2312,gb18030" >> ~/.vimrc
 
@@ -556,7 +552,14 @@
     ⦿ 设置缩进
         echo "set ts=4" >> ~/.vimrc && cat ~/.vimrc
         echo "set expandtab" >> ~/.vimrc && cat ~/.vimrc
+
+
+        
         echo "set autoindent" >> ~/.vimrc && cat ~/.vimrc
+❗️❗️ 千万不要加这行 自动缩进. 特别是 .py 文件会导致导致文件结构混乱❗️❗️
+❗️❗️ 千万不要加这行 自动缩进. 特别是 .py 文件会导致导致文件结构混乱❗️❗️
+
+
 
     🔅🔅
     echo "set fileencodings=utf-8,gb2312,gb18030,gbk,ucs-bom,cp936,latin1" >> ~/.vimrc && echo "set enc=utf8" >> ~/.vimrc && echo "set fencs=utf8,gbk,gb2312,gb18030" >> ~/.vimrc && echo ":set nu" >> ~/.vimrc && cat ~/.vimrc
@@ -1678,15 +1681,6 @@
 
         这样你要把vps1 里的某个数据库 导出到vps2上 ..就出问题了.
 
-
-
-
-🔸 Mysql 基本命令
-
-    状态: service mysql status
-    启动: service mysql start
-    停止: service mysql stop
-    重启: service mysql restart
 
 
 

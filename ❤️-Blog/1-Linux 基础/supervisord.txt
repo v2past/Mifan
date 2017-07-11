@@ -1,5 +1,5 @@
 
-🔸 supervisord
+🔸 supervisor
 
 Supervisor 相当强大,不过我们可能只需要用到其中一小部分。
 

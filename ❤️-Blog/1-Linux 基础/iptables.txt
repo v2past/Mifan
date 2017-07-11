@@ -3,6 +3,7 @@ vps的防火墙就算你关闭了. 它会自动启动的...
 折腾的时候 尽量关闭防火墙.以免因为防火墙的原因导致出问题. 害你半天查不出原因...
 
 
+
 service iptables stop
 service iptables start
 service iptables restart
