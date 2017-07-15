@@ -1,0 +1,144 @@
+🔸 ssh密钥 
+    ⦿ 生成(客户端)  ssh-keygen
+
+    ⦿ 传输(客户端)  scp -P 2222 -r id_rsa.pub root@23.105.192.96:~/.ssh/
+    ⦿ 传输(客户端)  scp -P 2222 -r id_rsa.pub root@104.224.139.45:~/.ssh/
+    ⦿ 注册(服务器)  cat ~/.ssh/id_rsa.pub >> ~/.ssh/authorized_keys
+
+
+
+🔸 开机启动
+    chmod 755 /etc/rc.d/rc.local
+    echo 'sleep 10' >> /etc/rc.local
+    chkconfig --list   查看开启启动状态...
+
+
+
+
+🔸 解压.
+    ⦿ .zip    unzip 文件名
+
+
+
+🔸 Linux
+
+    sudo sh -c "echo 'something' >> /etc/privilegedfile"
+    sudo sh -c "echo_supervisord_conf > /etc/supervisord.conf"
+
+
+
+
+
+## ❤️ 防火墙 FireWall iptable 
+    Ubuntu 默认关闭防火墙. 
+    iptables: 系统自带防火墙(复杂 难上手).
+    Uncomplicated Fire Wall(UFW):  iptable 的管理工具(使用简单).
+
+    安装 UFW :    sudo apt-get install ufw 
+    启用防火墙:　　sudo ufw enable 
+
+    service iptables status              查看iptables状态
+    service iptables restart iptables  服务重启
+    service iptables stop iptables     服务禁用
+
+    查看filter表：iptables -L
+    清空filter表：iptables -F
+
+    启动iptables: /etc/rc.d/init.d/iptables start
+    关闭iptables:/etc/rc.d/init.d/iptables stop
+
+    /etc/sysconfig/iptables
+
+    iptables：应用防火墙规则：iptables-restore: line 17 failed
+
+    /etc/init.d/iptables stop关闭
+    /etc/init.d/iptables start启动
+    /etc/init.d/iptables restart重启
+
+
+
+
+
+
+🔸 HTTPS
+    • 阿里云注册 www.0214.live
+    • 下载Nginx 版本证书 (.key 和 .pem 文件)
+    • 服务器新建cert 文件夹: mkdir /usr/local/nginx/conf/cert
+    • 然后把两个证书文件 传到 cert 目录下
+    • 编辑对应的nginx 配置文件. 添加额外的server模块.
+
+    server {
+    listen 443;
+    server_name www.0214.live;
+
+    ssl on;
+    ssl_certificate cert.pem;
+    ssl_certificate_key cert.key;
+    ssl_session_timeout 5m;
+    ssl_protocols SSLv2 SSLv3 TLSv1;
+    ssl_ciphers ALL:!ADH:!EXPORT56:RC4+RSA:+HIGH:+MEDIUM:+LOW:+SSLv2:+EXP;
+    ssl_prefer_server_ciphers on;
+
+    }
+
+
+    • 重启 nginx
+
+
+
+
+
+
+
+
+
+🔸 Django
+
+    ⦿ Django 版本查询方法一. 
+        (djcmsenv) ✘✘∙GCE mycms ➜ python
+        Python 2.7.5 (default, Nov  6 2016, 00:28:07)
+        [GCC 4.8.5 20150623 (Red Hat 4.8.5-11)] on linux2
+        Type "help", "copyright", "credits" or "license" for more information.
+        >>> import django
+        >>> django.VERSION
+        (1, 8, 18, 'final', 0)
+
+    ⦿ Django 版本查询方法2
+        转到 Django web 项目主目录并执行以下操作：
+        ./manage.py --version
+
+
+
+
+
+🔸 Mysql 
+
+    状态: service mysql status
+    启动: service mysql start
+    停止: service mysql stop
+    重启: service mysql restart
+
+
+
+
+
+🔸 Nginx
+
+    service nginx restart
+    service nginx status
+
+    cd /home/wwwroot/www.0214.live/
+
+    cd /usr/local/nginx/conf/vhost/ && ls 
+
+    vi /usr/local/nginx/conf/vhost/www.0214.live.conf
+
+
+
+🔸 Apache
+
+    service httpd status
+    service httpd stop
+
+
+

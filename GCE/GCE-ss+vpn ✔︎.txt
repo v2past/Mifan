@@ -502,10 +502,12 @@ SS 个人版 搭建 (可选,ETA: 10min+ )
     🔅 wget https://git.io/vpnsetup-centos -O vpnsetup.sh && sudo sh vpnsetup.sh 
 
   ⦿ 安装好后
-    Server IP: 35.189.183.10
-    IPsec PSK: cvc6heCs5A3ETARu
+
+    Server IP: 35.194.128.92
+    IPsec PSK: 6ga2dgFJN97N9p5d
     Username: vpnuser
-    Password: cTa7AMS6ADixkwiA
+    Password: D8aZztkdr5x6u2we
+
 
   ⦿ gce 防火墙
    ❗️❗️ GCE 有外部防火墙的! 必须为 VPN 打开 UDP 端口 500 和 4500 ❗️❗️
@@ -513,6 +515,7 @@ SS 个人版 搭建 (可选,ETA: 10min+ )
 
   ⦿ vpn 连接测试.
     Mac 建议用 shimo 这个软件. 
+    添加的时候选择 ipsec 协议.
 
 
 

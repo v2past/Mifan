@@ -1,0 +1,37 @@
+@: 简介
+Aircrack-ng 破解无线802.11WEP及WPA-PSK加密的工具套装
+
+包含 好多组件:
+
+aircrack-ng
+主要用于WEP及WPA-PSK密码的恢复，只要airodump-ng收集到足够数量的数据包，aircrack-ng就可以自动检测数据包并判断是否可以破解
+
+airmon-ng
+用于改变无线网卡工作模式，以便其他工具的顺利使用
+
+airodump-ng
+用于捕获802.11数据报文，以便于aircrack-ng破解
+
+
+aireplay-ng
+在进行WEP及WPA-PSK密码恢复时，可以根据需要创建特殊的无线网络数据报文及流量
+
+
+airserv-ng
+可以将无线网卡连接至某一特定端口，为攻击时灵活调用做准备
+
+
+airolib-ng
+进行WPA Rainbow Table攻击时使用，用于建立特定数据库文件
+
+
+airdecap-ng
+用于解开处于加密状态的数据包
+
+
+
+
+
+
+
+

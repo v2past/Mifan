@@ -22,10 +22,9 @@
 
 🔸 DjanCMS 技巧.
 
-
-❗️❗️ content 模式可以直接双击进行简单编辑
-❗️❗️ 空格        快速切换 structure 和 content 模式
-❗️❗️ shift+空格  快速定位
+    ❗️❗️ content 模式可以直接双击进行简单编辑
+    ❗️❗️ 空格        快速切换 structure 和 content 模式
+    ❗️❗️ shift+空格  快速定位
 
 
 
@@ -461,6 +460,25 @@ vacuum = true
     ⦿ 浏览器测试 http://www.0214.help:222/   出现 cms 的登录页面了.
 
 
+    ⦿ 端口更改.
+        网页么端口不是80 就是 443 .其他端口只是避免冲突测试用的
+        vi /home/mycms/mysite_nginx.conf 把222 改成80 就是不行.
+        可能是80被占用了..  但是不是被nginx 占用了.
+        lsof -i:端口号 安装: yum install lsof
+        如lsof -i:80 
+        nginx     15891 root    6u  IPv4 147886      0t0  TCP *:http (LISTEN)
+        nginx     15892  www    6u  IPv4 147886      0t0  TCP *:http (LISTEN)
+        两个http.... 
+
+        ✘✘∙GCE ~ ➜     cd /usr/local/nginx/conf/vhost/
+        居然看到个 www.0214.live的配置文件 里面默认用的80端口..
+        原来这就是我们用lnmp 建立的虚拟主机...
+        其实没必要. 我们已经在mycms项目里面建了一个 .conf 所以就冲突了..
+        删除...
+
+        rm /usr/local/nginx/conf/vhost/www.0214.live.conf
+        或者 lnmp vhost del...
+
 
 
 
@@ -641,6 +659,93 @@ vacuum = true
 
 
 
+⦿ 网站图标修改
+
+    图标是在html网页里面设置的.
+    然后 上传图标 设置路径.
+    favicon.ico 
+
+
+    有个网站. 方便设置所有平台全套的图标.
+
+    上传一张png 图片. 
+    然后下载一个文件夹..
+    然后把 文件夹 放到服务器的 /home/mycms/static/favicon 文件夹...
+
+    http://www.0214.live/static/favicons/favicon.ico
+    然后测试 是不是正常.
+
+    然后 就是html代码了额
+    放到.../home/mycms/mycms/templates/base.html 下的 head里面..
+    最后重启nginx 就可以了. service nginx restart
+
+
+
+    <link rel="apple-touch-icon" sizes="180x180" href="/static/favicons/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/static/favicons/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/static/favicons/favicon-16x16.png">
+    <link rel="manifest" href="/static/favicons/manifest.json">
+    <link rel="mask-icon" href="/static/favicons/safari-pinned-tab.svg" color="#5bbad5">
+    <meta name="theme-color" content="#ffffff">
+
+
+
+
+🔸 HTTPS
+
+    首先去阿里云 申请免费的 ssl证书. www.0214.live
+    然后下载 Nginx 版本的证书
+    得到两个文件:  .key  和  .pem
+    服务器新建cert 文件夹: mkdir /usr/local/nginx/conf/cert
+    然后把两个证书文件 传到 cert 目录下
+
+
+vi /home/mycms/mysite_nginx.conf  添加 https 模块
+
+server {
+    listen 443;
+    server_name www.0214.live;
+
+    location /media  {   alias /home/mycms/media;  }
+    location /static {   alias /home/mycms/static; }
+    location /       {
+      uwsgi_pass  django;
+       include /home/mycms/uwsgi_params;
+      }
+
+
+    ssl on;
+    ssl_certificate /usr/local/nginx/conf/cert/214194220970463.pem;
+    ssl_certificate_key /usr/local/nginx/conf/cert/214194220970463.key;
+    ssl_session_timeout 5m;
+    ssl_protocols SSLv2 SSLv3 TLSv1;
+    ssl_ciphers ALL:!ADH:!EXPORT56:RC4+RSA:+HIGH:+MEDIUM:+LOW:+SSLv2:+EXP;
+    ssl_prefer_server_ciphers on;
+
+}
+
+测试: https://www.0214.live  就可以了
+
+
+
+
+⦿ nginx https 跳转 
+    最好把 www.0214.live 转到 https 下.
+
+    vi /home/mycms/mysite_nginx.conf 
+    在 80 模块下 添加下面行就可以了
+
+    rewrite ^(.*)$  https://$host$1 permanent;  
+
+
+
+
+
+
+
+
+
+
 
 
 🔵 备份.
@@ -654,15 +759,15 @@ vacuum = true
 
 🔸 git 备份.
 
-git 安装      yum install git 
-查看版本      git --version
-初始化仓库    git init
-当前仓库状态  git status
+    git 安装      yum install git 
+    查看版本      git --version
+    初始化仓库    git init
+    当前仓库状态  git status
 
-添加文件（.或者*表示全部添加）   git add .
-提交代码  git commit -m "commit message" 
-添加远程仓库   git remote add origin git@github.com:xxxx.git 
-push本地代码到远程仓库  git push -u origin master 
+    添加文件（.或者*表示全部添加）   git add .
+    提交代码  git commit -m "commit message" 
+    添加远程仓库   git remote add origin git@github.com:xxxx.git 
+    push本地代码到远程仓库  git push -u origin master 
 
 
 

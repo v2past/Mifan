@@ -176,7 +176,10 @@
 
     ⦿ 改ssh端口成2222
         • vi /etc/ssh/ssh_config   取消Port 22 前的注释，并将22改成2222
+        • 这个文件好像没必要改的.
             🔅 sed -i 's/^#...Port.22/Port 2222/g' /etc/ssh/ssh_config
+ 
+ 
         • vi /etc/ssh/sshd_config  取消Port 22 前的注释，并将22改成2222
             🔅 sed -i 's/^Port.22/Port 2222/g' /etc/ssh/sshd_config
 

@@ -1,8 +1,4 @@
-❤️ 常用命令
-vps的防火墙就算你关闭了. 它会自动启动的...
-折腾的时候 尽量关闭防火墙.以免因为防火墙的原因导致出问题. 害你半天查不出原因...
-
-
+❤️ 
 
 service iptables stop
 service iptables start
@@ -10,17 +6,9 @@ service iptables restart
 service iptables status
 
 
-禁止某端口:
-    iptables -A INPUT -p tcp --dport 21 -j DROP
-
-
-开放某端口:
-
-    iptables -A INPUT -p udp --dport 500 -j ACCEPT
-
-
-开放多个连续端口
-    iptables -A INPUT -p tcp --dport 1025:1200 -j ACCEPT
+禁止某端口:    iptables -A INPUT -p tcp --dport 21 -j DROP
+开放某端口:    iptables -A INPUT -p udp --dport 500 -j ACCEPT
+开连续端口  iptables -A INPUT -p tcp --dport 1025:1200 -j ACCEPT
 
 
 

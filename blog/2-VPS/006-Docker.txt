@@ -470,3 +470,139 @@
             docker run sshd:centos6 /root/run.sh   ➜  用刚保存的新镜像新建容器: 并执行run.sh 脚本
             然后 ssh root@172.17.0.2   就能连上了....
 
+
+
+
+
+
+
+
+
+
+@: Docker
+
+轻量级的虚拟机,
+
+Mac 安装教程
+ 下载 boot2docker 最新版  进行安装
+
+https://github.com/boot2docker/osx-installer/releases
+
+
+下载 pkg 安装(包括 vb 的虚拟机)
+
+运行 应用软件里面 boot2docker. 
+会打开一个终端. 等着就好了 .
+
+然后就是使用教程:
+
+列出 本地镜像 docker images
+
+搜索镜像  docker search ubuntu
+
+
+当你从你的“应用程序文件夹(Applications)” 来启动 "Boot2Docker" 程序, 程序会做如下事项：
+• 打开一个命令行控制台。
+• 创建 $HOME/.boot2docker 目录
+• 创建 VirtualBox ISO 虚拟机 和 证书 （ssh key）
+• 启动 VirtualBox 并运行 docker 进程
+
+
+ 看基本命令 docker —help
+
+测试是否安装正确. docker run hello-world 
+会显示 不能找到本地镜像. 就会从网上下载一个镜像下来 
+
+
+
+创建新的 虚拟机. boot2docker init  只需运行一次. 以后就不再需要,
+
+启动 boot2docker 虚拟机 
+boot2docker start
+
+
+查看环境变量. boot2docker shellinit
+ip 路径 等等
+
+4、 使用 shell 命令来设置环境变量。
+$ eval "$(boot2docker shellinit)"
+5、 运行 hello-word 容器来验证安装。
+$ docker run hello-world、
+
+
+
+三、配置启动Docker
+在安装完毕后boot2docker后，就可以直接使用boot2docerk这个client command来操作vm中Images了。
+1、boot2docker init 命令进行初始化
+从日志可以看出，初始化的过程是下载一个boot2docer.iso，然后会用ssh生成用于docker的ssh的公钥和私钥对，用于远程。
+
+
+
+2、启动
+boot2docerk start命令来启动
+
+
+Ps：这里HOST为192.168.59.103，这个就是以后要访问的虚拟机的地址。
+
+
+至此，配置完毕。
+如果想进入到虚拟机的控制台，可以使用boot2docker ssh命令
+
+
+
+四、第一个和第二个Docker程序
+对于第一个，相信大家都很了解，Docker版的HelloWorld。这个正好来验证是否安装成功。
+1. Docker HelloWorld
+运行 docker run hello-world，docker会在本地查找镜像是否存在（肯定不存在了，刚装的= =）， 然后docker会去远程Docker registry server去下载这个镜像。
+下载后运行这个镜像。
+这个镜像程序，会输出一句 Hello from Docker. 
+如果看到这句话，说明你的Docker已经正确安装了。
+
+
+
+
+2、Docker Nginx
+这里会演示下载一个Nginx Server的镜像，然后可以通过本机访问Docker的容器端口，从而访问到部署在Docker中的Nginx。
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
