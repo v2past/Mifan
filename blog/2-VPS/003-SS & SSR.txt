@@ -13,8 +13,6 @@
 
 
 
-
-
 🔸 域名常识
     一个域名绑定一个公网IP;
     一个域名对应一个服务器(一般情况);
@@ -201,27 +199,7 @@
 
 
 
-⦿ chattr 命令：
 
-  有时候root 都不能修改某个文件(防止小白误删文件). 很可能是因为用了 chattr命令 锁定文件了.
-  chmod 只能改变文件的 读、写、执行权限.
-  但是其实文件还有很多额外权限. 这些更底层的权限要用 chattr 命令来修改.
-  最常用的就是chattr的 i 属性
-
-  i：设定文件不能被删除、改名、设定链接关系，同时不能写入或新增内容。
-  i参数对于文件 系统的安全设置有很大帮助。用chattr命令防止系统中某些关键文件被修改!!
-
-    chattr -i /home/wwwroot/default/.user.ini  解锁文件.
-    chattr +i /home/wwwroot/default/.user.ini  锁定文件.
-
-
-⦿ 复制所有文件
-    复制文件 cp filepatha filepathb
-    复制目录 cp -R /home/xxx /home    只会复制xxx文件夹下的 非隐藏文件 到/home下
-    复制所有文件 cp -R /home/xxx/. /home  会复制 所有文件到 /home下
-
-
-⦿ c7 停止防火墙:  systemctl stop firewalld.service
 
 
 
@@ -365,8 +343,9 @@
 
 
 
-
-
+⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️------⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️
+🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵  GCE SSR 🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵
+⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️------⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️
 ⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️------⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️
 🔸 准备工作: 
 ⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️------⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️
@@ -400,7 +379,7 @@
         如果你要更改 默认的加密方法. 最好在这里修改.
         不然等你安装好数据库. 再要修改数据表中某个字段的默认值 就要你有点mysql基础了.
         
-        `method` varchar(64) NOT NULL DEFAULT 'rc4-md5',  行改成下面的
+        `method` varchar(64) NOT NULL DEFAULT 'rc4-md5',  113行改成下面的
         `method` varchar(64) NOT NULL DEFAULT 'chacha20',
 
     ⦿ 导入数据表: db.sql
@@ -460,11 +439,13 @@
 
     cd /home/wwwroot/ss.0214.live && git clone https://github.com/mmmwhy/ss-panel.git && mv ss-panel/{.,}* ./ 
 
+    cd /home/wwwroot/ss.0214.help && git clone https://github.com/mmmwhy/ss-panel.git && mv ss-panel/{.,}* ./ 
+
+
         下载然后移动文件.
           移动 ss-panel 文件夹下所有内容到 /home/wwwroot/ss.0214.live
           确保 /home/wwwroot/ss.0214.live 下有个叫 public的文件夹.
           也可以用 cp -R /home/wwwroot/ss.0214.live/ss-panel/. /home/wwwroot/ss.0214.live/
-
 
 
 🔸 安装 php 依赖
@@ -510,6 +491,8 @@
 🔸 ❗️❗️ 配置 Nginx ❗️❗️
 
     vi /usr/local/nginx/conf/vhost/ss.0214.live.conf
+    vi /usr/local/nginx/conf/vhost/ss.0214.help.conf
+
     ❗️ 官方的ss-panle 坑就在 location ~ ...模块里.                               ❗           ️
     ❗️ 官方的安装说明 只有 location / 模型. 压根没有 location ~ 模块.            ❗️
     ❗️ 你按照官方的安装步骤永远不可能成功的,                                     ❗ ️
@@ -520,30 +503,30 @@
     ❗️ 修改文件中两个 ss.0214.live 替换成你自己的就可以 ❗️
 
 
-    server
-        {
-            listen 80 ;
-            server_name ss.0214.live;
+server
+    {
+        listen 80 ;
+        server_name ss.0214.live;
 
-            index index.html index.htm index.php;
-            root  /home/wwwroot/ss.0214.live/public;
-            
-            location / {
-                            try_files $uri $uri/ /index.php$is_args$args;
-                    }
-                    
-            location ~ [^/]\.php(/|$) {
-            # comment try_files $uri =404; to enable pathinfo
-            try_files $uri =404;
-            fastcgi_pass unix:/tmp/php-cgi.sock;
-            fastcgi_index index.php;
-            include fastcgi.conf;
-            #include pathinfo.conf;
-            fastcgi_param PHP_ADMIN_VALUE "open_basedir = /home/wwwroot: /temp/:/proc";
-            }
-
-            access_log  /home/wwwlogs/access.log;
+        index index.html index.htm index.php;
+        root  /home/wwwroot/ss.0214.live/public;
+        
+        location / {
+                        try_files $uri $uri/ /index.php$is_args$args;
+                }
+                
+        location ~ [^/]\.php(/|$) {
+        # comment try_files $uri =404; to enable pathinfo
+        try_files $uri =404;
+        fastcgi_pass unix:/tmp/php-cgi.sock;
+        fastcgi_index index.php;
+        include fastcgi.conf;
+        #include pathinfo.conf;
+        fastcgi_param PHP_ADMIN_VALUE "open_basedir = /home/wwwroot: /temp/:/proc";
         }
+
+        access_log  /home/wwwlogs/access.log;
+    }
 
 
 🔸 重启Nginx      service nginx restart  
@@ -564,6 +547,8 @@
 
 
     cd /home/wwwroot/ss.0214.live && cp .env.example .env && vi .env
+    cd /home/wwwroot/ss.0214.help && cp .env.example .env && vi .env
+
 
     ⦿ 重点字段
         ❗️db_database = 'SS2'  
@@ -817,18 +802,18 @@
 
 
 🔸 注册用户 进行测试.
-    千万别用管理员帐号来翻墙. 各种问题. 原因未知.自己注册个吧.
+    可以直接用管理员帐号来翻墙.无须注册新用户.
+    当然由于各种原因管理员账户可能会有问题.就需要注册新用户来测试.
+
+
+    ⦿ 添加节点
+        usermysql.json 面的ID按照这里生成的为准设置.
 
     ⦿ 生成邀请码
         管理员账户登录 ➜  管理面板 ➜ 邀请管理 ➜ 填写邀请码数量并生成 ➜ 
         
     ⦿ 查看邀请码 ➜ http://ss.0214.live/code
-
-        1	972z9VKitBVJteuCKzecKdRC4MifCmTD	可用
-        2	76aXwGeFfps8kUXBq3xyW8EYTh3k7rQK	可用
-        3	R8C5PMC6XhfQX4QQQs9YfLguDKquikC3	可用
-        4	HQsTiN8mm92hh9qz3GhQDCHi54jHyHKb	可用
-
+        eifR4FJhjzwLLT9xEFTrzJq75ccTt3Df
 
     ⦿ 注册新用户
         退出管理员, 注册新用户,然后用新注册的用户登录.
@@ -898,6 +883,9 @@
                 sh /root/shadowsocksr/run.sh
                 然后重启试试就可以了!!!!
 
+                有时候用这个命令可以 sh /root/shadowsocksr/run.sh
+                但是放到开机启动里面就无效.. 烦.
+
 
 
 
@@ -936,7 +924,133 @@
 
 
 🔵 客户端2 
-    spechtLite 很好用的.. 
+
+    spechtLite 很好用的..  下面是我的参考配置.
+    你只需修改下面 4个参数
+    # type: 代理类型, 有ss代理、http代理.    
+    host: 35.194.128.92
+    port: 1026
+    method: chacha20
+    # 当前支持的加密方法有: AES-128-CFB, AES-192-CFB, AES-256-CFB, chacha20, salsa20, rc4-md5
+    password: t54YdP
+
+
+
+
+
+
+
+        # This is the local http proxy server port.
+        # 这是本地监听的HTTP代理的端口地址。
+        # Note there is another SOCKS5 proxy server starts at port+1 automatically.
+        # SpechtLite还会自动启用一个位于port+1的SOCKS5代理服务器。
+        # 选择大于1024的未被占用的端口即可。
+        port: 9090
+
+        # Adapter is the remote proxy server you want to connect to
+        # 下面定义adapter，即远程代理服务器的信息。每个adapter代表一个远程代理服务器。
+
+        adapter:
+            # id is used to distinguish adapter when defining rules.
+            # 在定义规则的时候，我们使用id来引用当前定义的adapter。
+            # There is a 'direct' adapter that connect directly to target host without proxy.
+            # 程序自动定义了一个id为direct的adapter，使用这个adapter将会不走代理直接连接目标服务器。
+            # 因此自定义id不能为direct。
+            
+        - id: adapter1
+            type: ss
+            # type: 代理类型, 有ss代理、http代理.    
+            host: 35.194.128.92
+            port: 1026
+            method: chacha20
+            # 当前支持的加密方法有: AES-128-CFB, AES-192-CFB, AES-256-CFB, chacha20, salsa20, rc4-md5
+            password: t54YdP
+
+
+
+
+        # Speed adapter automatically connects to all specified adapters (with given delay) 
+        # and uses the fastest one that becomes ready.
+        # 针对每个请求，Speed adapter 自动连接所有的代理服务器（包括direct），并自动选择连接最快的服务器
+        - id: proxy
+            type: SPEED
+            adapters:
+            - id: adapter1
+                delay: 50
+                # 设置延迟，单位为毫秒
+
+
+        # 不发起任何连接，而是在给定延迟后断开
+        # Disconnect after given delay without connecting to remote.
+        - id: reject
+            type: reject
+            # It's very important to set a delay since some apps may try to reconnect repeatedly.
+            # 延迟非常重要，某些app可能会在连接失败后立刻无限重连。
+            delay: 300
+
+
+
+        # 接下来定义规则，每一个连接请求都会按顺序一一进行匹配。 
+        # 某中请求 使用某个服务器...   
+        # Here defines how things should work.
+        # Rule will be matched one by one.
+        rule:
+        - type: iplist
+        # Forward polluted host IP address
+            file: ~/.SpechtLite/pollutedip
+            adapter: proxy
+        - type: list
+        # Forward requests based on whether the host domain matches the given regular expressions.
+        # 基于给定的list文件中的正则表达式匹配域名信息（不包括IP）
+            file: ~/.SpechtLite/directlist
+            adapter: direct
+        - type: iplist
+        # Forward requests based on the IP address of the host.
+            file: ~/.SpechtLite/directiprange
+            adapter: direct
+        - type: list
+        # Forward requests based on whether the host domain matches the given regular expressions.
+            file: ~/.SpechtLite/proxylist
+            adapter: proxy
+        - type: iplist
+        # Forward requests based on the IP address of the host.
+            file: ~/.SpechtLite/proxyiprange
+            adapter: proxy
+        - type: list
+        # Reject requests based on whether the host domain matches the given regular expressions.
+            file: ~/.SpechtLite/rejectlist
+            adapter: reject
+        - type: iplist
+        # Reject requests based on the IP address of the host.
+            file: ~/.SpechtLite/rejectiprange
+            adapter: reject
+
+
+        - type: country
+        # When the location is unknown. Usually this means this is resolved an Intranet IP.
+            country: CN
+            match: true
+            adapter: direct
+
+
+        - type: country
+        # When the location is unknown. Usually this means this is resolved an Intranet IP.
+            country: --
+            match: true
+            adapter: direct
+
+
+
+        - type: DNSFail
+        # When the DNS lookup of the host fails.
+        # 当DNS解析失败时匹配。
+            adapter: proxy
+
+
+        - type: all
+        # Match all other requests.
+        # 匹配所有的请求。
+            adapter: proxy
 
 
 
@@ -971,3 +1085,8 @@ host "127.0.0.1" 改成 "104.224.139.45"
 
 那么接下来 就是把 vps2 的备份恢复到 vps1上.. 然后稍微修改下...
 就完成了.
+
+
+
+
+

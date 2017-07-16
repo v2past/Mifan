@@ -1,3 +1,10 @@
+
+
+
+
+
+
+
 🔸 ssh密钥 
     ⦿ 生成(客户端)  ssh-keygen
 
@@ -28,8 +35,18 @@
 
 
 
+# systemctl start httpd.service
+# systemctl restart httpd.service
+# systemctl stop httpd.service
+# systemctl reload httpd.service
+# systemctl status httpd.service
 
-## ❤️ 防火墙 FireWall iptable 
+
+Redirecting to /bin/systemctl status  puppetserver.service
+
+
+
+❤️ 防火墙 FireWall iptable 
     Ubuntu 默认关闭防火墙. 
     iptables: 系统自带防火墙(复杂 难上手).
     Uncomplicated Fire Wall(UFW):  iptable 的管理工具(使用简单).
@@ -54,6 +71,12 @@
     /etc/init.d/iptables stop关闭
     /etc/init.d/iptables start启动
     /etc/init.d/iptables restart重启
+
+
+
+
+⦿ c7 停止防火墙:  systemctl stop firewalld.service
+
 
 
 

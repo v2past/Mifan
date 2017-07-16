@@ -1,0 +1,81 @@
+
+⦿ chattr 命令：
+
+  有时候root 都不能修改某个文件(防止小白误删文件). 很可能是因为用了 chattr命令 锁定文件了.
+  chmod 只能改变文件的 读、写、执行权限.
+  但是其实文件还有很多额外权限. 这些更底层的权限要用 chattr 命令来修改.
+  最常用的就是chattr的 i 属性
+
+  i：设定文件不能被删除、改名、设定链接关系，同时不能写入或新增内容。
+  i参数对于文件 系统的安全设置有很大帮助。用chattr命令防止系统中某些关键文件被修改!!
+
+    chattr -i /home/wwwroot/default/.user.ini  解锁文件.
+    chattr +i /home/wwwroot/default/.user.ini  锁定文件.
+
+
+⦿ 复制所有文件
+    复制文件 cp filepatha filepathb
+    复制目录 cp -R /home/xxx /home    只会复制xxx文件夹下的 非隐藏文件 到/home下
+    复制所有文件 cp -R /home/xxx/. /home  会复制 所有文件到 /home下
+
+
+
+
+
+🔵 储备知识 rpm
+    RPM软件包的管理工具.最初是 red hat用来管理linux软件程序的,由于非常好用,被centos等系统采用了.
+    🔸语法: rpm  ✚ 选项  ✚ 软件名.
+    🔸选项:
+        -i  显示套件的相关信息； 
+        -v  显示指令执行过程； 
+        -h  套件安装时列出标记； 
+        -q  使用询问模式，当遇到任何问题时，rpm指令会先询问用户；
+        -l  显示套件的文件列表；
+
+    🔸常用选项组合
+        rpm -ivh       安装软件
+        rpm -ql        查看软件安装位置.
+        rpm --force -i ❗️❗️❗️❗️强制安装❗️❗️❗️❗️
+                正常一般添加对应源之后就可以用 yum 来安装对应的软件了.
+                但是如果 rpm -ivh 安装过程报错. 就可以用强制安装!!!
+                rpm -ivh http://yum.puppetlabs.com/puppetlabs-release-el-6.noarch.rpm
+                    👹 package puppetlabs-release-22.0-2.noarch is already installed
+
+                rpm --force -i http://yum.puppetlabs.com/puppetlabs-release-el-6.noarch.rpm
+                这下就好了!!!  
+
+
+
+
+
+
+
+
+
+
+
+🔸 源
+
+
+[DIR]	puppetlabs-release-el-5.noarch.rpm	2017-05-17 09:13:39	13.1KiB	 
+[DIR]	puppetlabs-release-el-6.noarch.rpm	2017-05-17 09:10:11	13.7KiB	 
+[DIR]	puppetlabs-release-el-7.noarch.rpm	2017-05-17 09:09:34	13.7KiB	 
+[DIR]	puppetlabs-release-pc1-cisco-wrlinux-5.noarch.rpm	2017-05-17 09:09:19	13.6KiB	 
+[DIR]	puppetlabs-release-pc1-cisco-wrlinux-7.noarch.rpm	2017-05-17 09:09:27	13.6KiB	 
+[DIR]	puppetlabs-release-pc1-el-5.noarch.rpm	2017-05-17 09:13:36	13.0KiB	 
+[DIR]	puppetlabs-release-pc1-el-6.noarch.rpm	2017-05-17 09:09:15	13.6KiB	 
+[DIR]	puppetlabs-release-pc1-el-7.noarch.rpm	2017-05-17 09:09:31	13.6KiB	 
+[DIR]	puppetlabs-release-pc1-fedora-22.noarch.rpm	2017-05-17 09:09:11	17.7KiB	 
+[DIR]	puppetlabs-release-pc1-fedora-23.noarch.rpm	2017-05-17 09:10:05	17.9KiB	 
+[DIR]	puppetlabs-release-pc1-fedora-24.noarch.rpm	2017-05-17 09:09:23	17.9KiB	 
+[DIR]	puppetlabs-release-pc1-fedora-25.noarch.rpm	2017-02-01 14:53:54	17.9KiB	 
+[DIR]	puppetlabs-release-pc1-sles-11.noarch.rpm	2017-05-17 09:13:33	13.3KiB	 
+[DIR]	puppetlabs-release-pc1-sles-12.noarch.rpm	2017-05-17 09:09:07	13.2KiB	
+
+el-5/6/7
+pc1-el-5/6/7
+pc1-fedora-22/23/24/25
+pc1-sles-11/12 
+
+
+
