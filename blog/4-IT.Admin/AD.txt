@@ -1,12 +1,5 @@
-@: 2002-02-01-Active Directory
----
-layout: post
-title: Active Directory
-tags: 
-categories: IT-Admin
----
 
-## AD: Active Directory
+🔸  AD: Active Directory
 
 *网络环境:*工作组 & 域  
 > 工作组:     每台电脑地位都是平等的.     资源分散在每台电脑上
