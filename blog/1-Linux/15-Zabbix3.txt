@@ -1,0 +1,1546 @@
+❤️ Zabbix 简介: 
+
+    本篇只适合运维人员看.... .
+    📌📌极品博客推荐:  http://www.zsythink.net/archives/category/%E8%BF%90%E7%BB%B4%E7%9B%B8%E5%85%B3/zabbix/
+
+    Zabbix: 企业级监控软件.
+        支持设备: 电脑、服务器、交换机、路由器、UPS等等
+        支持功能: cpu、内存、磁盘IO、端口、进程.. 
+        通过网页监控设备的状态.还有邮件短信报警通知功能,支持主流 Linux、Mac OS.但是 Windows 只能跑客户端!!!!!
+
+
+    🔵 通讯方式
+        要获取各种硬件的运行状态 就必须先和各种硬件建立连接.连接方式: agent、ssh/telnet、SNMP、IPMI、JMX
+
+        🔸zabbix-agent: 推荐方式.支持的功能最丰富. 是一个软件,是电脑都可以安装的.
+        🔸SSH/Telnet:    
+        🔸SNMP:         Simple Network Management Protocol ,被译为 "简单网络管理协议"，
+                        通常来说，我们无法在路由器、交换机这种硬件上安装agent，但是这些硬件往往都支持SNMP协议
+        🔸IPMI：        通过标准的IPMI硬件接口，监控被监控对象的物理特征，比如电压，温度，风扇状态，电源状态等。
+        🔸JMX：         Java Management Extensions，即Java管理扩展，监控JVM虚拟机时，可以使用这种方法。
+
+
+
+    🔵 zabbix 简单原理
+
+        Zabbix 组成: zabbix-Server监控端 + zabbix-Agent被监控端.
+            📌监控端(服务端)需: zabbix依赖环境、zabbix、web服务器(Nginx/Apache)、数据库(mysql/postsql...)、php
+            📌被控端(客户端)需: zabbix依赖环境、zabbix.
+            👁‍🗨 源代码压缩包只有一个: 同时包含了 Server + Agent.  编译的时候按需求选择功能安装就好了.
+            👁‍🗨 新手安装过程建议关闭防火墙.   service iptables stop
+
+
+        客户端负责把自己电脑的运行信息( cpu、内存、硬盘IO )上报给服务器.
+        服务器把数据存到数据库中.管理人员通过网页查看服务器数据库中的内容(各客户端的运行状况)
+
+
+
+    🔵 客户端上传数据模式
+        主动模式: 客户端会将采集完的数据主动发送给server端，这种模式我们称之为主动模式，
+        被动模式: 客户端也可以不主动发送数据，而是等待server过来拉取数据，
+        两种模式都是相对于客户端来说的.主动模式与被动模式可以同时存在，并不冲突。
+
+
+
+
+    ❗️❗️❗️❗️❗️不管什么模式. 服务器和客户端都是通过IP地址来通信的.IP就涉及到内外网络的问题.❗️❗️❗️❗️❗️❗️❗️
+        🔸如果服务器和客户端都在同一个内网下.  那么设置很简单. 填写对应的内网IP地址就可以
+
+        🔸如果服务器是公网IP. 但是客户端是内网IP.
+                要用被动模式: 也就是服务器来获取客户端电脑的信息.
+                那么服务器必须要可以通过IP地址 找到这台客户端.
+                服务器一般都是有一个公网IP的. 但是客户端一般都是没有公网IP的.只有内网IP.
+                那么服务器要连到内网的某台电脑.就必须进行额外设置了.
+                如果你有路由器的设置权限那么可以进行端口映射解决这个问题.
+                当然一般人是没有这个权限的.而且也不方便. 那么我就给你介绍一个内网穿透神器! frp
+                要用 frp 前提是你有一台frp服务器. 当然你也可以用我的frp服务器.
+                frp具体教程看我的 frp.txt去.
+                
+                zabbix-server 默认监听端口10051.
+                zabbix-agent  默认监听端口10050.
+
+                frp的作用就是 把你客户端的 10050 端口 绑定到frp服务器(23.105.192.96)的某个端口(111)
+                绑定好后任何电脑访问 23.105.192.96:111  就直接访问你内网电脑的10050端口. 
+                zabbix-server 自然就可以通过 23.105.192.96:111 来获取你客户端上的信息了.
+
+        ❗️❗️❗️❗️❗️❗️❗️❗️❗️Mac 不建议安装zabbix-server.我折腾一天没成功.时间宝贵.❗️❗️❗️❗️❗️❗️❗️❗️❗️❗️
+
+
+
+
+
+
+
+
+⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️------⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️
+🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵  Zabbix-server Centos7 GCE 🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵
+⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️------⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️
+🔵 zabbix-server 安装
+
+    🔅 yum install net-snmp-devel libxml2-devel libcurl-devel mysql-devel -y
+    🔅 cd /usr/local/src     
+    🔅 wget https://superb-sea2.dl.sourceforge.net/project/zabbix/ZABBIX%20Latest%20Stable/3.2.6/zabbix-3.2.6.tar.gz
+    🔅 tar xf zabbix-3.2.6.tar.gz && cd zabbix-3.2.6
+    🔅 ./configure --prefix=/usr/local/zabbix-server --enable-server --with-mysql --with-net-snmp --with-libcurl --with-libxml2 --enable-agent   
+    🔅 make && make install
+
+        1. 必须先安装依赖组件,不然编译不成功
+        2. 之后要下载zabbix源代码到 src . 其实下载到哪里都可以. 注意安装路径就可以了.
+        3. 下载源代码
+        4. 先解压 然后进入解压文件夹.
+        5. ❗️   --prefix 是指定安装路径的意思.  
+                --enable-server 是安装zabbix-server
+                --enable-agentd 是安装zabbix-agent
+                --with-mysql    是安装mysql
+                  Zabbix server一般充当两个角色：server、angent，所以加上了--enable-agent。
+        6. 安装
+        
+        🔸 如需最新版(或者链接失效了)去官网下载:  http://www.zabbix.com/download
+            ➜ zabbix Sources ➜  zabbix x.x ➜  点进去等几秒会开始下载. 
+            ➜ 去浏览器 找出这个下载的真实地址 ➜  然后用 wget + 地址 下载到服务器....
+
+
+🔵 创建zabbix数据库
+    zabbix server服务器端需要数据库，zabbix-angent被监控端不需要安装数据库。
+    zabbix-server创建完zabbix数据库后还要导入3个sql文件!!这三个文件会自动帮你建很多很多表.
+
+    假设:你安装好了MySQL，数据库用户名为root，密码为ttlsapwd
+        👁‍🗨 注意下面三个命令中. 后面两个命令最后的;号千万不能忘记.
+    🔅 mysql -u root -p                              ➜ 来进入服务器的数据库. (首先ssh进服务器.)
+    🔅 create database zabbix default charset utf8;  ➜ 创建数据库, 加default charset utf8，不然中文乱码，
+    🔅 quit;                                         ➜ 退出mysql. 这里目的只要创建一个zabbix 名称的数据库
+
+
+
+🔵 导入sql数据库文件.
+    🔅 cd /usr/local/src/zabbix-3.2.6
+    🔅 mysql -uroot -pxujian0219 zabbix < database/mysql/schema.sql
+    🔅 mysql -uroot -pxujian0219 zabbix < database/mysql/images.sql
+    🔅 mysql -uroot -pxujian0219 zabbix < database/mysql/data.sql
+    👁‍🗨 这里需要进入解压出来的zabbix文件夹内进行续操作
+    👁‍🗨 这三个文件导入过程中出现的任何报错.必须解决掉.
+
+        👹 ERROR 1071 (42000) at line 1476: Specified key was too long; max key length is 1000 bytes
+            如果遇到这个报错 就说明索引太长了. 默认最长值 1000bytes.
+            其实是数据库引擎的问题.
+            MyISAM是MySQL5.5之前版本默认的数据库存储引擎.
+            InnoDB是MySQL5.6版本的默认数据库存储引擎，
+            一般来说 mysql 5.5 会遇到这个问题. 因为mysql 5.5 默认使用 MyISAM引擎, 
+            建议换innodb引擎,Innodb 引擎性能好很多.. 很多软件必须用 innodb 引擎不然就报错.
+            换引擎两种方法. 要么升级mysql版本. 要么修改下启用 mysql5.5 的innodb引擎.
+
+            📌📌 最简单的解决方法就是备份5.5 的数据库. 然后升级都5.6/5.7 然后再数据恢复.
+            如果你的服务器 内存小于1G... 那是没办法安装 mysql 5.6+ 版本的....
+            那就只能 在mysql 5.5 上面想办法了... 
+            下面是让 mysql5.5 支持 innodb的处理办法
+            
+            首先登录 myslq 命令行交互界面.
+            🔅 show engines;        ➜  查看当前支持的引擎. innodb后面是 no.. 说明默认不支持.需要配置my.cnf  
+            🔅 service mysql stop   ➜  首先关闭mysql服务.
+            🔅 vi /etc/my.cnf       ➜  修改my.cnf 文件
+                🔸这行注释掉: default-storage-engine=MyISAM     
+                🔸添加这一行: default-storage-engine=INNODB    
+
+                🔸下面几行前面的注释全部去掉:
+                    innodb_data_home_dir = /usr/local/mysql/var
+                    innodb_data_file_path = ibdata1:10M:autoextend
+                    innodb_log_group_home_dir = /usr/local/mysql/var
+                    innodb_buffer_pool_size = 16M
+                    innodb_additional_mem_pool_size = 2M
+                    innodb_log_file_size = 5M
+                    innodb_log_buffer_size = 8M
+                    innodb_flush_log_at_trx_commit = 1
+                    innodb_lock_wait_timeout = 50
+
+            🔅 service mysql start ➜  重启服务   
+
+        👹 Starting MySQL.The server quit without updating PID file (/[FAILED]l/mysql/var/mail.0214.help.pid).
+            意思就是重启不了.  别急. 有问题都是会有日志的!!! 日志里面会有详细原因.
+            👁‍🗨 日志在 /usr/local/mysql/var 下面. var 文件夹里面肯定有个 mail.0214.help.err
+            我们来看  mail.0214.help.err
+                170414 17:35:51 mysqld_safe Starting mysqld daemon with databases from /usr/local/mysql/var
+                170414 17:35:51 [Note] /usr/local/mysql/bin/mysqld (mysqld 5.5.48-log) starting as process 2538 ...
+                170414 17:35:51 [Note] Plugin 'FEDERATED' is disabled.
+                ➜ 170414 17:35:51 [Note] Plugin 'InnoDB' is disabled.
+                ➜ 170414 17:35:51 [ERROR] Unknown/unsupported storage engine: INNODB
+                170414 17:35:51 [ERROR] Aborting
+
+                170414 17:35:51 [Note] /usr/local/mysql/bin/mysqld: Shutdown complete
+
+                170414 17:35:51 mysqld_safe mysqld from pid file /usr/local/mysql/var/mail.0214.help.pid ended
+
+
+            📌 Plugin 'InnoDB' is disabled.    说明 innodb 被禁用了啊!!!
+                my.cnf 中 找到这行loose-skip-innodb
+                在这行前面加个#号  注释掉这行 就可以启动 innodb 了!!!!  
+                这里教你的是思路!! 要学会看日志文件!!!....
+                service mysql start  现在数据库就可以正常启动了...
+                解决完这些问题.把zabbix数据库删除. 重新建立数据库. 这回应该没报错了.
+            
+
+
+
+
+🔵 Zabbix-Web  安装
+
+    网站很简单: 把一堆网页文件放到服务器指定的文件夹下.就可以通过服务器IP访问网站了
+    这堆文件zabbix早就帮你写好了!!! 你要做的就是移动这堆文件的位置到服务器的某个文件夹下
+    这堆文件就是zabbix源码解压文件夹下 forntends/php 下的所有文件.
+
+    重点就是找到当前服务器的 网站根目录.
+    你在浏览器输入 23.105.192.96 其实就是 23.105.192.96/index.php
+    这个index.php 所在的位置就是服务器的网站根目录.
+    你只要先删除这个根目录下的所有文件. 然后把forntends/php下面的所有文件 都放到这个网站根目录.
+    现在浏览器访问 23.105.192.96 就出现 zabbix-web 的网站了!!!
+
+    重点就是找到这个网站根目录的位置.下面就是怎么找网站根目录路径的.
+    当然 网站根目录 不是一个好的办法.  最好的 还是新建个nginx虚拟主机..
+
+
+    ⦿ 虚拟主机 lnmp vhost add
+        ================================================
+        Virtualhost infomation:
+        Your domain: zabbix.0214.help
+        Home Directory: /home/wwwroot/zabbix.0214.help
+        Rewrite: none
+        Enable log: no
+        Create database: no
+        Create ftp account: no
+        ================================================
+
+    ⦿ 网页文件
+        cd /usr/local/src/zabbix-3.2.6/frontends/php
+        cp -r * /home/wwwroot/zabbix.0214.help/
+        ❗️ 注意 这里复制命令有可能出错. 最好手动输入cp ...命令
+
+    ⦿ 停止 Apache  systemctl stop httpd.service
+    ⦿ 重启 Nginx   service nginx restart 
+    ⦿ 测试 zabbix.0214.help
+
+
+🔵 Zabbix-Web  配置1: php设置.
+    zabbix 对php设置有要求. 必须全部ok 才能next
+    这里所有的报错 都是在php配置文件中修改的!!!
+    进入php的配置文件. 找到报错对应的行,把后面的值改成zabbix要求的值.再重启php
+
+    👹 PHP option "max_input_time"	60	300	Fail
+        60 是当前设置.   300是zabbix需要的设置. 那么就去改...php的配置文件.
+
+        🔅 vi /usr/local/php/etc/php.ini   ➜ 396行的 max_input_time 60改成300  
+        🔅 service php-fpm restart         ➜ 重启php
+
+
+
+    🔸 php 配置文件路径
+            这是一个天坑. 如果你Mac电脑安装过很多版本的php.必然有很多个php配置文件.
+            哪一个php版本才是 zabbix-web 用的呢.怎么看这个php版本的配置文件路径呢.
+
+            创建一个php文件. 这里叫2.php. 内容只有三行. 
+            2.php
+            <?php 
+            phpinfo(); 
+            ?>
+
+            然后把 2.php 放到网站根目录下面!!!
+            然后浏览器输入127.0.0.1/2.php  就会出现当前php的详细信息了.
+            里面有一行是这样的: 这个就是网站当前用的php版本的路径!!!
+            Loaded Configuration File	/usr/local/php5/lib/php.ini
+
+    🔸编辑php.ini配置文件. 找到三行内容. 后面的值改成zabbix里需要的值就可以了.
+
+    🔸 重启php
+            Mac我是实在没发现怎么重启php,只要重启 apache 就会重新加载php配置文件...
+            sudo /usr/sbin/apachectl start/stop/reatart
+
+
+
+
+
+
+🔵 Zabbix-Web  配置2: 数据库配置
+    Database type  mysql
+    Database host  localhost
+    Database port  3306
+    Database name  zabbix
+    user 数据库用户 root 
+    password 数据库密码 
+        目的就是连上你服务器里面的zabbix数据库
+        如果你安装教程来学的话一般来说是不用改的.
+        这里点击下一步可能会报错
+        👹 The frontend does not match Zabbix database.
+            如果你确保 信息没填错. 那么肯定是你导入3个数据库文件的时候有报错.你没处理.
+            解决办法: 删除现有的 zabbix 数据库 .重新导入. 解决导入过程出现的任何错误!!
+
+🔵 Zabbix server details              默认就行. name 可以不写
+
+🔵 Zabbix-Web  配置3: 安装&登录
+    🔸安装
+        👹 Cannot create the configuration file.
+            可能是没有权限创建文件.  
+            那就下载配置文件(zabbix.conf.php)到本地点. 
+            然后通过各种办法把这个文件放到提示的路径中.
+            /home/wwwroot/zabbix.0214.help/conf/zabbix.conf.php
+
+            ⦿ 方法1
+                下载到本地. 看文件是什么内容. 然后 直接复制过去.
+                其实这个文件就 20几行而已.
+
+
+            ⦿ 方法2
+                我是用Mac下面的 yummy FTP软件的. 蛮好用的.一般都是拿来上传文件的.
+
+            ⦿ ❗️❗️zabbix.conf.php 文件权限❗️❗️
+                是个php文件. 是需要执行权限的! 
+                chmod 755 zabbix.conf.php
+
+
+    🔸登录
+        安装完成后. 自动跳转到登录界面...
+        📌默认账户: admin  默认密码: zabbix
+
+
+
+🔵 更改网页语言 & 默认密码
+        更改中文: 网页右上角 ➜ 人头像 ➜  user ➜  language ➜  chinese ➜  update.
+        更改密码: 管理➜ 用户➜  admin ➜ 更改密码.
+
+
+
+
+❤️ zabbix server is not running... 
+        网页配置好了. 下面开启zabbix-server 和 zabbix-agent 就算真的完成了
+        但是重点就是 zabbix_server 和 zabbix-agent 的开启.这里问题百出.
+        需要你有分析问题的能力,而不是一味的跟着别人的教程.
+        每台电脑的环境都是不一样的. 也不需要一样.只能告诉你多用日志这个神器.
+
+        zabbix-server 是需要配置过才能正常启动的.
+        编辑配置文件. 输入mysql 数据库相关信息.DBHost、DBName、DBUser、DBPassword
+        让 zabbix-server 可以连接到 你在mysql中建立的zabbix数据库.
+        上面网页设置中已经配置过一次数据库了.
+        但是 网页是网页. 网页要提取数据库中的信息. 前提是数据库中有信息.
+        数据库的信息是 server 负责写入的.(具体内容是agent负责提交给server的) 
+        所以 server 也要连接到数据库..
+        那么 zabbix-server的配置文件在哪呢!这个和zabbix的安装位置有关系.
+
+
+
+
+    📌zabbix-server 启动命令:    /usr/local/zabbix-server/sbin/zabbix_server
+
+
+    👹 ✘✘∙𝒗2 conf ➜ /usr/local/zabbix-server/sbin/zabbix_server
+        zabbix_server [15112]: user zabbix does not exist
+        zabbix_server [15112]: cannot run as root!
+            可以新建个zabbix用户. 然后切换到 zabbix 用户. 再运行..   
+            也可以修改配置文件允许用root 运行zabbix的
+                sudo vi /usr/local/zabbix-server/etc/zabbix_server.conf
+                里面的 DBUser=zabbix 改成   DBUser=root
+                这里先不急 我们等下统一修改配置文件.
+
+
+        /usr/local/zabbix-server/sbin/zabbix_server
+        ❗️这坑爹的命令. 不管启动成功还是启动失败.没有半点提示的. 只能自己想办法判断是否启动成功..❗️
+        ❗️这坑爹的命令. 不管启动成功还是启动失败.没有半点提示的. 只能自己想办法判断是否启动成功..❗️
+
+
+    🔸首先我们判断启动命令是否正确.
+        启动路径 其实就是 zabbix-server的安装路径.那么安装路径是什么呢... 
+        Linux 软件安装路径和win一样有两种. 一种是默认. 一种是你手动指定.只不过没有图形界面罢了
+        Linux 软件的安装路径是你编译软件(./configure)的时候指定的.
+                我们来回顾下 我们是怎么安装 zabbix-server的.
+                👁‍🗨 ./configure --prefix=/usr/local/zabbix-server
+                编译软件的时候 是加了参数 --prefix的. 就是手动指定安装路径的.
+                不加 --prefix 就是使用默认的路径.
+                既然zabbix 是安装在 /usr/local/zabbix-server 下面的
+                那我们去/usr/local/zabbix-server 文件夹下看看
+                👁‍🗨 Linux 软件其实是二进制文件. 就行win的软件是.exe文件.
+                👁‍🗨 Linux 的二进制文件按约定都是在 bin/sbin 文件夹下的
+                    /usr/local/zabbix-server/sbin 下面有两个文件 执行权限也是对的
+                    -rwxr-xr-x 1 root root 927K Apr 14 11:55 zabbix_agentd
+                    -rwxr-xr-x 1 root root 3.1M Apr 14 11:55 zabbix_server
+
+
+    🔸 判断端口有没有打开
+        服务如果正常开启.那么肯定有端口打开的.
+        zabbix agent  默认是 10050端口.
+        zabbix server 默认是 10051端口
+        
+        nmap -p 10050 127.0.0.1  ➜ 发现端口没开.那么肯定服务没起来.
+            👁‍🗨 不能用nmap 127.0.0.1 命令.默认nmap只扫描1-1000 内的端口. 10050,10051 明显超出范围.
+            ❗️ 为什么服务没开启呢. 没有头绪的时候就祭出神器.查看日志!!!
+
+
+    🔸 查看日志
+            要查看日志!!!! 日志在哪里呢! 一般都在对应服务的配置文件中.
+            比如 zabbix-agent  的日志路径由  zabbix_agentd.conf 文件指定
+            比如 zabbix-server 的日志路径由  zabbix_server.conf 文件指定
+
+        🔅 vi /usr/local/zabbix-server/etc/zabbix_server.conf
+                LogFile=/tmp/zabbix_server.log  这就是日志文件位置. 我们看日志内容.
+        🔅 vi /tmp/zabbix_server.log
+                using configuration file: /usr/local/zabbix-server/etc/zabbix_server.conf
+                connection to database 'zabbix' failed: [2002] 
+                Can't connect to local MySQL server through socket '/var/lib/mysql/mysql.sock' (2)
+
+
+            👹  [Z3001] connection to database 'zabbix' failed:
+                    这个应该就是问题关键了.用 zabbix_server.conf 里面的配置 连不上数据库. 
+
+                    我们来看看 这个配置文件.
+                    这文件看着很长的. 丫的实际都是带#号. 都是注释说明. 没注释的不超过10行..
+                    重点么 也就 数据库名称. 数据库端口. 帐号密码..
+
+
+                    mv /usr/local/zabbix-server/etc/zabbix_server.conf /usr/local/zabbix-server/etc/zabbix_server.conf.back
+
+
+                    sudo vi /usr/local/zabbix-server/etc/zabbix_server.conf
+                    直接改成下面内容.更具自己数据库适当修改.
+
+LogFile=/tmp/zabbix_server.log
+DBHost=127.0.0.1
+DBName=zabbix
+DBUser=root
+DBPassword=xujian0219
+DBPort=3306 
+ListenIP=0.0.0.0
+
+
+
+这个必须  不然只会外网发现不了 zabbix-server  ListenIP=0.0.0.0 
+
+
+                    ❗️ 多次启动失败 要手动 kill zabbix 进程.
+                    ❗️ 多次启动失败 要手动 kill zabbix 进程.
+                    ❗️ 多次启动失败 要手动 kill zabbix 进程.
+                    ❗️ 多次启动失败 要手动 kill zabbix 进程.
+                    ❗️ 多次启动失败 要手动 kill zabbix 进程.
+
+                    再开 zabbix 服务       /usr/local/zabbix-server/sbin/zabbix_server
+
+
+                    还是开起不来. 再看日志  tail /tmp/zabbix_server.log
+
+                    那就看第二个问题.
+
+
+            👹 Can't connect to local MySQL server through socket '/var/lib/mysql/mysql.sock
+            
+                vi /var/lib/mysql/mysql.sock   想看看这文件是什么东西. 丫的没有这个文件啊...
+                遇到这种情况就只能谷歌了!!! 谷歌说
+                    vi /usr/local/zabbix-server/etc/zabbix_server.conf 
+                        DBHost=localhost 行中的 localhost 必须换成 127.0.0.1
+                        虽然看着差不多.. 但是 localhost 和 127.0.0.1 还是有区别的!
+                        一个是域名,一个是IP地址.!!!!
+                        丫的 zabbix-server 服务终于可以开起来啦!!! 不容易啊..
+                        至少要开一个zabbix-agent 才能监控啊.
+
+
+
+
+            👹 数据库问题...
+                重启数据库
+
+                ⦿ 重启 zabbix_server
+                top 找出pid . kill . 然后重启...
+                现在就能启动了. 但是页面上还是有个红色的报错.
+
+
+
+            👹 A non well formed numeric value encountered [zabbix.php:21 → require_once() 
+                这个是因为PHP 7.1.0类型强化，处理方法也很简单找到Zabbix WEB目录下include/func.inc.php文件
+                /home/wwwroot/zabbix.0214.help/include/func.inc.php
+
+                sed -i '/$last = strtolower(substr($val, -1));/a$val = substr($val,0,-1);' /home/wwwroot/zabbix.0214.help/include/func.inc.php
+
+
+
+
+🔸 设置 开机启动
+    ❗️❗️ 参考 supervisor.txt 这个也可以实现开机启动的!!!❗️❗️
+    ❗️❗️ 参考 supervisor.txt 这个也可以实现开机启动的!!!❗️❗️
+
+
+
+
+👹 rc.local 开机不执行
+
+#!/bin/bash
+# THIS FILE IS ADDED FOR COMPATIBILITY PURPOSES
+#
+# It is highly advisable to create own systemd services or udev rules
+# to run scripts during boot instead of using this file.
+#
+# In constrast to previous versions due to parallel execution during boot
+# this script will NOT be run after all other services.
+#
+# Please note that you must run 'chmod +x /etc/rc.d/rc.local' to ensure
+# that this script will be executed during boot.
+
+
+#这个文件是为了兼容性的问题而添加的。
+#
+#强烈建议创建自己的systemd服务或udev规则来在开机时运行脚本而不是使用这个文件。
+#
+#与以前的版本引导时的并行执行相比较，这个脚本将不会在其他所有的服务后执行。
+#
+#请记住，你必须执行“chmod +x /etc/rc.d/rc.local”来确保确保这个脚本在引导时执行。
+
+
+看样子是版本的变迁，/etc/rc.local /etc/rc.d/rc.local正在弃用的路上。
+
+
+
+手动执行都是正确的，在排除了权限原因和脚本问题后，很郁闷，怎么放到开机启动项目中就无法执行了呢。
+
+于是去查linux开机启动过程信息。google下，看了下关于一些开机启动启的资料，发现了开机启动程序的级别为3.
+果断顺藤莫瓜，找到了这个目录 /etc/rc.d/rc3.d，进去一看恍然大悟。
+
+
+后来把开机启动的脚本配置到/etc/rc.d/rc.local中（或者把S99local指向 /etc/rc.local也行），重启检查，成功！
+
+
+
+systemd服务或udev规则
+
+
+
+
+
+
+
+
+
+
+⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️------⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️
+🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵  Zabbix-agent  Centos7 GCE 🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵
+⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️------⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️
+🔵 zabbix-agent 客户端(VPS)
+    服务器同时充当服务器和客户端.
+    要监控客户端首先要 编辑客户端配置文件,然后还要在web端添加这个客户端. web页面上才会有显示.
+    怎么看zabbix-agent客户端是否配置正确. 答案是通过 zabbix_server web页面看.
+    但是... 不是默认的web主页看!!!! 
+
+    web网页 最上方点击 configuration ➜ 点击 hosts ➜  
+    📌📌📌📌 这里会出现一个名叫 zabbix server 的主机 打勾 ➜  选择 enable !!!! ➜  才能在默认主页上看到信息.
+    像我傻傻的.不知道这一点.  客户端都配置了半天!!!!! 最后才发现这坑爹的设置.
+    注意. 这里只是在服务器上 启用了 对 zabbix-server 这台主机的监控. 
+    不代表服务器现在可以连接到 zabbix-server 主机的 zabbix-agent上.
+    首先要配置 zabbix-agent 
+
+
+
+    🔸 配置zabbix_agentd配置文件
+    vi /usr/local/zabbix-server/etc/zabbix_agentd.conf
+    整个文件改成下面的.
+
+LogFile=/tmp/zabbix_agentd.log
+Server=127.0.0.1
+ServerActive=127.0.0.1
+Hostname=gce2
+
+          👁‍🗨 Server=192.168.137.110        #被动模式，允许哪台zabbix服务器获取我客户端的信息.
+          👁‍🗨 ServerActive=192.168.137.110  #主动模式，允许向哪台zabbix服务器上报我客户端的信息.
+          👁‍🗨 Hostname=192.168.137.101      #客户端本机主机名. 用hostname 命令查很快的.
+                主动模式和被动模式的出发点都是agent端:
+                agent主动向server端发送数据就成为主动模式  agent等待server端主动获取数据则称为被动模式。
+
+    🔸 启动 Zabbix 客户端  默认端口10050
+    🔅 /usr/local/zabbix-server/sbin/zabbix_agentd
+
+    👁‍🗨 有问题看日志 vi /tmp/zabbix_agentd.log
+
+
+然后去网页首页. 就成功实现了 服务器监控自己的功能了.
+下面我们让服务器去监控其他服务器.
+
+
+
+
+🔵 Web 页面添加主机
+
+    web页面 ➜ 配置 ➜  主机 ➜  创建主机 ➜ 主机名称必须和 agent.conf 里的hostname 一致.
+    ➜ 选择一个群组 ➜  agent代理程序接口后面的ip.. 可以填 127.0.0.1  反正笔记本没有固定的外网IP的..
+
+    回到主机列表，可以看到我们刚才添加的主机，但是这个主机的"可用性"对应的4中接口都是灰色的。
+    ZBX就代表agent接口，虽然我们在添加主机时，配置了通过agent监控对应主机，
+    但是，由于我们并没有配置监控主机的任何指标，所以，ZBX仍然是灰色的，
+    也就是说，我们现在只是将这个主机加入了zabbix的监控范围，但是并没有对它进行任何实际的监控，
+    因为我们还没有配置任何"监控项"，
+
+    下面我们就来配置监控项.
+    获取监控设置 就是在客户端上执行命令.
+    监控选项有很多... 每个选项对应一个 键 这个键可以看成获取这个监控选项信息的命令.
+
+    配置 ➜ 主机 ➜  选择一个主机 ➜ 监控项 ➜ 创建监控项 ➜ 名称随便、类型一般是 zabbix客户端、重点是键值的选择 
+    ➜ 点击选择 ➜ 会有一系列命令. 后面都带有详细解释. 选择一个就可以了. ➜ 之后随便写个 新的应用集名称就可以了
+
+    然后怎么看这个监控选项的 内容呢....
+    检测中 ➜  最新数据 ➜ 主机 选择 ➜ 选一个主机 ➜ 过滤 ➜  图形 ➜  就可以了.. 到这里就算zabbix入门了.
+
+
+
+
+
+
+
+
+
+⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️------⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️
+🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵   Zabbix-agent  CentOS6 x86  🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵
+⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️------⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️
+🔸 Zabbix-agent 安装
+
+⦿ 添加源    CentOS/RHEL 6:
+    rpm -Uvh http://repo.zabbix.com/zabbix/3.0/rhel/6/x86_64/zabbix-release-3.0-1.el6.noarch.rpm
+
+⦿ 安装
+    yum install zabbix zabbix-agent -y
+    ❗ ️ 不知为什么安装 zabbix. 这里centos7 就会报错. cent6 就没事.
+
+
+⦿ 配置文件
+
+    vi /etc/zabbix/zabbix_agentd.conf 全部改成
+
+PidFile=/var/run/zabbix/zabbix_agentd.pid
+
+LogFile=/var/log/zabbix/zabbix_agentd.log
+LogFileSize=1 
+
+Server=35.194.128.92
+ServerActive=35.194.128.92
+Hostname=mail.0214.help
+
+Include=/etc/zabbix/zabbix_agentd.d/*.conf
+
+
+
+
+⦿ 重启客户端
+    /etc/init.d/zabbix-agent restart
+
+    /etc/init.d/zabbix-agent start
+    /etc/init.d/zabbix-agent stop
+
+⦿ 客户端是否启动
+    客户端 nmap -p 10050 127.0.0.1     ➜ open 就启动了.
+    服务器 nmap -p 10050 23.105.192.96 ➜ open 就启动了.
+
+⦿ 服务器添加 host
+    zabbix 会自动扫描你的内网. 自动添加可用的客户端:  配置 ➜ 自动发现 ➜ 启用..
+    如果你要检测外网主机. 就需要手动添加主机.
+
+
+    configuration ➜ hosts ➜ create host 
+
+    • 主机名称: mail.0214.help
+        必须是客户端的 hostname 
+
+    • 可见名称: vps1
+        别名. 服务器上方便区分客户端
+
+    • 群组: 随便选一个. 我们新建个VPS群组.
+
+    • 代理接口:
+        ip:     客户端的公网IP
+        连接到: IP地址.
+        端口:   10050
+
+    • 添加
+
+⦿ 服务器配置模板
+    单击 mail.0214.help 这个主机 ➜  模板 ➜ 选择 ➜ 随便选个 mysql 测试下 
+    ➜ 然后选择添加 ➜ 更新
+
+
+
+
+
+
+
+
+
+
+⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️------⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️
+🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵   Zabbix-agent  CentOS7 x64  🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵
+⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️------⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️
+
+zabbix 官方安装文档
+    https://www.zabbix.com/documentation/3.0/manual/installation/install_from_packages/repository_installation
+
+🔸 Zabbix-agent 安装
+
+⦿ 添加源 CentOS/RHEL 7
+    rpm -ivh http://repo.zabbix.com/zabbix/3.0/rhel/7/x86_64/zabbix-release-3.0-1.el7.noarch.rpm
+
+⦿ 安装
+    yum install zabbix-agent -y
+
+⦿ 客户端配置文件
+    vi /etc/zabbix/zabbix_agentd.conf 全部改成
+
+    PidFile=/var/run/zabbix/zabbix_agentd.pid
+
+    LogFile=/var/log/zabbix/zabbix_agentd.log
+    LogFileSize=1 
+
+    Server=35.194.128.92
+    ServerActive=35.194.128.92
+    Hostname=vps2
+
+    Include=/etc/zabbix/zabbix_agentd.d/*.conf
+
+
+⦿ 重启客户端
+    systemctl start  zabbix-agent.service
+    systemctl restart  zabbix-agent.service
+    
+    service zabbix-agent restart
+
+
+⦿ 客户端日志
+tail /var/log/zabbix/zabbix_agentd.log
+
+⦿ 客户端是否启动
+    客户端 nmap -p 10050 127.0.0.1      ➜ open 说明客户端成功启动
+    服务器 nmap -p 10050 104.224.139.45 ➜ open 说明客户端允许服务器访问.
+
+⦿ 服务端是否启动
+    客户端: nmap -p 10051 35.194.128.92  ➜ 发现服务器没启动/或者启动了没监听外网IP.
+    服务器: nmap -p 10051 127.0.0.1      ➜ 也没有启动..
+
+        • 服务器启动 zabbix:     /usr/local/zabbix-server/sbin/zabbix_server
+        • 服务器查看日志:        tail /tmp/zabbix_server.log
+        • 服务器配置文件:        vi /usr/local/zabbix-server/etc/zabbix_server.conf
+        • 重启服务端.
+            由于是编译安装的. 所以不能用 sysctl 命令来..
+            top | grep zabbix_server 
+            会出来很多进程. 选择一个 kill 就可以了.
+
+
+
+
+⦿ 服务器添加 host
+    zabbix 会自动扫描你的内网. 自动添加可用的客户端:  配置 ➜ 自动发现 ➜ 启用..
+    如果你要检测外网主机. 就需要手动添加主机.
+
+
+
+    configuration ➜ hosts ➜ create host 
+
+    • 主机名称: mail.0214.help
+        必须是客户端的 hostname 
+
+    • 可见名称: vps1
+        别名. 服务器上方便区分客户端
+
+    • 群组: 随便选一个. 我们新建个VPS群组.
+
+    • 代理接口:
+        ip:     客户端的公网IP
+        连接到: IP地址.
+        端口:   10050
+
+    • 添加
+
+⦿ 服务器配置模板
+单击 mail.0214.help 这个主机 ➜  模板 ➜ 选择 ➜ 随便选个 mysql 测试下 ➜ 更新
+
+
+⦿ 服务器启用
+
+⦿ 客户端看日志
+
+tail /var/log/zabbix/zabbix_agentd.log
+
+
+
+⦿ 客户端开机启动
+
+    systemctl enable zabbix-agent
+
+
+
+
+
+
+
+
+
+
+⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️------⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️
+🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵  Zabbix-agent  Mac OS  🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵
+⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️------⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️
+❤️ zabbix-agent 客户端(MacOSX)
+        让有外网IP的服务器来监控只能内网IP的mac电脑..
+
+    强烈建议直接用 brew 来装. brew install zabbix --without-server-proxy
+    用源码编译你肯定会遇到 Unable to use iconv 这个报错的.我是搞了半天没解决...
+
+    软件安装位置  --prefix=/usr/local/Cellar/zabbix/3.2.3_1
+    配置文件位置   vi /usr/local/Cellar/zabbix/3.2.3_1/etc/zabbix_agentd.conf
+    看出 软件安装位置 和配置文件位置的关系了么! 配置文件一般都在软件安装文件夹的etc子文件夹里
+
+    ❗️❗️web页面:Monitoring->Configuration->Hosts 页面的Name和zabbix_agentd.conf里面的Hostname必须一致.❗️❗️
+    ❗️❗️web页面:Monitoring->Configuration->Hosts 页面的Name和zabbix_agentd.conf里面的Hostname必须一致.❗️❗️
+
+
+🔵 监控模式选择
+
+    • 主动模式: 客户端主动把数据上传给服务器.   需要服务器有固定IP
+    • 被动模式: 服务器主动从客户端获取数据.     需要客户端有固定IP
+
+
+
+
+🔵 客户端配置文件 (主动模式)
+    vi /usr/local/Cellar/zabbix/3.2.3_1/etc/zabbix_agentd.conf
+
+ServerActive=35.194.128.92
+Hostname=MacOS
+RefreshActiveChecks=120
+
+
+
+
+
+    Server=127.0.0.1          #zabbix server的ip地址或主机名，可同时列出多个，需要用逗号隔开
+    ListenPort=10050          #zabbix agent监听的端口
+    ListenIP=0.0.0.0          #zabbix agent监听的ip地址
+            这三个是一起用的. 只有在被动情况下.才需要打开端口.并监听某个IP地址.
+            如果不使用被动模式 这三个不用管.
+
+    ServerActive=127.0.0.1    #开启主动检查
+    Hostname=Zabbix server    #在zabbix server web页面配置时指定的主机名必须和这个相同，最重要的配置❗️❗️❗️❗️❗️❗️
+    RefreshActiveChecks=120   #主动检查刷新的时间，单位为秒数
+            这个三个参数是一起用的. 把信息推送给服务器. 需要当前客户端的名称. 还要设置多久推送一次.
+            
+            我们可以同时设置主动模式和被动模式. 
+            到这里 客户端设置就完成了.启动客户端进程就可以了...
+
+    AllowRoot=0               #是否允许zabbix agent 以root用户运行
+
+
+
+    然后启动  zabbix_agentd
+
+    然后去web页面 添加 主机..... 添加监控项目
+    ❗️❗️客户端安装哈好后 web网页中是不会自动出现客户端的. 需要手动添加并进行设置.
+
+    服务器没数据啊... 看本地日志...  vi /tmp/zabbix_agentd.log
+
+
+
+🔵 重启zabbix-server服务 
+    先kill.服务进程 再重启.
+    🔅 top | grep zabbix
+    5929 zabbix    20   0 57152 1476 1212 S  2.0  0.6   0:04.07 zabbix_server
+    🔅 kill 5929
+    🔅 /usr/local/zabbix-server/sbin/zabbix_server
+
+
+
+
+最初我就说了.... 不知道问什么 用主动方式总是不成功.
+就算你用主动方式. 服务器上还是需要先创建主机的.
+创建主机需要客户端IP啊... 这IP得外网IP...
+反正我用的是被动模式. 让服务器来获取本地数据.
+前提是先用 frp内网穿透软件 把mac的10050 端口绑定到 frp服务器的1005端口.
+然后 去 zabbix-web 添加主机. 添加的时候 ip填 frp服务器的ip.
+端口填frp服务器上设置的端口 我是1005
+然后就成功了!!!
+
+具体frp设置 看我的 frp.txt
+大概就是修改配置文件. 重启服务.
+🔸frp服务器: frps.ini 这个配置文件中添加三行
+    [zabbix-rmbp]
+    auth_token = 123
+    listen_port = 1005
+
+🔸frp客户端:(Mac) frpc.ini 这个配置文件中添加三行
+    [zabbix-rmbp]
+    auth_token = 123
+    local_port = 10050
+
+🔸重启:
+    pidof frps ➜ 找出pid ➜ kill ➜ 启动 
+    pidof frpc ➜ 找出pid ➜ kill ➜ 启动
+
+
+
+别小看这搭建. 我花了快3天才成功搭建一个server. 两个agent....
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️------⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️
+🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵  Misc  🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵
+⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️------⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️
+
+Zabbix - Debian8
+
+**教程链接 (英文) (http://www.tecmint.com/install-and-configure-zabbix-monitoring-on-debian-centos-rhel/) Debian-8 + CentOS-7
+
+一: 更新系统
+sudo apt-get update
+
+二: 安装源代码编译的依赖环境
+
+sudo apt-get install build-essential gcc curl wget libsnmp-dev libcurl4-gnutls-dev libxml2-dev
+
+三: 安装 MariaDB 数据库
+
+sudo apt-get install mariadb-server mariadb-client libmysqld-dev
+会要你输入数据库默认 Root 的密码  本文输入 xujian 
+
+四: 保证数据库安全:
+如: 不许匿名登录 / Root 远程登录 / 移除测试数据库.
+
+mysql_secure_installation   
+按照屏幕提示 第一个选 N 其他选 Y .
+
+1. Change the root password? Y/n () n
+2. Remove anonymous users? Y/n () y
+3. Disallow root login remotely? Y/n () y
+4. Remove test database and access to it? Y/n () y
+5. Reload privilege tables now? Y/n () y
+
+
+五: 安装 Apache + PHP
+Apache 很多功能都是根据 PHP 语言写的. 不得不装 PHP.
+Zabbix 对 PHP 还有特别的要求. 所以还要安装一些 PHP 的额外组件.
+安装过程 输入 Y  .
+
+sudo apt-get install apache2 php5 php5-mysql php5-gd php5-cli php5-xmlrpc
+
+六: 修改 PHP 配置文件
+Zabbix 对PHP 有特殊要求.
+下面的 二选一 编辑器不同而已.  个人习惯用 VI.
+sudo nano /etc/php5/apache2/php.ini
+sudo vi /etc/php5/apache2/php.ini
+
+查找下列内容 并 修改成如下值
+post_max_size = 16M
+max_execution_time = 300
+max_input_time = 300
+date.timezone = Asia/Shanghai  
+always_populate_raw_post_data = -1
+
+注意: 时区选择http://php.net/manual/en/timezones.php (http://php.net/manual/en/timezones.php)
+监控和备件款的两台电脑 时区一定要一致! 不然进 Zabbix 界面会错误红色提示.
+大陆/城市   这里选择 Asia/Shanghai . 
+
+修改后 重启 Apache 服务来生效
+sudo systemctl restart apache2.service
+
+
+七: 编译 Zabbix-Server
+
+- 下载:
+  wget http://jaist.dl.sourceforge.net/project/zabbix/ZABBIX%20Latest%20Stable/3.0.1/zabbix-3.0.1.tar.gz
+
+- 解压:
+  tar -xf zabbix-3.0.1.tar.gz
+  cd zabbix-3.0.1.tar.gz
+  ls
+
+- 编译! 需要开启一些功能  不能直接 ./configure ?
+  ./configure --enable-server --enable-agent --with-mysql --enable-ipv6 --with-net-snmp --with-libcurl --with-libxml2 
+  make
+  make install
+
+
+
+八: 给 Zabbix 创建用户组 (安全起见不允许用 root来监控?)
+
+
+groupadd zabbix
+//创建 用户组
+
+useradd -g zabbix -d /usr/local/share/zabbix -s /bin/false zabbix
+//-g ( GROUP )     指定新用户  所属组.
+//-d ( HOME_DIR )  指定新用户  登录目录.
+//-s ( SHELL )     指定新用户  Shell.  默认使用 bash
+
+
+
+
+九: 给 Zabbix 配置数据库.
+
+mysql -u root -p 
+//登录 MySQL, 输入你 第三步 设置的密码 这里是 xujian.
+MariaDB> create database zabbix;
+//创建数据库
+MariaDB> grant all privileges on zabbix.* to 'zabbix'@'localhost' identified by 'xujian';
+//给 zabbix 用户权限. xujian 改成你自己的密码
+MariaDB> flush privileges;
+//更新权限
+MariaDB> exit
+//退出 MySQL.
+
+数据库 不一定 装在 Zabbix-Server 服务器上的.
+如果你的数据库是装在 别的电脑上的话:
+下面的 % 改成你的 ip , 密码 改成你数据库的密码.
+MariaDB> grant all privileges on zabbix.* to 'zabbix'@'%' identified by 'your_password';
+
+
+- 导入数据库表结构:
+
+  cd zabbix-2.4.5/
+  //进入 解压出来的 源代码文件夹.
+  ls database/mysql/
+  // 你会发现文件夹下面有三个文件. 把这 三个表 导入到数据库中就好了.
+  mysql -u zabbix -p zabbix < database/mysql/schema.sql
+  mysql -u zabbix -p zabbix < database/mysql/images.sql
+  mysql -u zabbix -p zabbix < database/mysql/data.sql
+
+
+
+十: 配置 Apache Web
+
+rm /var/www/html/index.html15.
+//先把 原理 Apache 默认的网页删掉
+cp -rf frontends/php/* /var/www/html/
+//替换成 Zabbix 3 源代码里 frontends/php/ 面的文件.
+
+
+
+usermod -aG www-data zabbix 
+// -aG 把用户加到额外的组(一人能有好几个组的)
+a2enmod ssl
+//a2enmod  属于apache2.2-common包下的一个工具 允许你配置apache的一个模块，启用或者禁用。
+//这里 是启用 ssl (一种安全协议 互联网通信用的 已过时.)
+a2ensite default-ssl
+systemctl restart apache2.servic
+//重启 Apache 服务.
+
+
+十一: 配置 Zabbix-Server
+
+编辑 服务端的配置文件: 
+vi /usr/local/etc/zabbix_server.conf
+改成如下值.
+ListenPort=10051
+LogFile=/var/log/zabbix_server.log
+DBHost=localhost      ## 如果数据库不在本机: localhost 换成数据库服务器的 IP.
+DBName=zabbix         ## 数据库名称
+DBUser =zabbix        ## 数据库用户名
+DBPassword=password   ## 第二步的数据库密码
+DBSocket=/var/run/mysqld/mysqld.sock
+DBPort=3306
+
+
+- 创建数据库日志文件 并 给与权限.
+  touch /var/log/zabbix_server.log
+  chmod 775 /var/log/zabbix_server.log
+  chgrp zabbix /var/log/zabbix_server.log
+  //改变文件的 群组属性.
+
+
+
+启动服务!
+
+/usr/local/sbin/zabbix_server
+/usr/local/sbin/zabbix_agentd
+/usr/local/sbin/zabbix_agent
+用下面命令 查看 服务是否启动成功.
+netstat -tulpn
+
+
+
+十二: 安装 Web 前端页面接口
+任意电脑 打开浏览器 输入 Zabbix-Server 的 IP
+http://服务器 IP 地址/setup.php  /或者/  https://服务器 IP 地址/setup.php
+本文: 0219.oicp.net/setup.php
+
+然后就能看的 Zabbix 的 网页配置界面了 ! 激动 兴奋 啊....
+
+总有6步:
+- 第二步: 最好全部 是 OK.
+- 第三步: 数据库设置
+  选择数据库类型 这里选 MySQL
+  数据库 IP // 选默认 Localhost 或者 数据库在别的服务器. 就填IP
+  数据库 名称   zabbix
+  数据库 用户名 zabbix
+  数据库 密码   xujian
+- 第四步: Zabbix Server 配置
+  Host:Localhost
+  Port:10051
+  Name:zabbix
+
+
+  chown -R www-data /var/www/html/conf/   //第五步之前 要 允许 Apache 有写入配置的权限.
+
+- 然后 下一步 下一步  直到 Finish
+
+Finsh 完成之后  还要 给 root 某些权限.
+chown -R root /var/www/html/conf/
+
+之后就能用下面的 账号密码 登录了
+0214.help/index.php
+Username: admin
+Password: zabbix
+
+这下 就能进 Web 界面了.
+
+十三: 开机启动
+编辑这个文件
+vi /etc/rc.local
+把下面三行 加到 exit 0 (尾行)   上面就行.
+/usr/local/sbin/zabbix_agentd
+/usr/local/sbin/zabbix_agent
+/usr/local/sbin/zabbix_server
+
+接下去就是 去被监控的电脑 安装客户端了. 安装好客户端再回来配置下 Web 界面就好了
+
+
+
+十四 : 客户端配置 Debian8 (被监控的电脑上安装)
+客户端教程链接 (http://www.kar-chan.com/?p=2541)
+
+- 创建运行账号
+  useradd zabbix -s /sbin/nologin
+
+- 安装依赖
+  apt-get install -y gcc curl
+
+
+- 下载+解压+编译安装 agent
+
+  cd /tmp
+
+  wget http://jaist.dl.sourceforge.net/project/zabbix/ZABBIX%20Latest%20Stable/3.0.1 zabbix-3.0.1.tar.gz
+
+
+- 解压 tar -xf 压缩包
+-x 意思是解压  / f 参数必须. 记住就行.
+
+- 编译
+  ./configure --prefix=/usr/local/zabbix   --enable-agent
+  //prefix 配置安装位置
+  //—enable-agent  只安装 agent !!
+
+
+- 配置客户端
+  vi /usr/local/zabbix/etc/zabbix_agentd.conf
+
+  Server=0219.oicp.net            #被动模式，允许哪台zabbix服务器可以连接.
+  ServerActive=0219.oicp.net      #主动模式，允许向哪台zabbix服务器上报.
+  Hostname=0214.help              #客户端本机IP，如有DNS解析可填主机名
+  UnsafeUserParameters=1          #允许用户自定义参数  278行
+  EnableRemoteCommands=1          #允许执行远程命令   69行
+
+- 创建init服务  未测试!!!!!   cp misc/init.d/fedora/core/zabbix_* /etc/init.d
+  sed -i 's/BASEDIR=/usr/local/BASEDIR=/usr/local/zabbix/g' /etc/init.d/zabbix_agentd
+
+- 设置开机自启动   未测试 !!!!! 
+  chkconfig zabbix_agentd on
+  service zabbix_agentd start
+
+
+
+十五: 回去配置 Zabbix Web 界面.
+
+configuration → Hosts → Create host
+Hostname : 被监控 ip
+visiblename:  被监控 ip
+Group 右边随便选一个? 大概就是 你有很多服务器要监控 .可以给这些服务器 分组.
+Agent interfaces  ip DNS port 如实填写.
+→ ADD
+
+然后 Temple 模板 选择一个?  被监控的是什么系统的 就选什么吧....
+
+http://miclesvic.blog.51cto.com/2152735/1136222 (http://miclesvic.blog.51cto.com/2152735/1136222)    ?? 教程 … 
+
+
+
+自带很多模板  添加这些模板 就能实现很多功能了.
+
+
+
+服务器重启之后:
+要开启 Apache  Server 等 才能登录WEB管理界面
+
+sudo systemctl restart apache2.service
+
+
+http://0219.oicp.net/zabbix.php?action=dashboard.view
+登录网址
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+----
+Zabbix - Mac OS
+
+MySQL 版本: 
+mysql --version
+
+PHP 版本:
+php --v
+
+Apache 版本:
+httpd --v
+
+
+
+Zabbix-Server:
+
+下载 解压 编译 安装.
+
+这里不能用默认编译. 因为还要开启一些额外的功能.
+
+./configure --enable-server --enable-agent --with-mysql --with-net-snmp --with-libcurl --with-libxml2 --prefix=$$HOME/Library/Zabbix
+
+
+1. Set up the database
+Create a new database user. Choose a database user password. I chose al9a0941h9.
+$ /Library/PostgreSQL/8.3/bin/createuser zabbix --no-superuser
+--createdb --no-createrole --pwprompt -U postgres
+Enter password for new role: <database user password>
+Enter it again: <database user password>
+Password: <superuser password>
+1. Create a new database
+$ /Library/PostgreSQL/8.3/bin/createdb zabbix -U zabbix -W
+Password: <database user password>
+Populate the database with tables and data...
+$ cat create/schema/postgresql.sql | /Library/PostgreSQL/8.3/bin/psql -U zabbix -W
+Password for user zabbix: <database user password>
+...
+$ cat create/data/data.sql | /Library/PostgreSQL/8.3/bin/psql -U zabbix -W
+Password for user zabbix: <database user password>
+...
+$ cat create/data/images_pgsql.sql | /Library/PostgreSQL/8.3/bin/psql -U zabbix -W
+Password for user zabbix: <database user password>
+...
+
+
+
+
+1. Configure the zabbix server
+$ mkdir /Library/Zabbix/etc
+$ cp misc/conf/zabbix_server.conf /Library/Zabbix/etc/
+Edit /Library/Zabbix/etc/zabbixserver.conf. Leave everything as default, but change the following two values...
+DBUser=zabbix
+DBPassword=al9a0941h9
+Start the zabbix server...
+./zabbix_server --config=$$HOME/Library/Zabbix/etc/zabbix_server.conf
+1. Install & Configure MAMP
+MAMP is the quickest way to get a full-blown Apache up and running with PHP5. Download it here and install the regular (non-pro) version.
+Configure PHP by editing /Applications/MAMP/conf/php5/php.ini. Change...
+max_execution_time = 300
+Then go to the bottom of the file and add your timezone
+date.timezone = America/Vancouver
+Install the Zabbix front-end so MAMP can serve it
+$ mv frontends/php /Library/Zabbix/frontend
+$ ln -s /Library/Zabbix/frontend /Applications/MAMP/htdocs/zabbix
+
+
+
+
+1. Launch MAMP & Configure Zabbix front-end
+Double-click the main MAMP application and see that the servers start up.
+Navigate to http://localhost:8888/zabbix/
+Go through the configuration screens.
+On the database screen, choose PostgreSQL, set the username to "zabbix" and the password to whatever database user password you chose.
+On the zabbix server details screen, set the port to 8888.
+You can now log on in with the username/password of Admin/zabbix
+Notes on Security
+This is a test installation on my home network, so I've foregone best practices for security and reliability. If you are relying on this zabbix installation for a production environment, you should consider taking some precautions...
+▪ PostgreSQL and Zabbix should both run as separate users
+▪ Zabbix should be started at boot via launchd
+▪ In order for launchd to monitor Zabbix, the zabbix_server process should not background itself. I don't think this is currently possible without changing the server's source code.
+▪ Don't use MAMP for a production service. Configure Apache and PHP properly to start up at boot and run as a separate user.
+
+
+
+
+
+
+
+
+
+
+
+
+----
+
+Zabbix 客户端 WinServer 2008
+
+官网下载  Win 全系列 通用包.
+
+解压. 出来  两个文件夹: Bin + conf 
+
+bin 文件夹 选择相应的系统版本 . 
+相应版本下的 文件夹. ,移动到C:Program Files  zabbix_agent目录下
+这个目录得自己手动先建立
+
+
+
+4.选择conf文件夹下
+zabbix_agentd.win.conf配置文件，修改为「zabbix_agentd.conf」。
+
+并移动到C:Program Fileszabbix_agent win64目录下
+ 然后下载 notepad++  编辑这个文件
+
+
+
+LogFile=c:zabbix_agentd.log
+LogFile=C:Program Fileszabbix_agentwin64zabbix_agentd.log  # 此处为agent的log文件存放地址。
+Server=127.0.0.1
+Server=X.X.X.X        # 此处为zabbix服务器IP。
+Hostname=Windows host
+Hostname=Windows2008    # 此处修改主机名。
+
+
+
+
+极品教程
+
+http://www.tecmint.com/install-and-configure-zabbix-monitoring-on-debian-centos-rhel/2/ (http://www.tecmint.com/install-and-configure-zabbix-monitoring-on-debian-centos-rhel/2/)
+
+
+
+
+
+最后一步
+
+不能写入文件 
+可以wget下载  然后放到指定位置.
+
+下载后要改名. 
+
+或者直接新建文件 内容粘帖进去  然后给777 权限   再本地浏览器刷新  就 ok 了
+
+
+时区设置   不然 web 界面会红色报错.
+date.timezone = Asia/Chongqing 
+
+
+
+界面是能 换成中文的 
+可能要 被监控那里 下载中文语言包
+
+
+ 收集不到数据.?? 
+
+
+依赖环境
+
+- Apache —————— 用网页显示服务器状态.
+- PHP———————— 编程语言. Apache 用到.
+- MySQL———————保存收集到的数据.
+- Zabbix Server  ——— 监控+收集信息 .
+- Zabbix Agent ———— 只有收集信息.
+
+通常: 这四个角色 可以安装在一台电脑.
+Apache / PHP / MySQL 版本越新越好.
+
+
+其他环境:
+
+OpenIPMI、libssh2、fping、libcurl、libiksemel、net-snmp
+
+
+
+
+基本环境配置
+
+yum install gcc gcc-c++ make openssl-devel curl wget net-snmp net-snmp-utils net-snmp-libs net-snmp-devel gnutls gnutls-devel libxml2 libxml2-devel
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

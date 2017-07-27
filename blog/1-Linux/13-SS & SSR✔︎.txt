@@ -346,9 +346,10 @@
 ⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️------⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️
 🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵  GCE SSR 🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵
 ⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️------⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️
-⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️------⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️
+
+
+🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸 数据库 🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸
 🔸 准备工作: 
-⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️------⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️
 
     ⦿ 储备
         前端只是个网页.可以安装在任何电脑. 不一定要安装在vps上.
@@ -390,10 +391,9 @@
 
 
 
-⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️------⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️
-前端
-⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️------⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️
 
+
+🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸 前端 🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸
 
 🔸 新建虚拟主机
     ❗️除了虚拟主机名改成你自己的域名.其他尽量安装我的! 
@@ -431,16 +431,12 @@
             免得和我们新建的虚拟主机冲突
 
 
-
-
-
-
 🔸 下载三方 ss-panle 项目源码
 
-    cd /home/wwwroot/ss.0214.live && git clone https://github.com/mmmwhy/ss-panel.git && mv ss-panel/{.,}* ./ 
-
+    cd /home/wwwroot/ss1.0214.help && git clone https://github.com/mmmwhy/ss-panel.git && mv ss-panel/{.,}* ./ 
+    cd /home/wwwroot/ss2.0214.help && git clone https://github.com/mmmwhy/ss-panel.git && mv ss-panel/{.,}* ./ 
     cd /home/wwwroot/ss.0214.help && git clone https://github.com/mmmwhy/ss-panel.git && mv ss-panel/{.,}* ./ 
-
+    cd /home/wwwroot/ss.0214.live && git clone https://github.com/mmmwhy/ss-panel.git && mv ss-panel/{.,}* ./ 
 
         下载然后移动文件.
           移动 ss-panel 文件夹下所有内容到 /home/wwwroot/ss.0214.live
@@ -450,39 +446,43 @@
 
 🔸 安装 php 依赖
 
-    cd /home/wwwroot/ss.0214.live
-    curl -sS https://install.phpcomposer.com/installer | php
-    chmod +x composer.phar
-    php composer.phar install
-    chmod -R 777 storage
-
-    🔅🔅
-        cd /home/wwwroot/ss.0214.live && curl -sS https://install.phpcomposer.com/installer | php && chmod +x composer.phar && php composer.phar install && chmod -R 777 storage
+    🔅🔅 一键命令
+    cd /home/wwwroot/ss.0214.live && curl -sS https://install.phpcomposer.com/installer | php && chmod +x composer.phar && php composer.phar install && chmod -R 777 storage
+    cd /home/wwwroot/ss.0214.help && curl -sS https://install.phpcomposer.com/installer | php && chmod +x composer.phar && php composer.phar install && chmod -R 777 storage
+    cd /home/wwwroot/ss1.0214.help && curl -sS https://install.phpcomposer.com/installer | php && chmod +x composer.phar && php composer.phar install && chmod -R 777 storage
+    cd /home/wwwroot/ss2.0214.help && curl -sS https://install.phpcomposer.com/installer | php && chmod +x composer.phar && php composer.phar install && chmod -R 777 storage
 
 
-    ⦿ 安装(非全局)  Composer
-      curl -sS https://getcomposer.org/installer | php 
-      
-    ⦿ 用composer 来安装项目.
-      就像下载的exe软件是需要安装后才能用的.
-      php composer.phar  install
+        ⦿ 命令解析
+            cd /home/wwwroot/ss.0214.live
+            curl -sS https://install.phpcomposer.com/installer | php
+            chmod +x composer.phar
+            php composer.phar install
+            chmod -R 777 storage
 
-    ⦿ Composer 简介
-        Composer 类似包管理器. 自动下载安装项目依赖的一些库.
-        在 composer.json 文件中列出你项目所需的依赖包，
-        然后就可以用 Composer 命令来自动安装依赖了.
-        运行 Composer 需要 PHP 5.3.2+ 以上版本。
+        ⦿ 安装(非全局)  Composer
+            curl -sS https://getcomposer.org/installer | php 
+        
+        ⦿ 用composer 来安装项目.
+            就像下载的exe软件是需要安装后才能用的.
+            php composer.phar  install
 
-    ⦿ 全局安装 Composer
-        • cd到安装目录:  cd /usr/local/bin/
-        • 下载安装脚本:  php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');"
-        • 安装后删除:    php composer-setup.php && php -r "unlink('composer-setup.php');"
-        • 全局使用方法:  composer filename
-          cd /usr/local/bin/ && php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');" && php composer-setup.php && php -r "unlink('composer-setup.php');"
-      composer install
-        安装项目依赖
-        这里可能会有两个警告信息! 可忽略.
-        大概意思就是 从项目源地址下载某个模块失败. 自动从别的地方下载
+        ⦿ Composer 简介
+            Composer 类似包管理器. 自动下载安装项目依赖的一些库.
+            在 composer.json 文件中列出你项目所需的依赖包，
+            然后就可以用 Composer 命令来自动安装依赖了.
+            运行 Composer 需要 PHP 5.3.2+ 以上版本。
+
+        ⦿ 全局安装 Composer
+            • cd到安装目录:  cd /usr/local/bin/
+            • 下载安装脚本:  php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');"
+            • 安装后删除:    php composer-setup.php && php -r "unlink('composer-setup.php');"
+            • 全局使用方法:  composer filename
+            cd /usr/local/bin/ && php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');" && php composer-setup.php && php -r "unlink('composer-setup.php');"
+        composer install
+            安装项目依赖
+            这里可能会有两个警告信息! 可忽略.
+            大概意思就是 从项目源地址下载某个模块失败. 自动从别的地方下载
 
 
 
@@ -490,8 +490,11 @@
 
 🔸 ❗️❗️ 配置 Nginx ❗️❗️
 
-    vi /usr/local/nginx/conf/vhost/ss.0214.live.conf
     vi /usr/local/nginx/conf/vhost/ss.0214.help.conf
+    vi /usr/local/nginx/conf/vhost/ss1.0214.help.conf
+    vi /usr/local/nginx/conf/vhost/ss2.0214.help.conf
+    vi /usr/local/nginx/conf/vhost/ss.0214.live.conf
+
 
     ❗️ 官方的ss-panle 坑就在 location ~ ...模块里.                               ❗           ️
     ❗️ 官方的安装说明 只有 location / 模型. 压根没有 location ~ 模块.            ❗️
@@ -502,7 +505,7 @@
     ❗️ 整个 ss.0214.live.conf 替换成下面内容.           ❗ ️
     ❗️ 修改文件中两个 ss.0214.live 替换成你自己的就可以 ❗️
 
-
+🔸 例子 ss.0214.live
 server
     {
         listen 80 ;
@@ -529,8 +532,47 @@ server
     }
 
 
-🔸 重启Nginx      service nginx restart  
 
+
+🔸 例子 ss.0214.help
+server
+    {
+        listen 80 ;
+        server_name ss.0214.help;
+
+        index index.html index.htm index.php;
+        root  /home/wwwroot/ss.0214.help/public;
+        
+        location / {
+                        try_files $uri $uri/ /index.php$is_args$args;
+                }
+                
+        location ~ [^/]\.php(/|$) {
+        # comment try_files $uri =404; to enable pathinfo
+        try_files $uri =404;
+        fastcgi_pass unix:/tmp/php-cgi.sock;
+        fastcgi_index index.php;
+        include fastcgi.conf;
+        #include pathinfo.conf;
+        fastcgi_param PHP_ADMIN_VALUE "open_basedir = /home/wwwroot: /temp/:/proc";
+        }
+
+        access_log  /home/wwwlogs/access.log;
+    }
+
+
+
+
+🔸 默认配置
+    vi /usr/local/nginx/conf/nginx.conf
+    确认有 
+    include /usr/local/nginx/conf/vhost/ss.0214.live.conf;
+    include /usr/local/nginx/conf/vhost/ss1.0214.help.conf;
+    include /usr/local/nginx/conf/vhost/ss2.0214.help.conf;
+
+
+🔸 重启Nginx      service nginx restart  
+🔸 域名解析       A ➜ ss1 ➜ 23.105.192.96 
 🔸 浏览器访问 ss.0214.live  就出来前端界面了!!!! 
     但是需要登录. 这就需要注册帐号. 注册信息肯定需要保存到数据库中.
     所以我们要先通过配置 ss-panel 的配置文件让前端连上数据库.  
@@ -546,23 +588,39 @@ server
       • DB_DBNAME 数据库名称
 
 
-    cd /home/wwwroot/ss.0214.live && cp .env.example .env && vi .env
     cd /home/wwwroot/ss.0214.help && cp .env.example .env && vi .env
+    cd /home/wwwroot/ss1.0214.help && cp .env.example .env && vi .env
+    cd /home/wwwroot/ss2.0214.help && cp .env.example .env && vi .env
+    cd /home/wwwroot/ss.0214.live && cp .env.example .env && vi .env
+
+vi /home/wwwroot/ss.0214.help/.env 修改下面的重点字段
+
+// ❗️❗️❗️❗️❗️❗️❗️❗️❗️❗️❗️❗️  下面是重点设置. 上面是废话不用理它 ❗️❗️❗️❗️❗️❗️❗️❗️❗️❗️❗️❗️❗️❗️
+// ❗️❗️❗️❗️❗️❗️❗️❗️❗️❗️❗️❗️  下面是重点设置. 上面是废话不用理它 ❗️❗️❗️❗️❗️❗️❗️❗️❗️❗️❗️❗️❗️❗️
+// ❗️❗️❗️❗️❗️❗️❗️❗️❗️❗️❗️❗️  下面是重点设置. 上面是废话不用理它 ❗️❗️❗️❗️❗️❗️❗️❗️❗️❗️❗️❗️❗️❗️
+
+appName = 'Xu.Jian - SSR'            //➜ 网页左上角显示的名称. 
+baseUrl = 'http://ss.0214.help'      //➜ 网页里面的链接地址
+defaultTraffic = '20'                // 用户初始流量 单位GB
+inviteNum = '0'                      // 注册后获得的邀请码数量
 
 
-    ⦿ 重点字段
-        ❗️db_database = 'SS2'  
-        ❗️db_username = 'root'  
-        ❗️db_password = '你的root密码'
-        ❗️db_charset = 'utf8'
-        ❗️db_collation = 'utf8_bin'
+# database 数据库配置
+db_driver = 'mysql'
+db_host = 'localhost'
+db_port = '3306'
+db_database = 'ss-vps1'
+db_username = 'root'
+db_password = '你的数据库密码'
+db_charset = 'utf8'
+db_collation = 'utf8_general_ci'
+db_prefix = ''
 
-    ⦿ 次要字段:
-        appName = 'Xu.jian'
-        baseUrl = 'http://ss.0214.live'
-        ipDayLimit = '100'
-        defaultTraffic = '50'
-        inviteNum = '0'
+
+
+
+
+
 
 
 
@@ -570,15 +628,17 @@ server
 
     V3 版本提供了一个脚本 帮你快速建立管理员帐号.
     🔅 cd /home/wwwroot/ss.0214.live && php xcat createAdmin
+    🔅 cd /home/wwwroot/ss1.0214.help && php xcat createAdmin
+    🔅 cd /home/wwwroot/ss2.0214.help && php xcat createAdmin
+
         输入管理员邮箱、密码、按下Y 帐号就创建好了.
         然后就可以用刚建立的帐号去登录了!!!
         前端部分到这里就差不多了.
 
 
 
-⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️------⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️
+
 🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸 后端 🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸
-⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️------⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️
 
 🔸 简介
     前端: ss-panle-mod 
@@ -636,6 +696,9 @@ server
 
 
     ⦿ CentOS 7 编译安装:libsodium
+    🔅🔅 一键命令
+        cd ~ && yum -y groupinstall "Development Tools" && wget https://github.com/jedisct1/libsodium/releases/download/1.0.12/libsodium-1.0.12.tar.gz && tar -xzf libsodium-1.0.12.tar.gz && cd libsodium-1.0.12 && ./configure && make -j2 && make install && echo "include ld.so.conf.d/*.conf" > /etc/ld.so.conf && echo "/lib" >> /etc/ld.so.conf && echo "/usr/lib64" >> /etc/ld.so.conf && echo "/usr/local/lib" >> /etc/ld.so.conf && ldconfig && cd .. && rm -rf libsodium-1.0.12 && rm -rf libsodium-1.0.12.tar.gz
+
 
         • libsodium最新版本:  2017-06-27-17  v1.0.12
           https://github.com/jedisct1/libsodium/releases/tag/1.0.12
@@ -657,22 +720,23 @@ server
             cd .. && rm -rf libsodium-1.0.12 && rm -rf libsodium-1.0.12.tar.gz
 
 
-        🔅🔅
-            cd ~ && yum -y groupinstall "Development Tools" && wget https://github.com/jedisct1/libsodium/releases/download/1.0.12/libsodium-1.0.12.tar.gz && tar -xzf libsodium-1.0.12.tar.gz && cd libsodium-1.0.12 && ./configure && make -j2 && make install && echo "include ld.so.conf.d/*.conf" > /etc/ld.so.conf && echo "/lib" >> /etc/ld.so.conf && echo "/usr/lib64" >> /etc/ld.so.conf && echo "/usr/local/lib" >> /etc/ld.so.conf && ldconfig && cd .. && rm -rf libsodium-1.0.12 && rm -rf libsodium-1.0.12.tar.gz
-
+        
 
 
 
 🔸 Python 依赖
-  ⦿ 基本库安装:
-    🔅 yum install python-setuptools -y && yum install git && easy_install pip 
+    🔅🔅 一键命令
+    yum install python-setuptools -y && yum install git && easy_install pip && pip install cymysql
 
-  ⦿ cymysql
-    🔅 pip install cymysql
+        ⦿ 基本库安装:
+            🔅 yum install python-setuptools -y && yum install git && easy_install pip 
 
-        CyMySQL: 它是PyMySQL的一个fork，使用Cython进行了加速，并且支持Python3。
-        PyMySQL: Python3 的一个用于连接MySQL数据库的工具,可以实现基本的增删改查。
-        mysqldb: Python2 的一个用于连接MySQL数据库的工具.
+        ⦿ cymysql
+            🔅 pip install cymysql
+
+                CyMySQL: 它是PyMySQL的一个fork，使用Cython进行了加速，并且支持Python3。
+                PyMySQL: Python3 的一个用于连接MySQL数据库的工具,可以实现基本的增删改查。
+                mysqldb: Python2 的一个用于连接MySQL数据库的工具.
 
 
 🔸 SSR 安装
@@ -701,7 +765,7 @@ server
                 ss 后端也有很多版本: 单人的ss 和多人的ssr
 
     ⦿ SSR 连接数据库 Mysql 
-    🔅 vi usermysql.json
+    🔅 vi /root/shadowsocksr/usermysql.json
             "host": "127.0.0.1",      //数据库地址 
             "port": 3306,             //mysql端口
             "user": "root",           //mysql用户名
@@ -869,38 +933,15 @@ server
 
 
 
-        ⦿ 设置开机启动:
-            Linux 两种方式实现开机启动.
+🔸 设置开机启动:
+    ❗️❗️不建议用 rc.local 经常莫名无效!! fuck ... 咱们用 supervisor 这个神器. ❗️❗️
+    ❗️❗️不建议用 rc.local 经常莫名无效!! fuck ... 咱们用 supervisor 这个神器. ❗️❗️
+    ❗️❗️不建议用 rc.local 经常莫名无效!! fuck ... 咱们用 supervisor 这个神器. ❗️❗️
+
+        详情参考 supervisor.txt 里面有.
 
 
-                1、把启动程序的命令添加到/etc/rc.d/rc.local文件中
-                2、把启动脚本添加到目录/etc/rc.d/init.d/，然后使用命令chkconfig设置开机启动。
-
-                这里选择第一种. 
-                vi /etc/rc.d/rc.local
-
-                添加: 
-                sh /root/shadowsocksr/run.sh
-                然后重启试试就可以了!!!!
-
-                有时候用这个命令可以 sh /root/shadowsocksr/run.sh
-                但是放到开机启动里面就无效.. 烦.
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+sh /root/shadowsocksr/run.sh
 
 
 
@@ -1085,6 +1126,108 @@ host "127.0.0.1" 改成 "104.224.139.45"
 
 那么接下来 就是把 vps2 的备份恢复到 vps1上.. 然后稍微修改下...
 就完成了.
+
+
+
+
+
+
+
+
+
+
+
+
+
+⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️------⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️
+🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵 mysql 导入导出 🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵
+⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️------⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️
+vps1 需要重新系统,但是里面有重要数据.
+vps1 上的 ss数据库需要迁移到 gce 里面.
+
+🔵 方法一: Mysql 客户端: Navicat 
+    Navicat 虽然非常方便.但是慢. 
+    大概就是vps1 上的数据下载到 本地. 然后再恢复到GCE上.
+    由于本地上传带宽非常小... 很慢很慢... 30M的数据库恢复要个把小时.
+
+
+    🔸 数据库导出 (vps1)
+        Navicat ➜ vps1 mysql ➜ 选择 ss 数据库 ➜ 右键 dump(转储) SQL file 
+        ➜ structure + data ➜ 储存到 Mac 桌面; 文件名 ss.sql
+
+    🔸 数据库导入 (GCE)
+        Navicat ➜ GCE mysql ➜ 新建数据库: ss-vps1、utf-8、uft8-bin
+        ➜ 右键 Execute SQL file ➜ 选择 ss.sql 文件 编码: utf-8 ➜ 开始
+
+
+
+🔵 方法二: Mysql 命令行
+    服务器的带宽本来就非常快. 一般都是100M/1000M 的网速.
+    在vps1上导出数据库到 vps1  然后恢复到GCE.
+
+
+    🔸 导出整个数据库 (vps1) 结构+数据!
+        语法: mysqldump -uroot -pdbpasswd dbname >db.sql;
+
+        cd /root && mysqldump -uroot -pxujian0219 ss >db.sql;
+            vps1 的 root 目录下就多了个 db.sql 文件了.
+            接下来要把 db.sql 用scp 命令传到 gce 服务器上去
+
+    🔸 数据库上传 (vps1)
+        scp -P 2222 -r /root/db.sql root@35.194.128.92:/root/
+
+        scp -P 2222 -r /home/mycms root@35.194.128.92:/home/
+
+    🔸 数据库恢复 (GCE)
+        首先要新建数据库. ss-vps1、utf-8、uft8-bin
+        还是用客户端软件建吧.然后恢复.
+        mysql -uroot -p ss-vps1 < /root/db.sql
+
+
+
+
+
+
+
+⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️------⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️
+🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵 多节点SSR  🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵
+⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️------⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️
+数据库可以只有一个
+前端只需要一个.  
+但是后端 三台服务器都需要安装.
+
+
+然后所有前端 所有后端 都连接到相同的数据库.
+然后前端去新建几个节点. 
+
+然后你在前端注册的账户.  密码端口都不变. 只需要更改 IP 就可以切换节点!!
+
+
+
+服务器有3台.  
+那么前端只需安装在一台服务器上. 后端需要安装在每台服务器上
+我们把前端安装在 gce 上.
+然后让三台的 ssr 后端都连到 gce 的 mysql 数据库中. 
+这样就可以一个地方注册.使用多个节点了.
+
+
+
+现在三个服务器 都连接到一个数据库中.
+所以...  你在前端注册的 账户 能同时在三个服务器中使用.
+只要改变服务器的IP就可以了.
+
+那么问题来了.. 
+每台服务器每月流量不一样.. 
+只能让人家 多用 流量多的... 
+
+
+丫的.. 这难道是说..  人家知道我gce的ip 就可以用...我gce的流量了...
+要么就提高流量比例.... 1000倍 
+也就是说 人家用 gce 节点 用了1G 会显示用了 10000G 就会超过每月20G 自动停止对方服务.
+
+
+
+
 
 
 

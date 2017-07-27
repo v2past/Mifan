@@ -63,6 +63,11 @@
     先去官网获取CentOS X86 对应的下载链接.
     https://github.com/fatedier/frp/releases/download/v0.9.3/frp_0.9.3_linux_386.tar.gz
 
+    CentOS7_x64 选择下面的连接.
+    https://github.com/fatedier/frp/releases/download/v0.12.0/frp_0.12.0_linux_amd64.tar.gz
+
+
+
     SSH到服务器. 并利用 wget + 网址来下载文件
 
     wget https://github.com/fatedier/frp/releases/download/v0.9.3/frp_0.9.3_linux_386.tar.gz
@@ -289,6 +294,99 @@ nohup ./frps -c ./frps.ini &
 
 
 
+
+
+
+
+
+
+
+
+
+
+⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️------⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️
+🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵  GCE 服务端搭建  🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵
+⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️------⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️
+
+
+wget https://github.com/fatedier/frp/releases/download/v0.12.0/frp_0.12.0_linux_amd64.tar.gz
+
+tar -xzf frp_0.12.0_linux_amd64.tar.gz
+
+保留 frps 及 frps.ini 两个文件. 其他删了吧.服务器清爽点好.
+
+    frps 这个是主程序. 需要执行权限的. 没有就 chmod +x frps 来添加权限.
+    frps.ini 是配置文件. 一般都是修改这个文件的.
+        建议直接清空里面的内容 , 直接复制我的内容.
+
+
+[common]
+bind_port = 7000
+vhost_http_port = 8080
+privilege_mode = true
+privilege_token = keuqricjswosdpfk
+privilege_allow_ports = 50000-60000
+max_pool_count = 100
+
+dashboard_port = 5500
+dashboard_user = admin
+dashboard_pwd = admin
+
+
+⦿ 运行服务器
+    ./frps -c ./frps.ini
+    这个不会后台运行. 你关闭ssh就退出了.
+
+    nohup ./frps -c ./frps.ini &
+    这个是后台运行的.
+
+
+
+
+⦿ frps.ini 解析
+    frp 自带网页控制台的.
+    需要设置端口. 还有登录用户名密码.
+    dashboard_port = 5500
+    dashboard_user = admin
+    dashboard_pwd = admin
+    也就是由上面三个参数控制.
+
+
+🔸 Nginx 
+    启动服务器后. 用浏览器访问 35.194.128.92:5500 就出现frp页面了.
+    下面我们来配置 nginx .把 frp.0214.help 设置成 frp 页面.
+
+    lnmp vhost add
+    ================================================
+    Virtualhost infomation:
+    Your domain: frp.0214.help
+    Home Directory: /home/wwwroot/frp.0214.help
+    Rewrite: none
+    Enable log: no
+    Create database: no
+    Create ftp account: no
+    ================================================
+
+
+    vi /usr/local/nginx/conf/vhost/frp.0214.help.conf
+
+    server {
+        listen 80;
+        server_name frp.0214.help;
+        location / {
+            proxy_pass http://127.0.0.1:5500;
+        }
+    }
+
+
+
+    vi /usr/local/nginx/conf/nginx.conf  
+    确保有加载新的nginx配置文件 /usr/local/nginx/conf/vhost/frp.0214.help.conf
+
+
+    service nginx restart
+
+    然后浏览器访问 ss.0214.help 就变成frp的页面了
 
 
 

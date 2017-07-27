@@ -1,0 +1,1400 @@
+🔸 spechlite 某ip 不走代理方法!
+
+vps1 的延迟只有 180 .这是美国啊!! 
+vps2的 延迟 就有 300 . 还是断断续续的 说明可能是机房节点不太好.
+gce 的延迟  居然也有 240 ... 这是先到美国再到台湾了啊..
+
+怎么办..
+
+也许是dns的关系....
+用阿里的试试  223.6.6.6  223.5.5.5
+
+
+
+
+一挂上ss 
+那么到 gce 的ip 就会先到ss服务器的美国 .再去 台湾. 绕太远了..
+
+改 具体代理的配置文件.
+文件配置项目非常多.
+
+
+
+
+
+
+
+
+
+
+🔸 Nmap 
+
+nmap -sT tcp 扫描
+nmap -sU dup 扫描 nmap -sU -p 60000 127.0.0.1
+
+
+
+
+
+⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️------⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛⬛️⬛️
+🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵 MySQL🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵
+⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️------⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️
+
+🔸 数据库
+		• 创建数据库   create database wpj1105;
+		• 删除数据库   drop database wpj1105;
+		• 使用数据库   use wpj1105;
+		• 显示数据库   show databases;
+
+
+🔸 判断
+
+		判断是否存在数据库wpj1105,有的话删除
+		drop database if exists wpj1105;
+
+		#先判断表是否存在,存在先删除
+		drop table if exists student;
+
+
+🔸 表
+	
+⦿ 创建表
+		create table student(
+		id int auto_increment primary key,
+		name varchar(50),
+		sex varchar(20),
+		date varchar(50),
+		content varchar(100)
+		)default charset=utf8;
+
+
+⦿ 删除表         drop table student;
+⦿ 查看表的结构   describe student;  #可以简写为desc student;
+
+
+🔸 插入数据
+		这个就要看user_token 表结构了 
+		+-------+-------+---------+-------------+-------------+
+		| id    | token | user_id | create_time | expire_time |
+		+-------+-------+---------+-------------+-------------+
+		|    12 |       |       0 |           0 |           0 |
+
+		语法: INSERT INTO table_name ( field1, field2,...fieldN ) VALUES ( value1, value2,...valueN );
+		实例: insert into user_token (id,token,user_id,create_time,expire_time) VALUES (98,1,2,3,4);
+		这个例子肯定是对的
+
+
+#修改某一条数据
+update student set sex=’男’ where id=4;
+
+
+🔸 删除某表某条记录
+		删除一条记录: delete from 表名 where id=1;
+
+
+🔸 删除某表所有记录(保留结构)
+		use ss-vps1;
+		show tables;
+		DELETE FROM `22`;
+		DELETE FROM `ss_node_online_log`;
+		❗️❗️ 表名外面 必须加上 `` . 这个不是单引号. 而是ESC键下面的符号. ❗️❗️
+
+		顺便把 ss-vps1 里的无用数据都删除了吧 
+		DELETE FROM `ss_checkin_log`;
+		DELETE FROM `ss_node_info_log`;
+		DELETE FROM `user_traffic_log`;
+
+
+
+
+#分组查询
+select name,max(age) from c group by sex;  #按性别分组查年龄最大值
+#聚合函数
+select min(age) from c;
+select avg(age) as ‘平均年龄 ‘ from c;
+select count(*) from c;  #统计表中数据总数
+select sum(age) from c;
+
+
+
+
+
+⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️------⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛⬛️⬛️
+🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵   CentOS 7 防火墙  🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵
+⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️------⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️
+🔸 Firewalld VS IPtables
+
+		Centos7 自带 firewalld 和 iptables .
+		但是iptables 太难用了. 所有默认就改成了 firewalld.
+		firewalld 在使用上 要比 iptables 人性化很多!!!
+		虽然默认用了 firewalld .但是底层还是靠iptables实现的.
+		所以个别iptables 命令还能使用如查看防火墙 iptables -L
+
+		❗️❗️ CentOS 7 默认使用firewalld. 别学 iptables 了, 直接学 firewalld ❗️❗️
+		❗️❗️ CentOS 7 默认使用firewalld. 别学 iptables 了, 直接学 firewalld ❗️❗️
+		❗️❗️ CentOS 7 默认使用firewalld. 别学 iptables 了, 直接学 firewalld ❗️❗️
+
+		❗️不明白“五张表五条链”,不明白TCP/IP协议也可以用 firewalls 实现大部分功能.❗️
+		❗️不明白“五张表五条链”,不明白TCP/IP协议也可以用 firewalls 实现大部分功能.❗️
+
+
+
+
+🔸 查看防火墙		iptables -L
+
+
+🔸 防火墙状态  systemctl status firewalld
+
+🔸 停止防火墙  systemctl stop firewalld.service
+🔸 停止防火墙  systemctl disable firewalld
+
+🔸 启动防火墙  systemctl start  firewalld
+🔸 禁用防火墙  systemctl stop firewalld
+
+
+永久的开放需要的端口
+
+sudo firewall-cmd --zone=public --add-port=3000/tcp --permanent
+sudo firewall-cmd --zone=public --add-port=3306/tcp --permanent
+sudo firewall-cmd --zone=public --add-port=60002/udp --permanent
+
+sudo firewall-cmd --reload
+
+
+
+//临时关闭防火墙,重启后会重新自动打开
+systemctl restart firewalld
+//检查防火墙状态
+firewall-cmd --state
+firewall-cmd --list-all
+//Disable firewall
+systemctl disable firewalld
+systemctl stop firewalld
+systemctl status firewalld
+//Enable firewall
+systemctl enable firewalld
+systemctl start firewalld
+systemctl status firewalld
+
+
+
+
+之后检查新的防火墙规则
+
+firewall-cmd --list-all
+
+
+
+
+
+
+# 清除已有iptables规则
+iptables -F
+# 允许本地回环接口(即运行本机访问本机)
+iptables -A INPUT -i lo -j ACCEPT
+# 允许已建立的或相关连的通行
+iptables -A INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
+#允许所有本机向外的访问
+iptables -A OUTPUT -j ACCEPT
+# 允许访问22222(SSH)端口，以下几条相同，分别是22222,80,443端口的访问
+iptables -A INPUT -p tcp --dport 22222 -j ACCEPT
+iptables -A INPUT -p tcp --dport 80 -j ACCEPT
+iptables -A INPUT -p tcp --dport 443 -j ACCEPT
+
+
+#如果有其他端口的话，规则也类似，稍微修改上述语句就行
+#允许ping
+iptables -A INPUT -p icmp -m icmp --icmp-type 8 -j ACCEPT
+#禁止其他未允许的规则访问（注意：如果22端口未加入允许规则，SSH链接会直接断开。）
+iptables -A INPUT -j REJECT 
+iptables -A FORWARD -j REJECT
+#保存防火墙规则
+service iptables save
+#设置防火墙开机启动
+chkconfig --level 345 iptables on
+
+
+
+
+
+防火墙 FireWall iptable 
+    Ubuntu 默认关闭防火墙. 
+    iptables: 系统自带防火墙(复杂 难上手).
+    Uncomplicated Fire Wall(UFW):  iptable 的管理工具(使用简单).
+
+    安装 UFW :    sudo apt-get install ufw 
+    启用防火墙:　　sudo ufw enable 
+
+    service iptables status              查看iptables状态
+    service iptables restart iptables  服务重启
+    service iptables stop iptables     服务禁用
+
+    查看filter表：iptables -L
+    清空filter表：iptables -F
+
+    启动iptables: /etc/rc.d/init.d/iptables start
+    关闭iptables:/etc/rc.d/init.d/iptables stop
+
+    /etc/sysconfig/iptables
+
+    iptables：应用防火墙规则：iptables-restore: line 17 failed
+
+    /etc/init.d/iptables stop关闭
+    /etc/init.d/iptables start启动
+    /etc/init.d/iptables restart重启
+
+
+
+
+
+
+
+
+
+
+
+
+- 防火墙设置  ———————— iptables -L 
+- 所有安装软件 ——————— rpm -qa
+- CPU 信息    ————————   cat /proc/cpuinfo 
+- 主机名(改名) ——————— hostname ( sudo hostname xx )
+- 系统运行信息  ——————  uptime 
+- 活动用户    ————————    w 
+- 硬盘硬件信息  ——————  cat /proc/partitions 
+- 硬盘分区信息  ——————  fdisk -l 
+- 内存硬件信息  ——————  cat /proc/meminfo 
+- 内存信息    ————————    free -m 
+- 路由表信息   ———————   route -n  
+- 所有监听端口  ——————   netstat -lntp  
+- 查看已建立连接 —————  netstat -antp 
+- 网络统计信息  ——————  netstat -s 
+- 显示进程(静态) ——————  ps -ef  
+- 用户的信息(群组/权限) ——— id xujian 
+- 用户登录日志 ———————  last 
+- 当前用户计划任务 ———— crontab -l  
+- 所有系统服务———————   chkconfig -list  
+
+
+
+
+
+
+
+
+
+
+
+🔸 ssh密钥 
+    ⦿ 生成(客户端)  ssh-keygen
+
+		⦿ 方法一: ssh-copy-id 命令 推荐.
+				可以把本地主机的公钥复制到远程主机的authorized_keys文件上.
+				这样可以免去 用scp上传. 然后再登录远程服务器手动修改authorized_keys
+				只需要用下面的命令 然后就可以ssh了
+				ssh-copy-id  -i id_rsa.pub -p 2222 root@104.224.139.45
+
+		⦿ 方法二: 手动传输 麻烦.
+			• 传输(客户端)  scp -P 2222 -r id_rsa.pub root@23.105.192.96:~/.ssh/
+			• 传输(客户端)  scp -P 2222 -r id_rsa.pub root@104.224.139.45:~/.ssh/
+			• 注册(服务器)  cat ~/.ssh/id_rsa.pub >> ~/.ssh/authorized_keys
+
+
+
+
+
+
+
+🔸 scp 远程拷贝
+		scp local_file user@host: remote_folder
+				本地路径   ssh登录    服务器路径 
+
+
+
+
+🔸 chattr 修改文件额外权限
+    ⦿ 查看文件额外属性: lsattr filepath
+        在Linux系统里，文件有i选项则表示不得对其做任何的修改
+				目的是为了不让用户 修改、输出、移动重要文件!! 
+		
+		锁定文件用:   chattr +i filepath
+		解锁文件用:   chattr -i filepath
+
+    chattr -i /home/wwwroot/default/.user.ini  解锁文件.
+    chattr +i /home/wwwroot/default/.user.ini  锁定文件.
+
+
+		⦿ ❗️❗️ 让系统日志只能增加数据 ❗️❗️
+			chattr +a /var/log/messages，
+			让系统日志只能增加数据，而不能删除也不能修改数据。
+
+        
+
+
+
+
+
+
+🔸 复制 
+    复制文件     cp filepatha filepathb
+    复制目录     cp -R /home/xxx /home    复制 非隐藏文件 到/home下
+    复制所有文件 cp -R /home/xxx/. /home  复制 所有文件   到/home下
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+🔸 开机启动
+
+	⦿ 推荐方式 Systemd
+		好像不适合编译安装的命令
+	
+		常用命令
+			# 立即启动一个服务              sudo systemctl start apache.service
+			# 立即停止一个服务              sudo systemctl stop apache.service
+			# 重启一个服务                  sudo systemctl restart apache.service
+			# 杀死一个服务的所有子进程      sudo systemctl kill apache.service
+			# 重新加载一个服务的配置文件    sudo systemctl reload apache.service
+			# 重载所有修改过的配置文件      sudo systemctl daemon-reload
+			# 显示某个 Unit 的所有底层参数  systemctl show httpd.service
+
+	    systemctl enable zabbix-agent
+	    systemctl disable zabbix-agent
+
+　　在开机时启用一个服务：systemctl enable postfix.service
+　　在开机时禁用一个服务：systemctl disable postfix.service
+　　查看服务是否开机启动：systemctl is-enabled postfix.service;echo $?
+　　查看已启动的服务列表：systemctl list-unit-files|grep enabled
+
+
+
+
+
+
+	⦿ 方法2: rc.local
+
+			⦿ 新建脚本  vi /home/boot.sh
+				#!/bin/bash
+				/usr/local/zabbix-server/sbin/zabbix_server
+
+			⦿ 脚本权限	chmod +x /home/boot.sh
+
+			⦿ rc.local 设置
+					chmod 755 /etc/rc.d/rc.local
+
+				vi /etc/rc.d/rc.local 添加  
+					/bin/bash /home/boot.sh
+
+
+
+
+		在工作中有脚本自启动的要求，而且自启动过程中，脚本需要指定为普通用户执行（非root权限）
+
+		❗️❗️ 在/etc/rc.d/rc.local里面增加的脚本和指令总是不能自动加载和启动，机器启动后手动执行脚本又能成功，晕❗️❗️
+		❗️❗️ 在/etc/rc.d/rc.local里面增加的脚本和指令总是不能自动加载和启动，机器启动后手动执行脚本又能成功，晕❗️❗️
+
+		解决方式如下，/etc/rc.d/rc.local文件的文件头是#!/bin/sh ，我们把这修改成#!/bin/sh   -x，
+		这样系统启动后就会把/etc/rc.d/rc.local里面的指令或脚本不能执行的日志写入/var/log/messages ,
+		我们查看messages文件内容就知道具体的问题出在哪里了
+
+			可能是执行那个脚本时，缺乏某些环境变量导致程序或动态库无法被找到。
+
+				比如 “ip -6 addr add 2001::1 dev wlan0” 这一条，操作系统在执行rc.local的时候还看不懂。
+				正确的应该是“/bin/ip -6 addr add 2001::1 dev wlan0”。
+				原因应该是，执行它的时候，还没初始化$PATH变量。这样就可以解释为什么你之后可以手动启动而不出问题，因为这个时候你的$PATH变量已经初始化好了。
+
+
+		那么就自己动手丰衣足食。把你的脚本单独存进一个文件例如叫/home/boot.sh 。
+			在rc.loacl 里这样写一行/bin/bash  /home/boot.sh  1>> /etc/mylog    2>&1
+			开机启动脚本要放到 home 目录下. 如果你放到 root 目录下. rc.local没权限看root目录的
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+🔸 rpm
+	rpm -ivh 加网址    默认直接用这个就好了.
+		-i:install
+		-v: 安装信息
+		-h: 安装进度.
+
+
+
+
+
+🔸 解压.
+    ⦿ .zip    unzip 文件名
+
+
+
+🔸 bash
+
+    sudo sh -c "echo 'something' >> /etc/privilegedfile"
+    sudo sh -c "echo_supervisord_conf > /etc/supervisord.conf"
+
+
+
+🔸 lsof
+	lsof  列出当前打开的文件.
+	linux 下所有东西都是文件. 端口也不例外.
+
+	lsof -i:80
+		如果端口被占用，则会返回相关信息，如果没被占用，则不返回任何信息。
+		-i 表示网络连接.
+		80 表示端口
+
+	sudo lsof -i -P | grep -i "listen"
+		查看所有进程监听的端口
+
+
+
+
+
+
+
+
+# systemctl start httpd.service
+# systemctl restart httpd.service
+# systemctl stop httpd.service
+# systemctl reload httpd.service
+# systemctl status httpd.service
+
+
+Redirecting to /bin/systemctl status  puppetserver.service
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+🔸 HTTPS
+    • 阿里云注册 www.0214.live
+    • 下载Nginx 版本证书 (.key 和 .pem 文件)
+    • 服务器新建cert 文件夹: mkdir /usr/local/nginx/conf/cert
+    • 然后把两个证书文件 传到 cert 目录下
+    • 编辑对应的nginx 配置文件. 添加额外的server模块.
+
+    server {
+    listen 443;
+    server_name www.0214.live;
+
+    ssl on;
+    ssl_certificate cert.pem;
+    ssl_certificate_key cert.key;
+    ssl_session_timeout 5m;
+    ssl_protocols SSLv2 SSLv3 TLSv1;
+    ssl_ciphers ALL:!ADH:!EXPORT56:RC4+RSA:+HIGH:+MEDIUM:+LOW:+SSLv2:+EXP;
+    ssl_prefer_server_ciphers on;
+
+    }
+
+
+    • 重启 nginx
+
+
+
+
+
+
+
+
+
+🔸 Django
+
+    ⦿ Django 版本查询方法一. 
+        (djcmsenv) ✘✘∙GCE mycms ➜ python
+        Python 2.7.5 (default, Nov  6 2016, 00:28:07)
+        [GCC 4.8.5 20150623 (Red Hat 4.8.5-11)] on linux2
+        Type "help", "copyright", "credits" or "license" for more information.
+        >>> import django
+        >>> django.VERSION
+        (1, 8, 18, 'final', 0)
+
+    ⦿ Django 版本查询方法2
+        转到 Django web 项目主目录并执行以下操作：
+        ./manage.py --version
+
+
+
+
+
+⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️------⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️
+
+🔸 Mysql 
+
+    状态: service mysql status
+    启动: service mysql start
+    停止: service mysql stop
+    重启: service mysql restart
+
+
+🔸 数据导出
+		语法 mysqldump -u用戶名 -p密码 -d 数据库 表名 脚本名;
+
+		1、导出數據库為dbname的表结构(不含数据.只有结构)
+		mysqldump -uroot -pdbpasswd -d dbname >db.sql;
+
+		2、导出數據库為dbname某张表(test)结构(不含数据.只有结构)
+		mysqldump -uroot -pdbpasswd -d dbname test>db.sql;
+
+		3、导出數據库為dbname所有表结构及表數據（不加-d）
+		mysqldump -uroot -pdbpasswd  dbname >db.sql;
+
+		4、导出數據库為dbname某张表(test)结构及表數據（不加-d）
+		mysqldump -uroot -pdbpasswd dbname test>db.sql;
+
+
+
+
+
+
+
+
+
+
+
+
+
+🔸 Nginx
+
+    service nginx restart
+    service nginx status
+
+    cd /home/wwwroot/www.0214.live/
+
+    cd /usr/local/nginx/conf/vhost/ && ls 
+
+    vi /usr/local/nginx/conf/vhost/www.0214.live.conf
+
+
+
+🔸 Apache
+
+    service httpd status
+    service httpd stop
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Linux 命令 
+
+
+
+
+&
+jobs
+fb gb kill
+
+
+ls -l
+less
+head tail
+ln ln-s
+df
+
+
+
+基础网络管理:
+ip ifconfig 
+netstat ping traceroute
+
+
+
+基本命令 ✔︎ 
+clear (⌘K)  清空终端
+
+su  sudo  pwd
+
+cd: change directory 
+	cd /     cd .     cd ..   cd - (之前目录)
+
+mkdir -p /home/bird/testing/test1
+	-p：递归创建多层目录，即使指定目录存在也不报错。
+rm -rf  强制删除非空目录.(不然只能删除空目录)
+
+
+
+ls list: 目录清单
+	ls -l    → 现实详细信息
+	ls -a    → 显示所有文件 (包括隐藏文件)
+	ls -i    → 显示inode信息
+	ls -S    → size 按文件大小排列
+	ls -r    → 反序排序
+
+	ls -@l favicon-32x32.png
+	Mac ll 命令显示文件红色, @ 是额外权限的意思….**
+
+shutdown [选项] <now或关机时间>  
+	至指定时间正常结束所有进程并关闭或重启系统。    
+	ssh 远程关机 只有 root 可以进行.
+	定时关机 shutdown -h 1:30 
+	重启电脑 shutdown -r
+	取消操作 shutdown -c
+
+halt [选项]        
+	停止系统 & 不关电源.
+		-f：不调用shutdown结束进程，直接终止当前系统。    
+		-p：如果硬件支持，则在终止系统后关闭主机电源。
+		执行“poweroff”命令时默认与执行“halt -p”的作用相同。   
+poweroff  停止系统 & 关闭电源
+reboot [选项]
+	-f：不调用shutdown结束进程，直接重启当前系统。
+
+
+
+
+cat/tac     
+	cat filename 第一行开始到最后一行
+	tac filename 最后行开始到第一行
+		Mac 默认不支持tac 要手动安装.
+			brew install coreutils
+				这时候 就可以用 gtac 来实现 tac的功能了.
+				系统tac命令也是没人用的. 那就把 gtac 变成 tac 
+				以运行 tac 也就是运行 gtac了
+			ln -s /usr/local/bin/gtac /usr/local/bin/tac
+
+tar
+	tar -xvfz
+	tar -xvf
+
+touch    
+
+	head xx.txt    默认显示10行内容。
+	head -2 xx.txt	> 显示文件前两行
+	tail -5 xx.txt	> 显示尾5行 
+
+more xxx.txt   
+	→ 回车下一行，空格下一屏， b 上一屏，q 退出.
+	/yyy 匹配yyy内容.   n键: 下一个匹配项
+
+
+find
+	find ~ -name "xujian.zip"   find + 路径 +参数
+	find / -name httpd.conf
+
+
+chmod    → chmod -R 777 /dev
+chown    chgrp    umask
+cp       mv       rm       tar       mount
+who      whoami   
+vi       grep                  wc 
+
+uptime 系统启动时间 和工作负载.
+
+
+
+useradd  usermod  userdel  groupadd  groupmod groupdel
+	groupadd test           //增加一个test组
+	groupdel test2          //删除 组test2
+	groupmod -n test2  test	//将test组的名子改成test2
+	groups xujian           //当前登录用户xujian所在的组 groups，
+	cat /etc/group          //查看所有组 	
+
+
+
+netstat    网络情况.
+	-a ：系统上所有联机状态.
+	-t ：列出 tcp 网绚封包的数据
+	-u ：列出 udp 网绚封包的数据
+	-l ：列出目前正在网络监听 (listen) 的服务；
+	-p ：列出该网绚服务的程序 PID
+
+df/fdisk 分区
+
+
+
+ps 
+
+	  top      kill     time uptime 
+ping     ftp      telnet   ssh     less
+
+
+	kill pid        杀进程用. 
+	kill -9 pid    -9 参数来强杀
+
+bc  简单的计算器.
+date 显示日期时间.
+cal 显示当月日历
+	cal 2009 显示09全年日历
+	cal 10 2009 显示09年 10月信息.
+
+
+
+
+echo
+echo : 在显示器上显示一段文字. 
+echo 极为常用.  打印变量的时候也常常用到.
+
+
+echo abc >> 1.txt
+把abc 追加到文件末尾
+
+
+文字输出：
+   \a 发出警告声；
+   \b 删除前一个字符；
+   \c 最后不加上换行符号；
+   \f 换行但光标仍旧停留在原来的位置；
+   \n 换行且光标移至行首；
+   \r 光标移至行首，但不换行；
+   \t 插入tab；
+   \v 与\f相同；
+   \\ 插入\字符；
+   \nnn 插入nnn（八进制）所代表的ASCII字符；
+–help 显示帮助
+–version 显示版本信息
+
+
+
+
+
+
+
+
+网络命令
+
+ping / traceroute / netstat / ftp / wget / ssh
+
+ping 发送icmp包. 给路由/主机 大部分都会回复. 
+
+traceroute. 
+显示所有经过的路由器的 名称/ip/往返时间.
+
+netstat 
+看本地网络信息. 多少网卡. 
+网卡是否启动 (是否UP)
+网卡是否有有效的IP地址
+netstat -r 会显示电脑本地的路由表!!!
+
+✘✘∙𝒗 ➜ netstat -r
+Routing tables
+
+Internet:
+Destination        Gateway            Flags        Refs      Use   Netif Expire
+default            101.92.192.1       UGSc          903        0     en0
+101.92.192/20      link#4             UCS             6        0     en0
+101.92.192.1/32    link#4             UCS             2        0     en0
+101.92.192.1       a0:f3:e4:97:b4:d1  UHLWIir       904        0     en0   1120
+101.92.206.42/32   link#4             UCS             1        0     en0
+101.92.206.77      link#4             UHLWIi          1        1     en0
+101.92.206.172     a0:f3:e4:97:b4:d1  UHLWIi          1        1     en0    659
+101.92.206.228     link#4             UHLWIi          1        1     en0
+101.92.207.157     link#4             UHLWIi          1        1     en0
+101.92.207.255     link#4             UHLWbI          1        9     en0
+127                localhost          UCS             1      369     lo0
+localhost          localhost          UH             13 30077264     lo0
+192.168.99         link#15            UC              3        0 vboxnet
+192.168.99.255     link#15            UHLWbI          1        9 vboxnet
+224.0.0/4          link#4             UmCS            3        0     en0
+224.0.0.251        1:0:5e:0:0:fb      UHmLWI          1        0     en0
+239.255.255.250    1:0:5e:7f:ff:fa    UHmLWI          1      140     en0
+255.255.255.255/32 link#4             UCS             1        0     en0
+
+Internet6:
+Destination        Gateway            Flags         Netif Expire
+default            fe80::%utun0       UGcI          utun0
+localhost          localhost          UHL             lo0
+
+wget 下载文件的...  非常有用. 脚本里经常用到
+
+
+查找文件
+简单方法: locate 通过名字来查找文件.
+复制方法:  find 在目录层次中搜索文件.
+
+locate. 默认搜索路径名数据库.这个数据库是每天更新的.不是实时更新的.
+
+
+
+
+AWK
+
+
+awk 是如何处理 每一笔记录的呢.
+
+
+awk特殊表达式: begin end
+begin end 作用是 给 程序赋予 初始状态 和 程序结束之后 一些稍微工作.
+
+任何Begin{} 内列出的操作 都会在 awk开始扫描之前执行.
+任何END{} 内列出的操作 都会在扫描完全部的输入之后执行.
+ 通常 begin 来显示变量和预置的变量.
+end 来输出最终的结构.
+
+
+
+
+
+
+
+取得活动网卡的IP
+
+ifconfig  会出来很长一段.很多是你不需要的. 
+我们要的 IP 只是 inet 字符后面的值.
+但是 网卡有很多张. 会出现很多 ip. 这就需要进一步刷选了. 
+由于激活的网卡都有个 广播地址: 也就是 broadcast
+
+
+1. ➜  Desktop ifconfig
+
+lo0: flags=8049<UP,LOOPBACK,RUNNING,MULTICAST> mtu 16384
+options=1203<RXCSUM,TXCSUM,TXSTATUS,SW_TIMESTAMP>
+inet 127.0.0.1 netmask 0xff000000
+inet6 ::1 prefixlen 128
+inet6 fe80::1%lo0 prefixlen 64 scopeid 0x1
+nd6 options=201<PERFORMNUD,DAD>
+gif0: flags=8010<POINTOPOINT,MULTICAST> mtu 1280
+stf0: flags=0<> mtu 1280
+en0: flags=8863<UP,BROADCAST,SMART,RUNNING,SIMPLEX,MULTICAST> mtu 1500
+ether 3c:15:c2:d6:0e:fa
+inet6 fe80::18bc:128a:4188:ee40%en0 prefixlen 64 secured scopeid 0x4
+inet 192.168.2.104 netmask 0xffffff00 broadcast 192.168.2.255
+nd6 options=201<PERFORMNUD,DAD>
+media: autoselect
+status: active
+en1: flags=963<UP,BROADCAST,SMART,RUNNING,PROMISC,SIMPLEX> mtu 1500
+options=60<TSO4,TSO6>
+ether 72:00:08:c9:9b:20
+media: autoselect <full-duplex>
+status: inactive
+en2: flags=963<UP,BROADCAST,SMART,RUNNING,PROMISC,SIMPLEX> mtu 1500
+options=60<TSO4,TSO6>
+ether 72:00:08:c9:9b:21
+media: autoselect <full-duplex>
+status: inactive
+
+
+1. ➜  Desktop ifconfig | grep 'inet'
+   inet 127.0.0.1 netmask 0xff000000
+   inet6 ::1 prefixlen 128
+   inet6 fe80::1%lo0 prefixlen 64 scopeid 0x1
+   inet6 fe80::18bc:128a:4188:ee40%en0 prefixlen 64 secured scopeid 0x4
+   inet 192.168.2.104 netmask 0xffffff00 broadcast 192.168.2.255
+   inet6 fe80::4c39:12ff:fe19:6c27%awdl0 prefixlen 64 scopeid 0x9
+   inet6 fe80::aa87:a64c:5192:5a83%utun0 prefixlen 64 scopeid 0xa
+   inet6 fe80::60c1:4cd2:bbde:11c%utun1 prefixlen 64 scopeid 0xb
+   inet6 fd42:b6ca:ab00:e5fe:60c1:4cd2:bbde:11c prefixlen 64
+
+
+2. ➜  Desktop ifconfig | grep 'inet'| grep 'broadcast'
+   inet 192.168.2.104 netmask 0xffffff00 broadcast 192.168.2.255
+现在就刷选出来 活动的网卡了.
+我们只需要ip 和 广播地址的话 就要用 awk 来筛选字段了.
+
+1. ➜  Desktop ifconfig | grep 'inet'| grep 'broadcast'| awk '{print $2,$6}'
+192.168.2.104 192.168.2.255
+
+
+
+
+
+
+
+
+压缩：tar -jcv -f filename.tar.bz2 要被处理的文件或目录名称  
+解压：tar -jxv -f filename.tar.bz2 -C 欲解压缩的目录  
+
+gcc  c源文件 编译成可执行的程序.
+time 执行某个目录需要花费的时间.  time ls　
+df命令: 磁盘使用情况 df -g; 以GB计
+passwd 修改密码
+
+
+whoami    当前用户信息
+logout    退出登录
+shutdown: 安全关闭系统
+halt:     直接关闭系统
+poweroff: 断电来关闭系统
+
+
+wc xxx.txt  统计文件行数 + 单词数 + 字符数: 
+
+
+设置权限 chmod +/—/=    读:r-4   写:w-2  执行x-1
+
+文件内容过多 需要分页: more / less  然后用 空格/b 来上下翻页.
+
+sort 文件排序...
+stat xxx.txt  文件索引信息
+
+nice 启动程序时候 指定优先级.
+renice 调整现有进程的优先级.
+vmstat 虚拟内存使用情况
+
+fdisk 磁盘分区工具..
+
+who
+who 系统登录人数.
+个人电脑: 一般都是个人使用.  一个电脑.一个用户
+服务器:   一般都是多人一起使用. 一个电脑多个用户
+who就是查看 谁登录了...
+'' ➜  sh who
+'' v        console  Mar 10 23:40
+'' v        ttys004  Mar 10 15:35
+'' 
+'' 大型服务器上有很多人在线一页显示不了.可用下面命令看人数:
+'' ➜  sh who | wc -l
+	''    2
+
+
+
+重启机器    shutdown -r now 
+切换用户  exit
+更换密码 passwd 进账户 直接改密码 
+
+ip 
+查询   ip :    addr    查看ip 信息 加/删 ip :    sudo ip addr add 192.168.0.193/24 dev wlan0
+查看   ip :  ip addr  show wlan0 查看路由器   ip route show
+查看 一个ip的路由包 从哪里来的 ip route get 58.217.200.13 (百度的ip)
+
+网络接口类型:
+lo  本地回环接口
+eth(0-9)  以太网接口
+pppx 点对点 接口
+
+chmod
+ sudo chmod -R 777 /usr/local/mysql-5.7.11-osx10.9-x86\_64/data/
+data 文件夹 下  所有文件 及 子文件夹 都有777 权限.
+
+chmod o+x 
+
+u → user    文件所有者 
+g → group   文件所有者所在组
+o → others  所有其他用户
+a → all     所有用户.
+
+
+- - =   增加权限 去除权限  重新设置所有权限
+
+
+例子:
+chmod a+r file.
+
+
+
+
+
+
+打包程序 tar
+使用tar程序打出来的包我们常称为tar包，通常都是以.tar结尾的。
+生成tar包后，就可以用其它的程序来进行压缩了.
+
+tar命令基本用法： 
+　　tar命令的选项有很多(用man tar可以查看到)，但常用的就那么几个选项
+
+　　\# tar -cf all.tar \*.jpg 
+　　这条命令是将所有.jpg的文件打成一个名为all.tar的包。-c是表示产生新的包 ，-f指定包的文件名。 
+ 　　
+tar -rf all.tar \*.gif
+　　这条命令是将所有.gif的文件增加到all.tar的包里面去。-r是表示增加文件的意思。 
+
+tar -uf all.tar logo.gif
+　　这条命令是更新原来tar包all.tar中logo.gif文件，-u是表示更新文件的意思。 
+
+　　\# tar -tf all.tar 
+　　这条命令是列出all.tar包中所有文件，-t是列出文件的意思 
+
+　　\# tar -xf all.tar 
+　　这条命令是解出all.tar包中所有文件，-x是解开的意思 
+
+　　为了方便用户在打包解包的同时可以压缩或解压文件，tar提供了一种特殊的功能。
+ 这就是tar可以在打包或解包的同时调用其它的压缩程序，比如调用gzip、bzip2
+
+
+
+1) tar调用gzip 
+　　gzip是一个压缩程序， .gz结尾的文件就是gzip压缩的结果。
+  gzip 相对的解压程序是gunzip。 tar中使用-z这个参数来调用gzip。 
+　　\# tar -czf all.tar.gz \*.jpg 
+　　将所有.jpg的文件打成一个tar包，并用gzip压缩，包名为all.tar.gz 
+　　\# tar -xzf all.tar.gz 
+　　这条命令是将上面产生的包解开。 
+ 　　
+2) tar调用bzip2 
+　　bzip2是一个压缩能力更强的压缩程序，.bz2结尾。 
+  与bzip2相对的解压程序是bunzip2。tar中使用-j这个参数来调用gzip。
+
+　　\# tar -cjf all.tar.bz2 \*.jpg 
+　  将所有.jpg的文件打成一个tar包，并且将其用bzip2压缩，生成一个all.tar.bz2 文件
+　　\# tar -xjf all.tar.bz2 
+　　这条命令是将上面产生的包解开。 
+
+
+下面对于tar系列的压缩文 件作一个小结： 
+　　1)对于.tar结尾的文件 
+　　tar -xf all.tar 
+ 　
+　2)对于.gz结尾的文件 
+　　gzip -d all.gz 
+　　gunzip all.gz 
+ 　
+　3)对于.tgz或.tar.gz结尾的文件 
+　　tar -xzf all.tar.gz 
+　　tar -xzf all.tgz 
+ 　　
+4)对于.bz2结尾的文件 
+　　bzip2 -d all.bz2 
+　　bunzip2 all.bz2 
+　　5)对于tar.bz2结尾的文件 
+　　tar -xjf all.tar.bz2 
+ 　
+　　另外对于Window下的常见压缩文件.zip和.rar，Linux也有相应的方法来解压它 们： 
+1)对于.zip 
+　　linux下提供了zip和unzip程序，zip是压缩程序，unzip是解压程序。
+
+　　\# zip all.zip \*.jpg 
+　　这条命令是将所有.jpg的文件压缩成一个zip包 
+unzip all.zip
+　　这条命令是将all.zip中的所有文件解压出来 
+
+2)对于.rar 
+　　要在linux下处理.rar文件，需要安装RAR for Linux，可以从网上下载，RAR for Linux 不是免费的；
+可从http://www.rarsoft.com/download.htm下载RARfor Linux 3.2.0，  然后安装： 
+　　\# tar -xzpvf rarlinux-3.2.0.tar.gz 
+　　\# cd rar 
+　　\# make 
+　　这样就安装好了，安装后就有了rar和unrar这两个程序，
+rar是压缩程序，unrar 是解压程序。　
+
+tar 
+
+-c: 建立压缩档案 
+-x：解压 
+-t：查看内容 
+-r：向压缩归档文件末尾追加文件 
+-u：更新原压缩包中的文件 
+
+这五个是独立的命令，压缩解压都要用到其中一个，可以和别的命令连用但只能用其中一个。下面的参数是根据需要在压缩或解压档案时可选的。 
+
+-z：有gzip属性的 
+-j：有bz2属性的 
+-Z：有compress属性的 
+-v：显示所有过程 
+-O：将文件解开到标准输出 
+
+下面的参数-f是必须的 
+-f: 使用档案名字，切记，这个参数是最后一个参数，后面只能接档案名。 
+tar -cf all.tar \*.jpg这条命令是将所有.jpg的文件打成一个名为all.tar的包。-c是表示产生新的包，-f指定包的文件名。
+tar -rf all.tar \*.gif
+这条命令是将所有.gif的文件增加到all.tar的包里面去。-r是表示增加文件的意思。 
+tar -uf all.tar logo.gif
+这条命令是更新原来tar包all.tar中logo.gif文件，-u是表示更新文件的意思。 
+tar -tf all.tar
+这条命令是列出all.tar包中所有文件，-t是列出文件的意思 
+tar -xf all.tar
+这条命令是解出all.tar包中所有文件，-x是解开的意思 
+压缩 
+tar –cvf jpg.tar \*.jpg //将目录里所有jpg文件打包成tar.jpg 
+tar –czf jpg.tar.gz \*.jpg //将目录里所有jpg文件打包成jpg.tar后，并且将其用gzip压缩，生成一个gzip压缩过的包，命名为jpg.tar.gz 
+tar –cjf jpg.tar.bz2 \*.jpg //将目录里所有jpg文件打包成jpg.tar后，并且将其用bzip2压缩，生成一个bzip2压缩过的包，命名为jpg.tar.bz2 
+tar –cZf jpg.tar.Z \*.jpg //将目录里所有jpg文件打包成jpg.tar后，并且将其用compress压缩，生成一个umcompress压缩过的包，命名为jpg.tar.Z 
+rar a jpg.rar \*.jpg //rar格式的压缩，需要先下载rar for linux 
+zip jpg.zip \*.jpg //zip格式的压缩，需要先下载zip for linux 
+
+解压 
+tar –xvf file.tar //解压 tar包 
+tar -xzvf file.tar.gz //解压tar.gz 
+tar -xjvf file.tar.bz2 //解压 tar.bz2 
+tar –xZvf file.tar.Z //解压tar.Z 
+unrar e file.rar //解压rar 
+unzip file.zip //解压zip 
+
+总结 
+1、\*.tar 用 tar –xvf 解压 
+2、\*.gz 用 gzip -d或者gunzip 解压 
+3、*.tar.gz和*.tgz 用 tar –xzf 解压 
+4、\*.bz2 用 bzip2 -d或者用bunzip2 解压 
+5、\*.tar.bz2用tar –xjf 解压 
+6、\*.Z 用 uncompress 解压 
+7、\*.tar.Z 用tar –xZf 解压 
+8、\*.rar 用 unrar e解压 
+9、\*.zip 用 unzip 解压
+ 
+
+
+
+硬盘常识
+硬盘: 扇区 和 磁柱 组成.
+每个扇区 512 byte   第一个扇区 特别重要: 包含了
+- 主要启劢记录区(Master Boot Record, MBR):
+  如果按照多系统 这个 就很重要了.!!!
+  可以安装开机管理程序癿地方,有 446 bytes     - 分区表(partition table):记录整颗硬盘分区状态,有 64 bytes 
+
+硬盘分区 属于 高级格式化.
+低格,必须在 dos/或者 U盘启动 中 才行.
+
+老毛桃 → DiskGenius → LFORMAT 低级格式化
+Y → Low Level Current Device
+Y
+没严重问题的硬盘 不建议低格.会影响硬盘寿命
+
+
+硬盘分区表
+硬盘 
+	→ 有多个磁盘盘面, 每个盘面一个磁盘读取头. 
+		→ 盘面有很多磁柱 类似操场 有很多跑道. 
+			→ 磁柱(跑道250米)有很多扇区(sector,一米)组成 
+				→ 每个扇区 512 byte = 0.5kb
+
+磁头只选择跑道,靠磁盘旋转来读写数据.
+
+硬盘的 第一个扇区特别重要 记录重要信息:
+主要启动记录区 (master boot record MBR) 安装开机管理程序的地方  446 byte
+开机 读取这个区块内容 系统才能知道你的程序放在哪里 和 如何进行开机 
+如果安装多系统 :这个就非常非常重要而来
+
+
+分区表信息 (partition table ) 记录硬盘的分割状态 64 byte
+	只能容纳 4笔 分区记录. 分区最小单位是磁柱.
+	多个主要分区 primary
+	一个扩展分区 extended
+
+为什么要分区 : 增加效率. 
+	比如分区 c 的磁柱范围是 1-100 
+	当硬盘要读取c 盘里面数据的话 只会搜索1-100的磁柱  
+	不会搜索100以外的磁
+
+
+比如一个硬盘 4个区.
+	硬盘 /dev/hda
+	分区1/dev/hda1
+	分区2/dev/hda2
+	分区3/dev/hda3
+	分区4/dev/hda4
+
+:
+
+磁柱: cylinder (所有盘面):多个磁轨 垂直方向叠加起来的概念 就是磁柱.
+磁轨: track    (单个盘面): 磁头不动  磁盘转一圈 那个就是磁柱.
+
+
+盘面 一个圆圈.  最外面
+
+分区 partition
+
+一个硬盘 多个分区 
+	SATA硬盘1 /dev/sda
+	SATA硬盘2 /dev/sdb
+	usb   /dev/sdc
+
+
+
+
+
+
+fdisk & df
+分区 → 格式化 → 挂载
+
+fdisk              磁盘操作工具
+fdisk -l           所有硬盘信息 + 详细的分区信息
+fdisk -l /dev/sda  查具体某块硬盘的分区信息
+
+格式化 hda10 分区 为 ext3 文件系统:  mkfs -t external /dev/hd10
+
+挂载
+	mkdir /mnt/sda6
+	chmod 777 /mnt/sda6
+	mount /dev/sda6 /mnt/sda6
+
+
+
+硬盘使用情况(容量):     df -h
+	root@kali:~# df -hl
+	Filesystem      Size  Used Avail Use% Mounted on
+	udev             10M     0   10M   0% /dev
+	tmpfs           401M  6.2M  395M   2% /run
+	/dev/sda1        21G  8.4G   12G  43% /
+	tmpfs          1003M  324K 1003M   1% /dev/shm
+	tmpfs           5.0M     0  5.0M   0% /run/lock
+	tmpfs          1003M     0 1003M   0% /sys/fs/cgroup
+	tmpfs           201M   16K  201M   1% /run/user/133
+	tmpfs           201M   24K  201M   1% /run/user/0
+
+
+
+fdisk -l
+
+Device     Boot    Start      End  Sectors  Size Id Type
+/dev/sda1  *        2048 43960319 43958272   21G 83 Linux
+/dev/sda2       43962366 45926399  1964034  959M  5 Extended
+/dev/sda5       43962368 45926399  1964032  959M 82 Linux swap / Sol
+
+
+Device Boot      Start         End      Blocks   Id  System
+/dev/hda1   *           1         765     6144831    7  HPFS/NTFS
+/dev/hda2             766        2805    16386300    c  W95 FAT32 (LBA)
+/dev/hda3            2806        9729    55617030    5  Extended
+/dev/hda5            2806        3825     8193118+  83  Linux
+/dev/hda6            3826        5100    10241406   83  Linux
+/dev/hda7            5101        5198      787153+  82  Linux swap / Solaris
+/dev/hda8            5199        6657    11719386   83  Linux
+/dev/hda9            6658        7751     8787523+  83  Linux
+/dev/hda10           7752        9729    15888253+  83  Linux
+
+第一段: 固态硬盘 sda 的信息.
+第二段: 机械硬盘 hda 的信息.
+如果有 hdb 说明是 HD 硬盘接口的 第二块硬盘.
+
+
+Boot  有 * 的那个是 启动盘!!!  主系统是安装在那里的.
+sda1,sda2,sda5  前缀都是 sda , 都是 sda 硬盘的分区.
+hda1,hda2,hda3… 前缀都是 hda , 都是 hda 硬盘的分区.
+
+sda1 启动分区  一般很小 . 
+sda2
+sda3
+
+
+交换分区:
+	查看交换分区: swapon -s
+	/dev/sda5                  partition   982012  0   -1
+
+
+分区转成 swap 交换分区
+	mkswap /dev/sda6  创建此分区为 swap 交换分区
+	swapon /dev/sda6  加载交换分区
+	swapoff /dev/sda6 关闭交换分区
+
+
+mkfs 格式化磁盘命令
+
+格式化 是为了 创建文件系统.
+
+
+dh -f
+用硬盘之前  必须 分区. 格式化 . 挂载
+
+mkfs
+
+
+
+
+disk doesn’t contain a valid partition table'' 你还没分区!!!! 
+遇上最后那种 就会出现  上面这个报错信息. 意思是你还没分区.
+
+解决办法:
+给磁盘创建文件系统
+创建挂载点
+挂载
+
+挂载: 怎么看有没有挂载
+新分区 用  fdisk 格式化下. 新建文件系统.
+
+
+
+
+文件操作
+
+nl 显示癿时候,顺道输出行号! 
+more 一页一页癿显示档案内容
+less 不 more 类似,但是比 more 更好癿是,他可以往前翻页!
+head 叧看头几行
+tail 叧看尾巳几行 cat -n xxx  则每一行前面还会加上行号呦! 
+
+
+找文件
+which type    需要 root 进行搜索.  寻找可执行文件. 命令
+
+
+
+find 直接搜索硬盘 . 很慢.
+whereis locate  利用数据库查找  快
+
+
+
+
+
+用户操作:
+
+|作用|命令|实例|
+|:---:|:---:|:---:|
+| 创建用户 | useradd| useradd xujian  |
+| 删除账号 | userdel| userdel xujian  |
+| 删除密码 | passwd | passwd -d xujian | | 修改密码 | passwd | passwd xujian xujian     | | 修改账号 | usermod| usermod xujian -l xx0219 |
+
+- 超级用户: 能给任何人 创建/修改 任何格式的密码.   (普通用户也能用简单密码,一定要 root 账户等进去改.自己是改不了简单密码的)
+
+加入用户组
+gpasswd -a test test2   //将用户test加入到test2组
+
+离开用户组
+gpasswd -d test test2  //将用户test从test2组中移出
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

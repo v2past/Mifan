@@ -1,0 +1,1237 @@
+⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️------⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️
+🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵  Linux 神器  🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵
+⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️------⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️
+
+❤️  vps 丢包严重 
+
+只能上vpn..
+
+
+
+
+
+
+
+❤️ tldr
+  man 替代品  
+  man 里面那么长.  懒得看.  用 tldr : too long don't read 
+  会给你该命令的用法举例!!! 一般人都能看懂的 ... 
+
+  ⦿ 安装 pip install tldr
+
+  ⦿ 使用 tldr + 命令
+    tldr ls
+    tldr ssh
+    tldr tar
+
+
+
+
+❤️ mycli
+
+  mysql 命令行客户端，支持语法高亮和命令补全
+  详细使用方法 https://github.com/dbcli/mycli
+
+  ❗️❗️ 每输入一次命令 都要按 q 按钮来退出. ❗️❗️
+
+  ⦿ Mac OS 安装:  brew install mycli
+  ⦿ Centos 安装:  yum install python-devel && pip install -U mycli
+
+  ⦿ 使用
+    • mycli -u root -p xxxx
+
+    • mycli ss  
+      直接进入ss数据库. 要输入root密码.
+
+    • mycli -h 104.224.139.45 -P 3306 -u root
+      Mac 如果安装了mycli 也能直接控制服务器. 不需要在服务器上安装.
+      mycli -h 104.224.139.45 -P 3306 
+
+
+
+
+
+🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸 Mosh 🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸
+自家的宽带烂偷了...丢包非常严重.... 丫的....
+为啥呢....
+
+
+❤️  Mosh    https://mosh.org/
+
+
+❗️❗️❗️❗️ 语法:  mosh --ssh="ssh -p 2222" root@23.105.192.96 ❗️❗️❗️❗️❗️
+❗️❗️❗️❗️ 语法:  mosh --ssh="ssh -p 2222" root@104.224.139.45 ❗️❗️❗️❗️❗️
+❗️❗️❗️❗️ 语法:  mosh --ssh="ssh -p 2222" root@23.105.192.96 ❗️❗️❗️❗️❗️
+
+
+
+用 mosh  root@23.105.192.96 死活不行?
+
+
+
+
+🔸 优点
+    ❗️❗️ 网络断线能自动恢复SSH连接,  使用UDP 消除卡顿 ❗️❗️
+    ❗️❗️ 网络断线能自动恢复SSH连接,  使用UDP 消除卡顿 ❗️❗️
+
+    Mosh 是一个替代 SSH 的免费软件，它最大的特点是支持网络漫游和间歇性连接。
+    Mosh 会不断的同步您本地和远程计算机的连接会话，以确保计算机在切换无线连接或休眠后可以自动重新连接到服务器。
+
+
+  持续连接：
+    如果您的网络中断，Mosh将会在新网络可用的时候自动重新连接服务器。
+
+  减少网络延时：
+    SSH 需要等待服务器响应后，才显示您的输入内容。而 Mosh 会马上显示您的输入，编辑，删除等内容。
+    像 SSH，但比 SSH 更好：Mosh 会通过 SSH 登录到服务器，然后运行普通终端应用程序。
+
+
+🔸 安装
+    需要服务器和本地同时安装 mosh
+
+    Centos7 安装 Mosh   yum install mosh
+    Mac OS  安装 Mosh   官网下载客户端 https://mosh.org/  
+
+    ⦿ mac 重装
+        之前是用 pkg 的安装包... 这种方式不好卸载..... 只能手动删除下面文件.
+        /usr/local/bin/mosh
+        /usr/local/bin/mosh-client
+        /usr/local/bin/mosh-server
+        /usr/local/share/man/man1/mosh-client.1
+        /usr/local/share/man/man1/mosh-server.1
+        /usr/local/share/man/man1/mosh.1
+
+        建议用 brew.
+        
+
+
+
+
+🔸 服务端
+    ⦿ 启动 mosh:   mosh-server
+
+        👹 服务端启动不了.
+          ✘✘∙𝒗2 ~ ➜  mosh-server
+              mosh-server needs a UTF-8 native locale to run.
+              Unfortunately, the local environment (LC_CTYPE=C) specifies
+              the character set "US-ASCII",
+              The client-supplied environment ([no charset variables]) specifies
+              the character set "US-ASCII".
+
+                ❗️❗️在~/.bashrc 或者~/.zshrc 添加一行即可： export LC_ALL="en_US.UTF-8"❗️❗️
+                然后重新连服务器 就可以开启mosh服务器
+
+
+    ⦿ 判断服务端是否开启
+        nmap -sU -p 60000-60005 127.0.0.1
+
+          👹 60002/udp open|filtered unknown
+              ✘✘∙𝒗1 /etc ➜ nmap -sU -p 60000-60005 127.0.0.1
+                  Starting Nmap 6.40 ( http://nmap.org ) at 2017-07-23 20:17 CST
+                  Nmap scan report for localhost.localdomain (127.0.0.1)
+                  Host is up (0.000079s latency).
+                  PORT      STATE         SERVICE
+                  60000/udp closed        unknown
+                  60001/udp closed        unknown
+                  60002/udp open|filtered unknown
+                  60003/udp closed        unknown
+                  60004/udp closed        unknown
+                  60005/udp closed        unknown
+
+服务器是启动了. 但是被filtered...  
+要么是防火墙.要么是什么设置
+先来看防火墙.
+
+
+
+
+
+
+
+
+  ⦿ 使用.
+
+      mosh 有自己的端口. 而不是用的ssh端口.
+
+
+      语法:  mosh 用户名@服务器IP
+      mosh root@104.224.139.45
+      mosh root@104.224.139.45 --ssh="ssh -p 2222" 
+
+
+默认是用的是 60000 的udp端口.
+因为 Mosh 使用的是 UDP 端口，所以服务器上需要打开某 UDP 端口。
+因为Mosh用的是UDP端口, 所以要在服务器上面打开端口, 打开60001到61000任何一个端口即可.
+
+
+
+
+查看 60000 这个udp端口有没有开启. 没开启就是没运行 mosh 服务.怎么运行呢..
+ nmap -sU -p 60000 127.0.0.1
+ nmap -sU -p 60000-60005 127.0.0.1
+
+
+
+
+
+
+
+
+👹 客户端连不上.
+/usr/local/bin/mosh: Could not connect to 23.105.192.96, last tried 23.105.192.96: IO::Socket::INET: connect: Connection refused
+ssh_exchange_identification: Connection closed by remote host
+/usr/local/bin/mosh: Did not find remote IP address (is SSH ProxyCommand disabled?).
+
+export LANG="en_US.UTF-8"
+
+ 65 export LANG="en_US.UTF-8"
+ 66 export LC_ALL="en_US.UTF-8"
+
+
+
+
+
+👹 ssh_exchange_identification: Connection closed by remote host
+
+这个提示是典型的tcp_wrapper配置了不允许你这个ip登录ssh
+最简单的解决方法就是让/etc/hosts.allow 和/etc/hosts.deny里面的所有信息都不生效,全部注销掉,重启SSH服务就可以了.
+应该是服务端的 
+登录服务器发现这两个端口都是空的啊..
+
+
+
+
+Mosh 还有chrome 浏览器的桌面应用. 
+安装后会和别的程序一样安装到 mac 的 app 里面. 
+通过这个启动的. 而不是通过chrome 浏览器启动的...
+
+
+
+
+
+
+
+
+❤️ shellcheck：
+    shell脚本静态检查工具，能够识别语法错误以及不规范的写法。
+    https://github.com/koalaman/shellcheck
+
+    很多使用方法.
+    可以在网页上写脚本.然后在线检查.
+    可以在终端上检测, 还能在编辑器如 vscode  上检查.
+
+    ⦿ 网页在线检测.  http://www.shellcheck.net/
+
+    ⦿ Mac 安装  
+      • brew install shellcheck
+      • vsc 插件安装. 找 shellcheck 然后安装.
+
+
+
+
+
+
+❤️ mtr   网络诊断工具
+
+❤️ netstat
+  使用 netstat 去查找网络连接信息和系统开启的端口号。
+
+
+**显示各种网络相关信息:**
+
+网络连接，
+**路由表**
+接口状态 (Interface Statistics)，masquerade 连接，
+多播成员 (Multicast Memberships) 等等。
+
+
+-a (all)显示所有选项，默认不显示LISTEN相关 -t (tcp)仅显示tcp相关选项 -u (udp)仅显示udp相关选项 -n 拒绝显示别名，能显示数字的全部转化成数字。 -l 仅列出有在 Listen (监听) 的服務状态
+-p 显示建立相关链接的程序名 -r 显示路由信息，路由表 -e 显示扩展信息，例如uid等 -s 按各个协议进行统计 -c 每隔一个固定时间，执行该netstat命令。
+提示：LISTEN和LISTENING的状态只有用-a或者-l才能看到
+
+
+列出所有端口 netstat -a
+
+
+列出所有 tcp 端口 netstat -at
+
+列出所有 udp 端口 netstat -au
+
+2. 列出所有处于监听状态的 Sockets
+  只显示监听端口 netstat -l
+
+只列出所有监听 tcp 端口 netstat -lt
+
+ 只列出所有监听 udp 端口 netstat -lu
+
+只列出所有监听 UNIX 端口 netstat -lx
+
+
+
+3. 显示每个协议的统计信息
+  显示所有端口的统计信息 netstat -s
+
+
+
+显示 TCP 或 UDP 端口的统计信息 netstat -st 或 -su
+
+4. 在 netstat 输出中显示 PID 和进程名称 netstat -p
+netstat -p 可以与其它开关一起使用，就可以添加 “PID/进程名称” 到 netstat 输出中，这样 debugging 的时候可以很方便的发现特定端口运行的程序。
+
+
+5. 在 netstat 输出中不显示主机，端口和用户名 (host, port or user)
+当你不想让主机，端口和用户名显示，使用 netstat -n。将会使用数字代替那些名称。
+同样可以加速输出，因为不用进行比对查询
+
+
+
+6. 持续输出 netstat 信息
+netstat 将每隔一秒输出网络信息
+
+
+
+8. 显示核心路由信息 netstat -r
+
+
+
+9. 找出程序运行的端口
+并不是所有的进程都能找到，没有权限的会不显示，使用 root 权限查看所有的信息。
+
+
+
+显示网络接口列表
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+❤️ nmon   综合监控，CPU，内存，磁盘IO，网络IO
+❤️ dstat  综合监控，CPU，内存，磁盘IO，网络IO
+
+
+❤️ htop   进程监控
+
+❤️ iotop  硬盘IO的命令
+            需要 2.6.20+的内核才行. Centos6 是不行的. Centos7 才可以.
+            ⦿ 安装   yum install iotop -y
+            ⦿ 使用  iotop
+❤️ iftop  网络流量 
+            iftop是类似于top的实时流量监控工具。
+            iftop可以用来监控网卡的实时流量、反向解析IP、显示端口信息等，
+
+            yum install flex byacc  libpcap ncurses ncurses-devel libpcap-devel
+            yum install iftop
+
+
+
+
+
+
+❤️ ip 
+  新工具 ifconfig会被这个所淘汰！比如 ip route list 查看当前主机路由表。
+
+
+
+
+
+
+
+
+
+❤️ supervisor
+
+  Supervisor 相当强大,不过我们可能只需要用到其中一小部分。
+
+  supervisor 是一个 C/S 模型的程序. 有服务端 和 客户端.
+    supervisord   服务端配置
+    supervisorctl 客户端配置
+
+  supervisor 用来进程管理. 如果某些进程发生意外 可以自动重启这些进程.
+
+
+
+  ⦿ Mac 安装               pip install supervisor
+  ⦿ Centos7 安装           pip install supervisor
+  ⦿ supervisor 默认配置:   echo_supervisord_conf
+  ⦿ 导出默认配置           echo_supervisord_conf > /etc/supervisord.conf
+                          sudo sh -c "echo_supervisord_conf > /etc/supervisord.conf"
+
+  ⦿ 启动: supervisord -c /etc/supervisord.conf
+  ⦿ 状态: ps aux | grep supervisord
+
+
+  ⦿ 配置 /etc/supervisord.conf
+
+  [unix_http_server]
+  file=/tmp/supervisor.sock   ; UNIX socket 文件，supervisorctl 会使用
+  ;chmod=0700                 ; socket 文件的 mode，默认是 0700
+  ;chown=nobody:nogroup       ; socket 文件的 owner，格式： uid:gid
+
+  ;[inet_http_server]         ; HTTP 服务器，提供 web 管理界面
+  ;port=127.0.0.1:9001        ; Web 管理后台运行的 IP 和端口，如果开放到公网，需要注意安全性
+  ;username=user              ; 登录管理后台的用户名
+  ;password=123               ; 登录管理后台的密码
+
+  [supervisord]
+  logfile=/tmp/supervisord.log ; 日志文件，默认是 $CWD/supervisord.log
+  logfile_maxbytes=50MB        ; 日志文件大小，超出会 rotate，默认 50MB
+  logfile_backups=10           ; 日志文件保留备份数量默认 10
+  loglevel=info                ; 日志级别，默认 info，其它: debug,warn,trace
+  pidfile=/tmp/supervisord.pid ; pid 文件
+  nodaemon=false               ; 是否在前台启动，默认是 false，即以 daemon 的方式启动
+  minfds=1024                  ; 可以打开的文件描述符的最小值，默认 1024
+  minprocs=200                 ; 可以打开的进程数的最小值，默认 200
+
+  ; the below section must remain in the config file for RPC
+  ; (supervisorctl/web interface) to work, additional interfaces may be
+  ; added by defining them in separate rpcinterface: sections
+  [rpcinterface:supervisor]
+  supervisor.rpcinterface_factory = supervisor.rpcinterface:make_main_rpcinterface
+
+  [supervisorctl]
+  serverurl=unix:///tmp/supervisor.sock ; 通过 UNIX socket 连接 supervisord，路径与 unix_http_server 部分的 file 一致
+  ;serverurl=http://127.0.0.1:9001 ; 通过 HTTP 的方式连接 supervisord
+
+  ; 包含其他的配置文件
+  [include]
+  files = relative/directory/*.ini    ; 可以是 *.conf 或 *.ini
+
+
+
+
+
+  ⦿ 使用 supervisorctl
+  Supervisorctl 是 supervisord 的一个命令行客户端工具，启动时需要指定与 supervisord 使用同一份配置文件，否则与 supervisord 一样按照顺序查找配置文件。
+
+  supervisorctl -c /etc/supervisord.conf
+
+
+
+
+
+
+
+
+
+
+❤️ nohup，在后台运行程序，程序不会随着shell关闭而退出。
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+❤️ Nslookup
+*查询DNS的记录，查看网络中的 DNS 服务器 的域名解析是否正常.*
+
+ nslookup www.taobao.com
+Server:     172.19.16.16        // DNS 服务器.
+Address:    172.19.16.16#53
+Non-authoritative answer:
+www.taobao.com  canonical name = www.taobao.com.danuoyi.tbcache.com.
+Name:   www.taobao.com.danuoyi.tbcache.com
+Address: 124.160.132.254
+Name:   www.taobao.com.danuoyi.tbcache.com
+Address: 140.207.232.122
+
+
+
+正向解析
+
+逆向解析
+
+
+
+直接查询 返回的是 A 记录.
+
+
+
+A记录: (address)
+用来 指定主机名/域名 对应的 IP 地址记录.
+
+
+
+- A     地址记录 
+- CNAME 别名记录 
+	允许您将多个名字映射到同一台计算机。 通常用于同时提供WWW和MAIL服务的计算机。
+
+例:
+有一台计算机名为“host.mydomain.com”（A记录）。 它*同时提供 WWW 和 MAIL服务.*
+为了便于用户访问服务。*可以设置两个别名（CNAME）*：WWW 和 MAIL。 
+1. www.mydomain.com
+	2. mail.mydomain.com。
+		> 实际上他们都指向“host.mydomain.com”。
+
+
+
+
+- MX    邮件服务器记录
+
+
+
+- NS    名字服务器记录
+
+AAAA          地址记录 
+AFSDB Andrew  文件系统数据库服务器记录 
+ATMA          ATM地址记录 
+HINFO         硬件配置记录，包括CPU、操作系统信息 
+ISDN          域名对应的ISDN号码 
+MB            存放指定邮箱的服务器 
+MG            邮件组记录 
+MINFO         邮件组和邮箱的信息记录 
+MR            改名的邮箱记录 
+PTR           反向记录 
+RP            负责人记录 
+RT            路由穿透记录 
+SRV           TCP服务器信息记录 
+TXT           域名对应的文本信息 
+X25           域名对应的X.25地址记录
+
+
+
+
+1. A记录 又称IP指向，用户可以在此设置子域名并指向到自己的目标主机地址上，从而实现通过域名找到服务器。说明：·指向的目标主机地址类型只能使用IP地址；
+
+附加说明： 
+           1) 泛域名解析即将该域名所有未指定的子域名都指向一个空间。在“主机名”中填入\*，“类型”为A，“IP地址/主机名”中填入web服务器的IP地址，点击“新增”按钮即可。 
+           2) 负载均衡的实现：负载均衡(Server Load Balancing，SLB)是指在一系列资源上面动态地分布网络负载。负载均衡可以减少网络拥塞，提高整体网络性能，提高自愈性， 并确保企业关键性应用的可用性。当相同子域名有多个目标地址时，表示轮循，可以达到负载均衡的目的，但需要虚拟主机服务商支持。
+  
+
+ \2. CNAME 通常称别名指向。您可以为一个主机设置别名。比如设置test.mydomain.com，用来指向一个主机www.rddns.com那么以后就可以用test.mydomain.com来代替访问www.rddns.com了。
+说明：·
+            CNAME的目标主机地址只能使用主机名，不能使用IP地址；·主机名前不能有任何其他前缀，如：http://等是不被允许的；·A记录优先于CNAME记录。即如果一个主机地址同时存在A记录和CNAME记录，则CNAME记录不生效。  
+3. MX记录 邮件交换记录。用于将以该域名为结尾的电子邮件指向对应的邮件服务器以进行处理。如：用户所用的邮件是以域名mydomain.com为结尾的，则需要在管理界面中添加该域名的MX记录来处理所有以@mydomain.com结尾的邮件。
+
+说明：·
+            MX记录可以使用主机名或IP地址；·MX记录可以通过设置优先级实现主辅服务器设置，“优先级”中的数字越小表示级别越高。也可以使用相同优先级达到负载均衡的目的；·如果在“主机名”中填入子域名则此MX记录只对该子域名生效。
+附加说明：
+         1) 负载均衡服务器负载均衡(Server Load Balancing，SLB)是指在一系列资源上面智能地分布网络负载。负载均衡可以减少网络拥塞，提高整体网络性能，提高自愈性，并确保企业关键性应用的可用性。当域名的MX记录有多个目标地址且优先级相同时，表示轮循，可以达到负载均衡的目的，但需要邮箱服务商支持。  
+4. NS记录 解析服务器记录。用来表明由哪台服务器对该域名进行解析。这里的NS记录只对子域名生效。
+   例如用户希望由12.34.56.78这台服务器解析news.mydomain.com，则需要设置news.mydomain.com的NS记录。
+   说明：·“优先级”中的数字越小表示级别越高；·“IP地址/主机名”中既可以填写IP地址，也可以填写像ns.mydomain.com这样的主机地址，但必须保证该主机地址有效。
+   如，将news.mydomain.com的NS记录指向到ns.mydomain.com，在设置NS记录的同时还需要设置ns.mydomain.com的指向，
+   否则NS记录将无法正常解析；·NS记录优先于A记录。即，如果一个主机地址同时存在NS记录和A记录，则A记录不生效。这里的NS记录只对子域名生效。 
+5. 
+   相关说明  
+   1) 负载均衡服务器负载均衡(Server Load Balancing，SLB)是指在一系列资源上面智能地分布网络负载。负载均衡可以减少网络拥塞，提高整体网络性能，提高自愈性，并确保企业关键性应用的可用性。当相同子域有多个目标地址，或域名的MX记录有多个目标地址且优先级相同时，表示轮循，可以达到负载均衡的目的，但需要虚拟主机和邮箱服务商支持。
+    2) TTL值TTL值全称是“生存时间（Time To Live)”，简单的说它表示DNS记录在DNS服务器上缓存时间。东方网景DNS服务器默认即时生效，客户的增加修改一般不超过15分钟可以使用。  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️------⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️
+🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵     Misc     🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵
+⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️------⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️
+
+
+🔵 ag
+Ag > Ack > Grep Vim下面我用了长时间的 grep ，真是伤不起啊。
+
+
+全局代码搜索 比较快... 但是文件就不一定了 ..
+
+
+
+Ag(The Silver Searcher)和Ack都是 CLI 的全局搜索工具，其中Ag更快一些，而Ack也比Vim自带的grep快很多。这些工具的Vim插件可以通过Vim Quickfix窗口来提供代码搜索的结果。 本文便来详细介绍如何在Vim中使用Ag全局搜索。
+
+
+
+比grep、ack更快的递归搜索文件内容。
+https://github.com/ggreer/the_silver_searcher
+
+
+⦿ Mac OS  安装:  brew install the_silver_searcher
+⦿ Centos7 安装:  yum install the_silver_searcher -y
+
+
+
+⦿ 使用
+  ag 'hx' /www/t086.com
+
+  常用参数
+  -i 忽略大小写
+  -l 只列出文件名
+  -g 文件名匹配
+  --php 只搜索php文件
+  --ignore-dir 忽略目录
+
+
+  • 用法 man ag
+  • 版本 ag -V
+
+
+
+
+如：ag --ignore-dir sitedata --php hx /www/9enjoy.com
+
+更多
+-h 看帮助吧
+
+
+
+
+
+
+ag HelloWorld
+就会搜索 所有文件　
+
+
+
+
+
+
+
+
+🔵 tig
+https://github.com/jonas/tig
+终端下查看... git 项目..
+
+⦿ Mac OS  安装:  brew install tig
+⦿ Centos7 安装:  yum install tig
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+🔵 yapf：
+Google开发的python代码格式规范化工具，支持pep8以及Google代码风格。
+https://github.com/google/yapf
+⦿ 安装 pip install yapf
+
+
+
+
+
+
+
+
+
+
+
+
+
+🔵 axel
+多线程下载工具，下载文件时可以替代curl、wget。
+
+
+
+
+🔵 tmux：
+
+⦿ 参考文章
+    https://mba811.gitbooks.io/mac-dev/content/iTerm/tmux.html
+    http://wdxtub.com/2016/03/30/tmux-guide/
+    http://mingxinglai.com/cn/2012/09/tmux/
+
+
+
+🔸 简介
+
+tmux使用C/S模型构建，主要包括以下单元模块：
+server服务器。输入tmux命令时就开启了一个服务器。
+session会话。一个服务器可以包含多个会话
+window窗口。一个会话可以包含多个窗口。
+pane面板。一个窗口可以包含多个面板。
+
+
+
+
+    iTerm是一个GUI软件，它的窗格只是窗格而已！
+    而Tmux是终端复用，在一个命令行窗口中不仅可以显示多个Shell的内容，而且可以保持多个会话
+
+    Tmux 和 screen 有什么区别？
+    功能差不多 但是 tmux 强大很多..
+
+    tmux是linux中一种管理窗口的程序。那么问题来了：Mac自带的Iterm2很好用啊。既支持多标签，也支持窗体内部Panel的分割，为什么还要用tmux？其实，多标签和分割窗体只是tmux的部分功能。用tmux的主要原因是它提供了一个窗体组随时存储和恢复的功能。看看以下的使用场景是否适合你：
+
+    公司台式机开了一堆vim和log打印窗口下班了。到家后灵感突发，想要继续coding，登陆VPN，SSH连上台式后发现又要重新打开各种窗口，瞬间没心情了。。。FML！这个时候你就可以在你的公司台式机上装个tmux。同一组工作环境，在多处共享。
+    公司服务器上调试程序，开了一堆窗口。出去吃了个饭，发现SSH超时了，broken pipe。重头开始。。。FML！如果你之前使用了tmux就不会有这样的问题，attach就能找回原来打开的那些窗口。
+
+
+
+
+    终端复用工具，替代screen、nohup。
+    比如在 iterm 下要在vps2下开多个窗口.  要么一次次的ssh.
+    要么就 用 tmux . 这个是安装在服务器端的.
+
+    安装好后 . 在终端输入 tmux 就启动了. .
+    启动之后，可以看到命令行最底部多了一条绿色的状态条，上面显示了一些信息，比如计算机名和时间等。 要退出 tmux，可以输入 exit 回车或者按下组合键 [Ctrl+d] 。
+
+🔸 安装
+  brew install tmux
+  yum install tmux -y
+
+
+
+🔸 基本操作.
+
+tmux              新建会话.
+tmux new -s vps1  新建名为 vps1 的会话
+tmux show -g      tmux当前配置,需进入tmux操作  可查看前置快捷键是 prefix C-b
+tmux ls           当前有哪些Session
+tmux a -t name    恢复某个session
+
+c           新建窗口.  新窗口是没有tab的. 只会在底下绿色栏目里显示.
+0-9         切换到几号窗口. 当前窗口底部绿栏有个星号表示.
+n           跳到下一个窗口
+
+"(shift+')  水平新建panel
+%(shift 5)  垂直新建panel
+o           鼠标跳到下一个panel.  
+
+空格        自动切换panel布局排列
+
+!(shift 1)  当前panel 变成新窗口
+
+
+C-方向键   调整panel大小 
+
+
+t          显示时钟
+
+x  关闭panle
+&  关闭窗口
+d  后台运行当前会话.
+
+
+
+
+🔸 前置快捷键修改.
+
+  默认快捷键是 ctrl b  不喜欢可以改... 
+  新建配置文件. vi ~/.tmux.conf
+
+  #解除Ctrl+b 与前缀的对应关系
+  unbind C-b
+
+  #设置前缀为Ctrl + a
+  set -g prefix C-a
+
+  要使得配置生效得重新加载 配置文件. 不等于重启 iterm!!!
+  在 tmux 里面输入  ⌃+b shift+; 就能进入tmux的命令行模式了, 
+  输入source-file ~/.tmux.conf 就能重新加载 tmux 配置文件了.
+  然后再进入 tmux 用 tmux show -g 看快捷键就改掉了.!!
+
+
+🔸 快捷键修改
+
+#up
+bind-key k select-pane -U
+#down
+bind-key j select-pane -D
+#left
+bind-key h select-pane -L
+#right
+bind-key l select-pane -R
+
+之后就能用 快捷键+hjkl 来切换panel了.
+
+
+
+
+
+⦿ 分离会话
+退出 tmux 可以使用 exit 命令或者 [Ctrl+d] 组合键，退出 tmux 会把会话结束掉，就像平常关闭终端程序一样。但是在实际应用中，可能你并不希望这样，因为有些程序是要保持运行的，例如 rails 的测试服务、telnet连接远程服务器等等。
+
+
+分离后 . 可以一直运行... 哪怕你把 iterm程序关闭...
+
+如果你想知道当前tmux的设置，可通过tmux show -g来查看（该命令需要tmux正在运行）。 你可能会需要把这些设置导出为文件：
+
+
+
+
+
+
+tmux list-keys 列出所有可以的快捷键和其运行的 tmux 命令
+tmux list-commands 列出所有的 tmux 命令及其参数
+tmux info 流出所有的 session, window, pane, 运行的进程号，等。
+
+
+
+
+
+
+
+
+
+
+
+
+
+🔵 you-get
+
+下载工具..
+
+
+
+🔵 thefuck
+
+⦿ 安装
+brew install thefuck
+pip install thefuck
+
+
+⦿ 使用
+
+
+
+🔵 screenfetch
+查看系统信息
+✘✘∙𝒗2 screenFetch ➜ ./screenfetch-dev
+                   ..                    root@localhost.localdomain
+                 .PLTJ.                  OS: CentOS
+                <><><><>                 Kernel: x86_64 Linux 2.6.32-042stab123.3
+       KKSSV' 4KKK LJ KKKL.'VSSKK        Uptime: 1d 23h 20m
+       KKV' 4KKKKK LJ KKKKAL 'VKK        Packages: 530
+       V' ' 'VKKKK LJ KKKKV' ' 'V        Shell: zsh 5.0.2
+       .4MA.' 'VKK LJ KKV' '.4Mb.        CPU: Intel Xeon E3-1275 v5 @ 3.6GHz
+     . KKKKKA.' 'V LJ V' '.4KKKKK .      RAM: 340MiB / 1024MiB
+   .4D KKKKKKKA.'' LJ ''.4KKKKKKK FA.
+  <QDD ++++++++++++  ++++++++++++ GFD>
+   'VD KKKKKKKK'.. LJ ..'KKKKKKKK FV
+     ' VKKKKK'. .4 LJ K. .'KKKKKV '
+        'VK'. .4KK LJ KKA. .'KV'
+       A. . .4KKKK LJ KKKKA. . .4
+       KKA. 'KKKKK LJ KKKKK' .4KK
+       KKSSA. VKKK LJ KKKV .4SSKK
+                <><><><>
+                 'MKKM'
+
+
+
+安装: 
+git clone https://github.com/KittyKatt/screenFetch.git
+cd screenFetch
+chmod +x screenfetch-dev
+./screenfetch-dev
+
+
+
+
+🔵 NetHogs
+NetHogs——Linux下按进程实时统计网络带宽利用率
+
+
+网上有很多适用于Linux操作系统的开源网络监视工具.
+你可以用命令iftop来检查带宽使用情况. 
+netstat用来查看接口统计报告,
+还有top监控系统当前运行进程.
+但是如果你想要找一个能够按进程实时统计网络带宽利用率,那么NetHogs就是你所需要的唯一工具.
+
+
+
+⦿ 安装   yum install nethogs -y
+
+⦿ 使用: 
+
+sudo nethogs
+sudo nethogs -d 5  刷新频率.
+
+
+
+
+🔵 nload
+❗️❗️❗️❗️ 监控主机网络流量 ❗️❗️❗️❗️
+
+⦿ 安装:  yum install nload -y
+
+⦿ 使用
+
+nload          左右方向键 可以切换网卡!!
+nload -t 500   刷新值
+
+
+nload -u b 显示单位
+nload -u k 显示单位
+nload -u m 显示单位
+nload -u g 显示单位
+
+
+
+
+
+
+
+
+🔵 arpwatch
+arp活动监视器
+
+
+
+查看 arp的...
+yum install arpwatch -y
+
+
+启动.
+/etc/init.d/arpwatch start
+
+
+
+
+
+
+🔵 bwm-ng
+
+实时网速查看
+$ sudo yum install bwm-ng
+
+
+
+  bwm-ng v0.6.1 (probing every 0.500s), press 'h' for help
+  input: /proc/net/dev type: rate
+  |         iface                   Rx                   Tx                Total
+  ==============================================================================
+               lo:           0.20 KB/s            0.20 KB/s            0.41 KB/s
+           venet0:           0.20 KB/s            0.75 KB/s            0.95 KB/s
+  ------------------------------------------------------------------------------
+            total:           0.41 KB/s            0.95 KB/s            1.36 KB/s
+
+
+
+
+
+
+🔵 极速蜗牛：apt-fast
+
+如果你在Debian或Ubuntu系统上经常感觉到apt-get 或 aptitude包安装速度过慢，那么这里就有几种改善这一情况的方法。你有没有考虑过改变正被使用的默认镜像站点？你有没有排除因特网连接的上游带宽成为瓶颈的可能？
+
+它能加速包的下载速度。apt-fast本质上采用aria2下载工具，这款工具能够以“块”的方式从多个镜像并行下载一个文件（就像BitTorrent下载）。
+
+
+
+
+
+🔵 ngxtop
+Nginx日志实时监控、排查整理工具 - ngxtop
+
+
+要实时查看日志文件变动我们首先想到的应该是tail -f /path/to/log，
+但是这样看网站的访问日志是相当崩溃的，好一点可以写个脚本进行筛选，但是大部分人还是不擅长的，
+今天就推荐给大家一个Nginx日志工具：ngxtop。
+
+说起top工具有很多如：iftop、htop、ntop等，今天说的ngxtop功能也毫不逊色，不仅能实时监控Nginx日志的访问还可以对以前的日志进行排查整理。
+
+
+⦿ 安装: pip install ngxtop
+
+
+⦿ 使用
+
+实时监控日志
+ngxtop -l /home/wwwlogs/www.vpser.net.log
+
+
+
+
+
+🔵 fping/hping
+ping 只能ping 一个主机.
+如果是大量服务器 就得用 fping.
+
+sudo yum install fping -y
+
+brew install fping
+
+
+
+
+
+
+
+
+
+🔵 pkill 按进程的名称杀死进程！（这个工具我很惊讶！）
+
+
+
+
+
+
+
+🔵 iptraf （网卡监听工具）神器！
+
+yum install iptraf -y
+
+
+
+
+
+
+🔵 swaks
+Swaks是由John Jetmore编写和维护的一种功能强大，灵活，可脚本化，面向事务的SMTP测试工具。可向任意目标发送任意内容的邮件。
+
+“swaks”这个名字是”SWiss Army Knife Smtp”的首字母缩略词.
+
+邮件伪造
+
+
+http://www.freebuf.com/sectool/92397.html
+
+
+
+
+
+🔵 cv
+cp 复制是没有进度条的 用cv 就有.
+
+需要自己编译安装.https://github.com/Xfennec/progress
+
+
+
+🔵 powerline-shell
+好看的 终端条
+https://github.com/banga/powerline-shell
+
+
+🔸 Mac 安装方法
+
+任意目录下载.
+git clone https://github.com/milkbikis/powerline-shell && cd powerline-shell
+
+复制文件
+cp config.py.dist config.py
+
+运行
+./install.py
+
+会生成一个 powerline-shell.py 文件. 把这个文件放到 用户根目录下去.
+
+然后就看你是使用 bash 还是 zsh . zsh的话 把 下面内容追加到 ~/.zshrc 就可以
+function powerline_precmd() {
+    PS1="$(~/powerline-shell.py $? --shell zsh 2> /dev/null)"
+}
+
+function install_powerline_precmd() {
+  for s in "${precmd_functions[@]}"; do
+    if [ "$s" = "powerline_precmd" ]; then
+      return
+    fi
+  done
+  precmd_functions+=(powerline_precmd)
+}
+
+if [ "$TERM" != "linux" ]; then
+    install_powerline_precmd
+fi
+
+
+⦿ 重启zsh 测试
+
+
+
+
+
+
+🔵 hydra九头龙 暴力破解
+
+
+
+
+🔵 last lastlog（运维神器和我们普通用户没关系）
+
+
+
+
+
+
+
+
+🔵 brctl网桥工具
+
+
+🔵 route-n（查看ip与路由） cat/proc/net/arp（查看arp）cat /proc/net/netlink（查看哎呀忘了）
+
+
+
+
+
+🔵 PM2 
+http://pm2.keymetrics.io/
+
+Nodejs服务工具可以在服务因异常或其他原因被杀掉后进行自动重启。 
+由于Node的单线程特征，自动重启能很大程度上的提高它的健壮性。
+
+
+
+
+
+
+🔵 HTTPie
+
+https://httpie.org/
+
+安装:  brew install httpie
+        sudo yum install httpie
+
+
+
+之前在命令行下进行HTTP服务的调试和信息查看都是使用经典的cURL，不过前段时间发现一个交互更加友好的工具，就是HTTPie。
+
+
+如果你经常需要用终端以非交互模式访问网络服务器（比如，下载文件、测试REST服务），可能你会选择的工具是wget或curl，通过大量的选项，这两种工具也都可以处理很多非交互网络访问的情况（比如，如何通过wget下载多个文件，如何在wget中设置自定义的http头，如何在curl中设置自定义的HTTP头）。然而，除非你很精通这些繁复的语法细节，这些工具对于你来说，不过是简单的下载工具而已。
+
+
+
+HTTPie则在使用时的表现力、人性化做得比wget、curl好得多，就像在官网上宣传的那样，它追求的是人性化、简单自然的语法，以及彩色的输出。而且HTTPie还有一些不错的优点，比如对JSON的良好支撑、持久性会话等特性。
+
+
+
+
+
+
+
+
+
+
+🔵 jq，命令行的json查询和格式化工具，适合查看rest接口的输出
+
+
+
+
+🔵 musicbox  网易云音乐 命令行版本
+https://github.com/darknessomi/musicbox
+
+macOS安装
+
+$ pip3 install NetEase-MusicBox
+$ brew install mpg123
+
+使用
+
+
+
+
+🔵 cowsay
+https://gist.github.com/dakull/6615458
+
+
+
+使用方法 cowsay 显示内容
+
+cowsay helloacm
+ __________
+< helloacm >
+ ----------
+        \   ^__^
+         \  (oo)\_______
+            (__)\       )\/\
+                ||----w |
+                ||     ||
+
+
+
+
+
+🔵 lolcat
+彩色 cat 
+
+
+
+
+🔵 屏保 nyancat
+
+
+
+
+
+
+
+
+🔵 ffmpeg
+这玩意可以实现:视频拆帧，合并帧为视频，视频转gif，视频转码，分离音视频......
+
+
+
+
+
+🔵 Lynx  文本浏览器.
+http://chaishiwei.com/blog/708.html
+brew install lynx
+
+使用:..在公司里，别人浏览网站，都是用浏览器。
+
+用法: lynx + 网址.
+
+
+
+
+
+🔵 axel 
+
+各种网盘不限速下载 谁用谁知道&
+
+
+
+
+🔵 bmon 简单但非常强大的 网络监视和调试工具
+sudo yum install bmon -y
+
+使用 bmon 
+网络监控吧...
+
+
+
+
+

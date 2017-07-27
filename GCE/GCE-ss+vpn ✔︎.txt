@@ -1,9 +1,6 @@
 ⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️------⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️
 GCE 简介
 ⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️------⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️
-
-
-
 ⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️------⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️
 🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵 基础配置 🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵
 ⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️------⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️
@@ -207,25 +204,50 @@ set autoindent
 
 
 ⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️------⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️
-🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵 GCE ❌   BBR 🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵
+🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵 GCE ✔︎   BBR 🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵
 ⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️------⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️
 🔸 资源
 
-    一键脚本  https://teddysun.com/489.html
+❗️❗️参考文章  https://teddysun.com/489.html/comment-page-4 ❗️❗️
+❗️❗️参考文章  https://teddysun.com/489.html/comment-page-4 ❗️❗️
+❗️❗️参考文章  https://teddysun.com/489.html/comment-page-4 ❗️❗️
 
-❗️❗️ ❌ centos7 上安装成功,但是dns 解析有问题.. 只能放弃. ❗️❗️
-❗️❗️ ❌ centos7 上安装成功,但是dns 解析有问题.. 只能放弃. ❗️❗️
-❗️❗️ ❌ centos7 上安装成功,但是dns 解析有问题.. 只能放弃. ❗️❗️
-没试过gce官方文档. 太复杂了.. 
-都是自己谷歌的几个教程. 都失败了.
 
-该脚本在 debian 上就完全没问题... fuck....
+  GCE 官方文档 (非常复杂.不建议看)
+    https://github.com/google/bbr/blob/master/Documentation/bbr-quick-start.md
 
 
 
+🔸 一键脚本 (👹 有问题)
 
-GCE 官方文档
-  https://github.com/google/bbr/blob/master/Documentation/bbr-quick-start.md
+    ⦿ 安装
+      wget --no-check-certificate https://github.com/teddysun/across/raw/master/bbr.sh
+      chmod +x bbr.sh
+      ./bbr.sh
+
+
+    ⦿ 重启服务器后执行下面两个命令
+      🔅 sudo su
+      🔅 mount -o remount rw / 
+      必须执行这步. 不然会有 read-only file system 报错.
+
+    ⦿ 测试
+      lsmod | grep bbr
+      返回值有 tcp_bbr 模块即说明bbr已启动。
+
+
+👹 脚本有问题... 
+  bbr 虽然开启了. 但是一堆问题...
+  nginx 开启自启动失败了.
+  mysql 居然挂了..
+  还有各种问题....  这么坑...
+
+还好 db.sql 还在.. 
+
+
+
+
+
 
 
 
@@ -400,6 +422,12 @@ SS 个人版 搭建 (可选,ETA: 10min+ )
     IPsec PSK: 6ga2dgFJN97N9p5d
     Username: vpnuser
     Password: D8aZztkdr5x6u2we
+
+Server IP: 35.194.128.92
+IPsec PSK: q2i9pE5FahD6hsJt
+Username: vpnuser
+Password: L3eC9YKirnfv5Uyv
+
 
 
   ⦿ gce 防火墙

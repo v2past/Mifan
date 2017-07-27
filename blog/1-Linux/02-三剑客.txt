@@ -24,8 +24,6 @@ grep sed awk.正则式. 结合起来 能在千万文件中.找到你想要的.
 
 
 
-
-
 ## Grep
 '' G + re + P
 '' Global search regular expression(RE) and Print out the line，

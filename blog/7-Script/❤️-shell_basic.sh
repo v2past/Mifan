@@ -1936,3 +1936,371 @@ export PATH
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# 脚本
+
+# 简介
+# shell脚本难移植（BSD/GUN ）难debug
+# 至少mac和linux之间 sed就不通用
+
+# ‼️简单问题用shell脚本, 复杂问题用 ruby/python/perl ‼️
+# ‼️脚本第一行:#!/bin/bash 必须这个！别自找麻烦‼️
+# ‼️脚本第二行:set -x 输出每行执行的详细情况(变量)‼️
+# ‼️脚本第三行:set -e 脚本出错,自动结束脚本‼️
+# ‼️神器 shellcheck 来 debug, 提示各种语法问题.‼️
+
+
+
+
+# 变量展开: 
+# 在 shell 脚本中，偶尔可以看到这样的做法：
+# echo $xxx | awk/sed/grep/cut... 。
+# 看起来大张形势的样子，其实不过是想修改一个变量的值。
+# bash内建的变量展开机制已经足以满足你各种需求！
+
+
+# 获取命令行输入
+# $1可以获取命令行输入的第一个参数，
+# $2可以获取命令行输入的第2个参数，
+# $3可以获取命令行输入的第......
+
+# $0获取的脚本的名字
+# $@获取所有的参数
+# $#获取参数的数目。
+# 记住@和#这两个符号，
+# @前者表示全部参数，#表示参数的数目。
+
+
+
+
+
+# 变量
+# ❗️变量中如有空白符 或者特殊字符 如*, 必须加双引号❗️
+
+# 变量大小写转换
+# HI=HellO
+
+# echo "$HI"   # HellO
+# echo ${HI^}  # HellO
+# echo ${HI^^} # HELLO
+# echo ${HI,}  # hellO
+# echo ${HI,,} # hello
+# echo ${HI~}  # hellO
+# echo ${HI~~} # hELLo
+# 	^大写，,小写， ~大小写切换
+# 	重复一次只修改首字母，重复两次则应用于所有字母。
+# 	混着无效！只能用一种
+
+# 移除匹配字符串
+# %xx  从后往前，开始匹配，移除匹配的内容
+# %%xx 跟上面的差不多，不过这是贪婪匹配
+# #xx  从前往后，开始匹配，移除匹配的内容
+# ##xx 跟上面的差不多，不过这是贪婪匹配
+
+# FILENAME=/home/spacewander/param.sh
+# echo ${FILENAME%/*} # /home/spacewander
+# echo ${FILENAME%%/*} #
+# echo ${FILENAME#*/} # home/spacewander/param.sh
+# echo ${FILENAME##*/} # param.sh
+
+
+# 查找替换
+# /MATCH/VALUE 替换第一个匹配的内容。
+# //MATCH/VALUE 替换匹配的内容
+
+# echo ${FILENAME/home/office} # /office/spacewander/param.sh
+# echo ${FILENAME//s/S} # /home/Spacewander/param.Sh
+
+
+
+
+# 获取变量（字符串）长度：${#FILENAME}
+
+
+# 截取变量
+# TEXT=这个程序充满了BUG!
+
+# echo ${TEXT:0:8}   → 这个程序充满了B // 截取前8字符.
+# echo ${TEXT:4}     → 充满了BUG!
+# echo ${TEXT:(-4)}  → BUG!
+
+
+
+
+
+# 一次性建多个目录
+# mkdir -p /home/user/{test,test1,test2}
+
+
+# 获取HTTP完整头信息：
+# curl -I http://www.example.com
+# 获取Http 状态码
+# curl -sL -w "%{http_code}\\n" www.example.com -o /dev/null
+
+
+
+# 快速备份一个文件：
+# cp some_file_name{,.bkp}
+
+# 创建空文件或清空一个现有文件：
+# \> test.txt
+
+# 获取test.txt文件中第50-60行内容：
+# < test.txt sed -n '50,60p'
+
+
+
+
+# 扫描网络寻找开放的8081端口：
+# nmap -p 8081 172.20.0.0/16
+
+
+
+
+# 后台执行.
+# 比如扫描局域网开发端口. 花费时间很久.
+
+# 1. 先开始扫描.
+# 2. 然后按 ctrl z 暂停到后台.
+# 3. 然后输入 jobs 看后台任务. 
+# 4. 发现任务是 暂停的 没有在运行
+# 5. 然后输入 bg 
+# 6. 再jobs 就看到后台运行了.
+
+
+# 用”=”打印出横线:
+# printf '%100s\n' | tr ' ' =
+
+# ShellCheck 
+# shell 提示/bug 非常有用
+# 安装: brew install shellcheck
+
+
+# 脚本种类: bash, python, ruby, c,lisp 等等.等等
+
+# 	运行shell脚本 → sh xxx.sh            或者   xxx.sh
+# 	运行Apple脚本 → osascript xxx.scpt
+# 	运行php脚本   →  php xxx.php
+# 	运行perl脚本   ./xxx.pl
+
+# 	脚本权限: chmod +x xxx.sh
+
+
+# Cron 定时任务
+# Mac两种方式实现定时任务:
+# - Mac   常用的 launchctl 最小间隔时间单位是秒! (❗️推荐❗️)
+# - Linux 常用的 crontab   最小间隔时间单位是分!
+
+# Crontab 方法: 
+# 	crontab [-u username] [-l|-e|-r]
+# 		-u ：帮其他使用者建立/移除 crontab 工作排程；需root权限.
+# 		-e ：编辑 crontab 的工作內容
+# 		-l ：查看 crontab 的工作內容
+# 		-r ：移除所有的 crontab 的工作內容.
+
+# 你可以手动输入来执行任务.
+# 也可以把命令先写到某个文件,再调用那个文件来执行任务.
+
+
+# 一: 用script editor 写一个 eat.scpt 苹果脚本
+# 运行这脚本就会弹框让你去吃饭
+
+# 二: 给eat.scpt 执行权限.
+
+# 三: 把eat.scpt 加到自动执行任务里.
+# crontab -e
+# 1 * * * * osascript /Users/v/Desktop/AppleScript/eat.scpt
+# // 这个命令会没一分钟就执行一次.
+# 系统自动建立新cron，提示如下：crontab: installing new crontab。设置非常简单。
+
+# 四: 报错:
+# crontab: "/usr/bin/vi" exited with status 1
+# 	这个报错用下面的命令修复 意思就是vi出错了. 那就用 nano来编辑文件就可以了.
+# 	export EDITOR=nano
+
+# 五: 重复第三步
+# sh-3.2$ crontab -e
+# crontab: installing new crontab
+# 	出现这个 就说明 任务正在运行了 
+# 	用crontab -l 就有显示了.
+# ➜  ~ crontab -l
+# 1 * * * * osascript /Users/v/Desktop/AppleScript/eat.scpt
+
+# $  LaunchAgents  sudo launchctl list | grep cron
+# 	98285	0	com.vix.cron 
+# 		有pid 说明这个服务启用. 为什么不运行脚本就不知道了...
+
+# 等半天怎么不执行呢.... 不继续了. 还是用 推荐的 plist吧.
+
+# Crontab 实例:
+#  * * * * * 命令
+#  五个*号:   分、 时、 日、   月、 周
+#  数字范围 0-59  0-23  1-31  1-12  0-7
+ 
+# *号代表任何时间都接受的意思，任意。
+# 	 *号之间用空格分开，
+# 	如果是一段范围，用-号连接；
+# 	如果是隔开几个时间，用,号表示。
+ 
+# 命令必须是编写计划任务的用户有权限执行的，并且最后用绝对路径。
+
+# * * * * * myCommand                  每1分钟执行一次myCommand
+# 3,15 * * * * myCommand               每小时的第3和第15分钟执行
+# 3,15 8-11 * * * myCommand            在上午8点到11点的第3和第15分钟执行
+# 3,15 8-11 */2  *  * myCommand        每隔两天的上午8点到11点的第3和第15分钟执行
+# 3,15 8-11 * * 1 myCommand            每周一上午8点到11点的第3和第15分钟执行
+# 30 21 * * * /etc/init.d/smb restart  每晚的21:30重启smb
+
+# Plist 方法:
+# xxx.plist 就是一个 xml格式文件.系统默认是用xcode打开的.
+# 你用任何文本编辑器也可以的.
+
+# plist脚本存放路径为/Library/LaunchDaemons或用户目录/Library/LaunchAgents，
+# 	后一个路径的脚本当用户登陆系统后才会被执行，
+# 	前一个只要系统启动了，哪怕用户不登陆系统也会被执行。
+
+# 自己编写的plist 一般放:~/Library/LaunchAgents
+
+# 1. cd /Users/v/Library/LaunchAgents
+# 2. touch com.v.cron.eat.plist 来建立一个 com.v.cron.eat.plist
+
+# 	➜  LaunchAgents ls
+# 	com.coppertino.VoxHelper.plist            com.spotify.webhelper.plist
+# 	com.google.keystone.agent.plist           net.philosophicalzombie.eggtimer.plist
+# 	com.qiuyuzhou.shadowsocksX-NG.http.plist  org.virtualbox.vboxwebsrv.plist
+# 	com.qiuyuzhou.shadowsocksX-NG.local.plist
+# 	// 这些就是 系统偏好设置 → “用户与群组” 下面的你自己添加的开机启动项.
+
+
+# ★ com.v.cron.eat.plist 具体内容 ★
+
+# <?xml version="1.0" encoding="UTF-8"?>
+# <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+# <plist version="1.0">
+#   <dict>
+
+# 	<!-- plist名称，要全局唯一 -->
+#     <key>Label</key>
+#     <string>com.v.cron.eat</string>
+
+# 	<!-- 命令， 第一行是命令 osascript 就是支持苹果脚本的意思，第二行是参数,也就是脚本路径-->
+#     <key>ProgramArguments</key>
+#     <array>
+#         <string>osascript</string>
+#         <string>/Users/v/Desktop/AppleScript/eat.scpt</string>
+#     </array>
+
+# 	<!-- 运行时间方式:   -->
+# 		<!-- 可以是间隔多少运行:StartInterval -->
+# 		<!-- 也可以是指定具体时间:StartCalendarInterval -->
+# 		<!-- 下面就是每隔 5 秒 执行一次脚本. -->
+#     <key>StartInterval</key>
+#       <integer>5</integer>
+
+#     <!-- 标准输入文件 -->
+#     <key>StandardInPath</key>
+#     <string>/Users/v/Desktop/log/eat.log</string>
+
+# 	<!-- 标准输出文件 -->
+#     <key>StandardOutPath</key>
+#     <string>/Users/v/Desktop/log/eat.log</string>
+
+# 	<!-- 标准错误输出文件 -->
+#     <key>StandardErrorPath</key>
+#     <string>/Users/v/Desktop/log/eat.log</string>
+#   </dict>
+# </plist>
+
+
+# ★ 控制 Plist ★
+# 	Plist 写好后. 还需要用下面命令 加载/卸载Plist
+# 	launchctl load   com.aigo.launchctl.plist
+# 	launchctl unload com.aigo.launchctl.plist
+# 	launchctl start  com.aigo.launchctl.plist
+# 	launchctl stop   com.aigo.launchctl.plist
+# 	launchctl list
+
+# 	要开启任务，必须先 load命令加载这个plist
+# 	要停止任务, 必须用 unload .而不是 stop
+# 	如果任务呗修改了，那么必须先unload，然后重新load
+# 	start可以测试任务，这个是立即执行，不管时间到了没有
+# 	❗️执行start和unload前，任务必须先load过!!!❗️
+# 	stop可以停止任务
+# 	ProgramArguments内不能直接写命令，只能通过shell脚本来执行
+
+
+# 脚本编写:
+# 会乱码. 需要.
+
+# #!/bin/bash
+
+# LANG=en_US.UTF-8
+# export LANG
+
+# svn status | xargs echo 
+# echo "out: 输出正确的中文"
+
+
+
+
+
+
+
+# 脚本运行Sudo
+
+# sudo 是需要输入密码的. 执行脚本的时候 显然是要自动化的.
+
+# 方法1: 使用管道
+# 	echo password | sudo -S apt-get update
+
+# 方法2: 使用重定向
+# 	sudo -S apt-get update << EOF 
+# 	你的密码
+# 	EOF
+
+# 在shell脚本中，通常将EOF与 << 结合使用，
+# 	表示后续的输入作为子命令或子Shell的输入，直到遇到EOF为止，再返回到主Shell,
+# 	即将‘你的密码’当做命令的输入
+
+#  ‼️ 加上-S参数sudo才会从标准输入中读取密码，不加-S参数以上命令将起不到作用
+
+
+
+
+
+
+
+
+
+'' !/bin/sh
+'' //指定脚本解释器，这里是用/bin/sh做解释器
+'' cd 
+'' //切换到当前用户的home目录
+'' mkdir shelltut 
+'' //创建文件夹
+'' cd shell_tut
+'' //切换到新建文件夹
+'' 
+'' for ((i=0; i<10; i++)); do
+'' touch test_$i.txt
+'' // 创建 test_1、test_2 ... test_10 文件
+'' done 
+'' // 结束循环
+
+
+
+

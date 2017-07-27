@@ -205,3 +205,99 @@ AirSnort是一款用来恢复加密密码的无线LAN（WLAN）工具。Shmoo Gr
 
 
 
+# Nessus
+
+
+## 漏洞扫描一: Nessus 
+最流行的 漏洞扫描工具.
+Nessus Home 个人版免费的. 
+Nessus Pro  商业版收费的. 
+个人申请注册码.需要翻墙.挂代理.
+
+
+安装好 就自动打来一个网页. 这个网页地址要记住.
+
+
+要设置一个本地的. 管理员账户. root toor
+然后输入 邮箱收到的激活码.
+这个激活码是一次性的. 换电脑./ 卸载软件都要重新获取激活码的.
+激活后 就会自动下载一些插件什么的....
+
+### 下载失败:
+Mac 程序文件夹 里面的 nessus 文件夹整个删除. 然后重新安装就能登录了.
+还是之前的 root toor
+
+这里可能需要断网...
+
+
+
+### 插件更新
+
+Mac 的 nessus 软件安装在两个位置.   
+一个是 程序文件夹. 
+一个是 /library/nessus.
+
+要用命令行. 就需要终端CD 到 /library/nessus/run/sbin  
+然后执行命令.
+
+
+更新所有
+'' ➜  sbin sudo ./nessuscli update --all
+更新不了 绝大多数是网络问题. 换个网络 或者翻墙.
+
+
+
+
+
+
+
+
+## 插件简介:
+'' Backdoors                       扫描秘密信息
+'' Brute Force Attacks             暴力攻击
+'' CentOSo Local Security Checks   扫描CentOS系统的本地安全漏洞
+'' DNS                             扫描DNS服务器
+'' Debian Local Security Checks    扫描Debian系统的本地安全漏洞
+'' Default Unix Accounts           扫描默认Unix用户账号
+'' Denial of Service               扫描拒绝的服务
+'' FTP                             扫描FTP服务器
+'' Fedora Local Security Checks    扫描Fedora系统的本地安全漏洞
+'' Firewalls                       扫描防火墙
+'' FreeBSD Local Security Checks   扫描FreeBSD系统的本地安全漏洞
+'' Gain a shell remotely           扫描远程获得的Shell
+'' General                         扫描漏洞
+'' Gentoo Local Security Checks    扫描Gentoo系统的本地安全漏洞
+'' HP-UX Local Security Checks     扫描HP-UX系统的本地安全漏洞
+'' Mandriva Local Security Checks  扫描Mandriva系统的本地安全漏洞
+'' Misc                            扫描复杂的漏洞
+'' Red Hat Local Security Checks   扫描Red Hat系统的本地安全漏洞
+'' SMTP Porblems                   扫描SMTP问题
+'' SNMP                            扫描SNMP漏洞
+'' Scientific Linux Local Security Checks扫描Scientific Linux系统的本地安全漏洞
+'' Slackware Local Security Checks 扫描Slackware系统的本地安全漏洞
+'' Solaris Local Security Checks   扫描Solaris系统的本地安全漏洞
+'' SuSE Local Security Checks      扫描SuSE系统的本地安全漏洞
+'' Ubuntu Local Security Checks    扫描Ubuntu系统的本地安全漏洞
+'' Web Servers                     扫描Web服务器
+
+
+
+
+## 扫描结果
+按照颜色来分. 红色>黄色>绿色>蓝色.   蓝色最安全. 红色最不安全.
+
+
+
+
+
+
+
+扫描都是用插件的. 所有插件都是默认开启的.
+但是 这个会影响时间. 一台电脑要好久才能扫描好.
+要缩短时间 就必须合适的选择插件.
+
+有些插件是 针对 win的.   有些是针对linux的.  有些是针对服务器的. 按需要选择.
+
+
+
+
