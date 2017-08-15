@@ -1,3 +1,90 @@
+
+⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️------⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️
+🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵 开机启动 Supervisor✔︎🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵
+⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️------⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️
+
+🔸 精简例1 zabbix_server
+
+    ⦿  vim /etc/supervisord.conf 
+        确保  [include] 了 /etc/supervisor 里面的文件
+        files = /etc/supervisor/*.conf
+
+    ⦿  cd /etc/supervisor
+
+    ⦿  给每个启动程序新建单独配置文件.
+      vi /etc/supervisor/zabbix-server.conf
+
+        [program:zabbix-server]
+        directory= /       ; 这个参数好像不能省的.
+        command = /usr/local/zabbix-server/sbin/zabbix_server
+        autostart = true
+        startsecs = 5
+        autorestart = true
+        startretries = 3
+        user = root
+        redirect_stderr = true
+        stopasgroup=true
+
+
+    ⦿ 重载配置文件
+      systemctl daemon-reload && systemctl reload supervisord.service
+
+    ⦿ 重启 supervisor
+      systemctl restart supervisord.service
+
+    ⦿ 测试 
+      nmap -p 10051 127.0.0.1
+
+
+
+🔸 精简例2 zabbix-agent 
+
+    ⦿  cd /etc/supervisor
+
+    ⦿  给每个启动程序新建单独配置文件.
+      vi /etc/supervisor/zabbix-agent.conf
+
+    [program:zabbix-server]
+    directory= /
+    command = /usr/local/zabbix-server/sbin/zabbix_agentd
+    autostart = true
+    startsecs = 5
+    autorestart = true
+    startretries = 3
+    user = root
+    redirect_stderr = true
+    stopasgroup=true
+
+
+    ⦿ 重载配置文件
+      systemctl daemon-reload && systemctl reload supervisord.service
+
+    ⦿ 重启 supervisor
+      systemctl restart supervisord.service
+      现在不用启动 zabbix_agentd, supervisor会自动帮你启动的.
+
+    ⦿ 测试 
+      nmap -p 10051,10050 127.0.0.1
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 🔸 Supervisor Centos7
 		❗️❗️❗️ Supervisor是一个用python写的进程管理程序，不仅仅可以用来管理进程，还可以用来做开机启动。❗️❗️❗️
 		❗️❗️❗️ Supervisor是一个用python写的进程管理程序，不仅仅可以用来管理进程，还可以用来做开机启动。❗️❗️❗️
@@ -189,7 +276,7 @@ cd /etc/supervisor/
 vi /etc/supervisor/zabbix-server.conf
 
 [program:zabbix-server]
-directory= /       ; 这个参数好像不能省的.
+directory= /
 command = /usr/local/zabbix-server/sbin/zabbix_server
 autostart = true
 startsecs = 5

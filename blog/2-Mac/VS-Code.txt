@@ -27,6 +27,264 @@
 
 
 
+🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸 远程文件编辑 🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸
+🔸 目的
+
+
+🔸 rmate 简介
+
+    在远程ssh服务器上安装rmate就可以实现本地电脑编辑服务器上的文件.
+
+    rmate 有很多语言版本. ruby/bash/python ....  我们使用 python的.
+    https://github.com/sclukey/rmate-python
+
+    rmate 是个单文件脚本.
+    只要下载到服务器上.放到环境路径中就可以使用.
+
+    rmate 使用的是 ssh 反向隧道. 
+    正向 ssh 是客户端ssh到服务器. 然后客户端可以修改服务器上的文件.
+    反向 ssh 是服务器ssh到客户端. 然后客户端可以修改服务器上的文件.
+    rmate 是安装在服务器上的.所以必须使用 反向ssh技术.
+    ssh 是在Mac上面设置的.
+
+
+🔸 rmate 安装 
+
+    ⦿ 安装方法一
+        wget https://raw.githubusercontent.com/sclukey/rmate-python/master/bin/rmate
+        chmod +x ./rmate
+        mv ./rmate /usr/local/bin/rmate
+
+    ⦿ 安装方法二
+        pip install rmate
+
+    ⦿ 安装检测
+        rmate -h
+
+
+🔸 ramte 使用
+
+
+⦿ rmate 配置文件
+    /etc/rmate.rc或~/.rmate.rc
+
+    host: auto                   # Prefer host from SSH_CONNECTION over localhost
+    port: 52698
+
+
+
+
+⦿ ssh 设置(Mac)
+    服务器的 rmate 想要连到 Mac 的vscode . 就必须建立一个隧道.
+    我们配置Mac 的ssh 配置.来创建一个隧道.
+    默认 rmate 使用 52698 端口.
+    ssh -R 52698:localhost:52698 -p 2190 root@35.194.128.92
+
+    或者 直接修改 vi ~/.ssh/config
+    Host *
+    RemoteForward 52698 localhost:52698
+
+    这样所有的ssh 都会创建一个反向连接到mac 本地.
+
+
+
+⦿ 使用
+
+但是每次手工输入ssh -R 52698:localhost:52698 user@example.org命令显然是繁琐而无人性的，我们需要一个通用的配置文件来使得简单的ssh登录服务器就具备上述功能。
+
+编辑 ~/.ssh/config 在总的通用段落Host *添加LocalForward 52698 localhost:52698
+
+Host *
+    ServerAliveInterval 60
+    ControlMaster auto
+    ControlPath ~/.ssh/%h-%p-%r
+    ControlPersist yes
+    LocalForward 52698 localhost:52698
+这样，所有远程登录ssh后都会做这个端口转发，也就实现了上述rmate远程编辑功能。
+
+
+如果是单独针对某台服务器，则在对应的主机配置段落添加，例如
+
+Host test4
+    HostName 192.168.1.4
+    User root
+    LocalForward 52698 localhost:52698
+
+
+
+
+Go to the remote system and run
+
+rmate -p 52698 file
+
+rmate -p 52698 ~/vpnsetup.sh
+
+rmate -p 52698 /home/wwwroot/cv.0214.help/index.html
+
+
+
+
+
+
+
+
+🔵 方法2 
+ftp-sync    自动智能同步..
+
+🔸 安装
+
+🔸 配置 
+
+然后好ftp-sync插件之后，在 Ctrl+Shift+P (或 F1) 输入 ftp-sync: init，配置服务器账号路径等信息。 
+
+
+通过命令 Ftp-sync: Sync Local to Remote 和 Ftp-sync: Sync Remote to Local 同步服务器端和客户端的文件。
+
+通过命令 commit 提交修改。
+
+
+
+
+🔸 使用 选择一个文件/文件夹 右键 ftp 上传.
+就会在文件夹下面生成一个 .json文件.
+里面配置上... 服务器的IP 端口. ssh 信息.就可以了..
+
+
+
+
+
+
+
+
+
+
+🔵 remote vscode 扩展
+https://marketplace.visualstudio.com/items?itemName=rafaelmaiolla.remote-vscode
+
+
+
+⦿ vscode 通过ssh 远程编辑服务器文件. 如 html
+需要 Mac 的 vscode 安装 remote vscode 插件. 然后配置服务器信息.
+还要 服务器 安装...
+
+
+⦿ rmate 简介
+
+有一个功能超强大是rmate，
+把rmate 安装到服务器上。
+
+再打开服务器上的端口转发 52698.
+在服务器  rmate test.txt
+在你本地的textmate 2就会弹出test.txt，就可以像编辑本地文件一样编辑test.txt了。
+
+
+
+
+1. 在textmate的 Preferences | Terminal 里面 check "Accept rmate connections"2. 点击rmate link，将rmate文件内容复制下来，在服务器上创建rmate命令：
+vi /usr/local/bin/rmate
+chmod a+x /usr/local/bin/rmate3. 修改服务器的环境变量
+RMATE_HOST=127.0.0.1
+export RMATE_HOST4. 打开textmate，ssh连接服务器的时候添加参数
+ssh -R 52698:127.0.0.1:52698 remote_host5. 在服务器上修改文件用 rmate filename，即可用本地textmate修改和保存该文件如果不是在ssh的命令行上设置反向tunnel，也可以在ssh config里面设置
+Host example
+Hostname example.com
+RemoteForward 52698 localhost:52698
+
+
+点击rmate link，将rmate文件内容复制下来，在服务器上创建rmate命令：
+
+vi /usr/local/bin/rmate
+chmod a+x /usr/local/bin/rmate
+修改服务器的环境变量
+
+RMATE_HOST=127.0.0.1
+export RMATE_HOST=127.0.0.1
+打开textmate，ssh连接服务器的时候添加参数，创建反向SSH隧道：
+
+ssh -R 52698:127.0.0.1:52698 remote_host
+在服务器上修改文件用 rmate filename，即可以让本地textmate修改和保存该远程服务器文件
+
+如果不是在ssh的命令行上设置反向tunnel，也可以在ssh config里面设置
+
+host example
+    hostname example.com
+    RemoteForward 52698 localhost:52698
+
+
+
+
+
+
+⦿ 安装 rmate 
+
+
+
+
+⦿ 插件安装 cmd+p ➜  install remote-vscode
+
+
+
+⦿ 用户配置.
+
+
+
+⦿ F1 ➜ Remote: Start server / Remote: Stop server
+    来启动/停止服务器..
+
+
+⦿ 创建 ssh 隧道
+    ssh -R 52698:127.0.0.1:52698 -p 2190 root@35.194.128.92
+
+
+remote -p 52698 vpnsetup.sh
+
+
+
+⦿ 服务器配置.
+ssh 是有转发功能的.
+也就是说你可以在mac 看到服务器上的内容.还可以修改服务器上的内容.
+这个只能在终端里面实现.  其实也可以在vscode 里面实现.
+
+也就是用客户端 转发服务器是流量. 这个需要配置
+
+⦿ 配置 vi ~/.ssh/config
+Host gce
+    HostName 35.194.128.92
+    Port 2190
+    User root
+    ForwardAgent yes
+    RemoteForward 52698 127.0.0.1:52698
+
+
+⦿ 连接 
+ssh gce
+
+sudo wget -O /usr/local/bin/rcode \
+https://raw.github.com/aurora/rmate/master/rmate
+chmod a+x /usr/local/bin/rcode
+这些操作是在服务器上运行的.
+
+⦿登出?
+
+
+
+
+
+之后打开终端（【查看】——【集成终端】），输入以下命令：
+
+　ssh -R 52698:127.0.0.1:52698 登录linux用户名@linux计算机ip地址
+# 例子
+ssh -R 52698:127.0.0.1:52698 learn@192.168.1.215
+rmate -p 52698 linux中的文件名称
+
+
+之后可以直接进行修改了。
+
+此外，如需设置扩展自动启动，只需点一下【工作区设置】，这样会自动添加setting.json文件
+
+
+
+
 
 
 

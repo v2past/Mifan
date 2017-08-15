@@ -5,15 +5,106 @@ categories: Tooles
 ---
 
 
-1. zsh install: 
+❤️ zsh install: 
    brew install zsh  (home-brew needed )
 
-2. iTerm install :
+❤️ iTerm install :
    official website .   iTerm2 download link (https://www.iterm2.com/downloads.html)
 
-3. oh-my-zsh install:
+❤️ oh-my-zsh install:
    Website (http://ohmyz.sh)
    sh -c "$(curl -fsSL https://raw.github.com/robbyrussell/oh-my-zsh/master/tools/install.sh)" 
+
+
+🔵 zsh 插件: autojump
+  自动跳转.
+
+
+
+🔵 zsh 插件: autosuggestions 
+  https://github.com/zsh-users/zsh-autosuggestions
+  根据历史命令智能补全
+
+  安装
+  git clone git://github.com/zsh-users/zsh-autosuggestions $ZSH_CUSTOM/plugins/zsh-autosuggestions
+
+  添加到 vi ~/.zshrc
+  plugins=(zsh-autosuggestions)
+
+  使用: 输入命令就会自动补全.
+
+
+
+🔵 curl 升级美化版本
+  https://github.com/jakubroztocil/httpie/
+
+  ⦿ MacOS 安装   brew install httpie
+  ⦿ Linux 安装   yum install httpie
+
+  ⦿ 语法:  http [flags] [METHOD] URL [ITEM [ITEM]]
+      http httpie.org
+
+
+
+
+
+
+
+
+🔵 Taskwarrior: 这个是装逼的, 终端 todo list
+https://taskwarrior.org/
+
+
+
+
+
+
+
+🔵 dbcli/mycli: 这个是装逼的, 终端操作数据库的时候, 自动提示
+
+
+
+
+
+
+
+
+🔵 dirhistory 目录的上翻，下翻功能的插件。
+
+  cd ~
+  cd /usr
+  cd share
+  cd doc
+
+  如果现在在 share .
+  如果按 alt-left 就会到 usr 
+  如果按 alt-right 会到 doc 
+
+
+
+
+
+
+
+🔵 OSX 插件
+
+一款增加了一些在OSX上实用的命令插件。
+
+
+Command	Description
+tab	Open the current directory in a new tab
+ofd	Open the current directory in a Finder window
+pfd	Return the path of the frontmost Finder window
+pfs	Return the current Finder selection
+cdf	cd to the current Finder directory
+pushdf	pushd to the current Finder directory
+quick-look	Quick-Look a specified file
+man-preview	Open a specified man page in Preview app
+
+
+
+
+🔸 
 
 
     

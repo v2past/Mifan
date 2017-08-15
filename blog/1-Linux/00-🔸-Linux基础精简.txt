@@ -1,3 +1,35 @@
+⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️------⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛⬛️⬛️
+🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵 SSH  🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵
+⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️------⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️
+🔸 配置文件 
+	一个是 /etc/ssh/ssh_config     本机连接其他服务器的设置.
+	一个是 /etc/ssh/sshd_config     其他服务器连接本机的设置.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 🔸 spechlite 某ip 不走代理方法!
 
 vps1 的延迟只有 180 .这是美国啊!! 
@@ -84,8 +116,17 @@ nmap -sU dup 扫描 nmap -sU -p 60000 127.0.0.1
 		这个例子肯定是对的
 
 
-#修改某一条数据
-update student set sex=’男’ where id=4;
+🔸修改某一条数据
+	update student set sex=’男’ where id=4;
+
+🔸修改某字段数据 ??
+	UPDATE table_name SET field1=new-value1,
+
+	UPDATE user SET transfer_enable=21474836480
+
+
+
+
 
 
 🔸 删除某表某条记录
@@ -1397,4 +1438,46 @@ gpasswd -d test test2  //将用户test从test2组中移出
 
 
 
+
+
+🔸 配置 FQDN
+
+    FQDN Fully Qualified Domain Name 完全合格域名的缩写, 访问时将由DNS进行解析,得到IP.
+
+    FQDN = Hostname + DomainName
+
+    linux下查看方式：
+        hostname      查看主机名  cat /etc/hostname
+        hostname -f   查看FQDN
+        dnsdomainname 查看域
+
+    当我们申请了一个域名时，就可以使用这个域名来得到IP，但若这个域名下挂在很多主机如何？
+    我是不是得申请很多很多域名给每个主机？不需要，
+    域名即创建了一个域，就如命名空间，在这个命名空间下，其他主机都可以创建自己的名称。
+    这个名称就是通过以上公式得来。
+
+    举个例子，一个公司申请了域名comp.com，
+    这时候有一台主机名为web，则可以使用web.comp.com得到这个主机IP。
+    若还有两台提供邮件和OA服务的主机cmail，oa，则这时候可以用以下FQDN：
+    cmail.comp.com
+    oa.comp.com
+
+
+    GCE 的 FQDN 
+    gce.c.cloudpan-172312.internal
+
+
+    目的: 需要外网能解析到GCE IP.
+    gce 有点特别. 有两个IP . 一个外网一个内网.
+    我们看到的 其实是内网的 FQDN. 不是外网的.
+
+    ✘✘∙GCE tls ➜ cat /etc/hosts
+    127.0.0.1   localhost localhost.localdomain localhost4 localhost4.localdomain4
+    ::1         localhost localhost.localdomain localhost6 localhost6.localdomain6
+    10.140.0.2 gce.c.cloudpan-172312.internal gce  # Added by Google
+    169.254.169.254 metadata.google.internal  # Added by Google
+
+
+    反正只要 FQDN 能解析到GCE的IP就可以了.
+    我们直接修改客户端的hosts文件. 就可以了.
 

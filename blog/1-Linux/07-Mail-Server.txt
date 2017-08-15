@@ -1,3 +1,102 @@
+⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️------⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛⬛️⬛️
+🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵 精简 🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵
+⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️------⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️
+🔸 
+postfix  发送邮件. SMTP 25  / SMTPS 465
+devocot  接收邮件. IMAP 143 / POP3 110
+
+
+
+
+🔸 端口 
+
+    nmap -p 25,465,110,143 127.0.0.1
+    nmap -p 25,465,110,143 23.105.192.96
+
+    netstat -antp |grep :25
+    netstat -antp |grep :110
+
+
+
+🔸 postfix
+    systemctl start  postfix.service
+    systemctl restart  postfix.service
+    systemctl status postfix.service
+
+🔸 dovecot
+    /bin/systemctl start  dovecot.service
+
+
+🔸 
+    /bin/systemctl start  saslauthd.service
+
+
+🔸 smtp 端口配置 
+    vim /etc/postfix/master.cf
+    vim /etc/services
+
+
+
+
+
+❤️ 25 / 465 smtps 端口
+    发送邮件由两个端口 25 和 465. 
+    25 是没有加密的. 465 是加密的.
+    绝大多数 vps会封 25端口. 和 465端口.
+
+这个不是你防火墙可以解决的....   只能换端口...
+
+
+
+
+🔸 开启 smtps 
+
+    ⦿ vi /etc/postfix/master.cf
+        28行的 smtps 去掉注释
+        smtps     inet  n       -       -       -       -       smtpd
+
+    ⦿ 重启 postfix
+        systemctl restart  postfix.service
+
+
+
+
+
+
+👹 25 端口问题
+    使用 25 端口 收发邮件都正常. 但是绝大多数vps 封25端口.
+    25 换成 2525端口. 发不正常 收正常...
+
+    邮件发送 和 路由器通信一样. 也是经过很多跳的.
+    各个邮件服务器之间是需要邮件转发!!!!   
+    别的邮件服务器要给你的邮件服务器发邮件 肯定要用到你的服务器的25端口. 这个设置是
+    你的邮件服务器要给其他邮件服务器发邮件 肯定要用到其他服务器的25端口. 
+
+    现在你的服务器的25端口被封了. 也就是说别的服务器不能给你发服务器发邮件.
+    但是其他服务器的25端口正常的. 也就是说你的服务器可以给其他服务器发邮件.
+    也就产生了. 改了 smtp的25端口后导致.能发 不能收!
+
+    但是现在好像我们发都发不了啊..
+
+So you have one set of rules/processing (defined in master.cf) for server-to-server communication (on port 25), and one set of rules/processing for user-to-server communication (on port 587, aka submission port).
+
+
+
+
+🔸 解决方案
+    原来的25端口不要去管他!  不要修改 也不要删除. 
+    我们用 465 这个 smtps 端口.
+
+
+
+
+
+⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️------⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛⬛️⬛️
+🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵   🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵
+⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️------⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️
+
+
+
 准备工作:
     一个带固定IP的Linux 服务器 (这里是CentOS6) 
     一个域名: www.0214.help
@@ -160,16 +259,14 @@
 ❤️ 二: 卸载 Sendmail
       // 一山不容二虎. 自带的sendmail 会影响postfix.
     🔅 service sendmail status/start/stop    查看/启动/停止 sendmail
-    🔅 yum remove sendmail                   卸载 sendmail 服务 (先停止)
+    🔅 yum remove sendmail -y                卸载 sendmail 服务 (先停止)
 
 
 ❤️ 三: 安装
 
-    安装 postfix    🔅 yum -y install postfix   默认安装 2.6.6 版.
-    安装 dovecot    🔅 yum install -y dovecot
-    安装 procmail   🔅 yum install procmail
-    安装 cycus-sasl 🔅 yum install cyrus-sasl cyrus-imapd
-        查看是否安装cycus-sasl:  rpm -qa |grep cyrus-sasl
+    安装 postfix、dovecot、procmail  🔅 yum -y install postfix dovecot procmail
+    安装 cycus-sasl                  🔅 yum -y install cyrus-sasl cyrus-imapd
+    查看是否安装cycus-sasl:  rpm -qa |grep cyrus-sasl
 
 
 
@@ -210,25 +307,18 @@
     myorigin = $mydomain
     // 本机邮件发送时候 用的域名..
 
-
     🔸 116行: 修改
     inet_interfaces = all
     // 默认只监听本地环回接口(localhost)， 改成 all 让Postfix监听整个互联网.
-
 
     🔸 119行: 推荐ipv4，如果支持ipv6，则可以为all
     inet_protocols = ipv4
 
 
-    🔸 164行: 添加
+    🔸 164行: 修改
     mydestination = $myhostname, localhost.$mydomain, localhost, $mydomain
     // 可以投递的网络.这台服务器是寄往这些网域的邮件的最终目的地
-
-
-    🔸 Postfix 默认主机名:
-    📌mydestination = $myhostname, localhost.$mydomain,localhost
-    //所有发邮件时使用代表本机的主机名必须在此列出，否则无法接收邮件。
-
+    // 所有发邮件时使用代表本机的主机名必须在此列出，否则无法接收邮件。
 
 
 
@@ -259,20 +349,20 @@
 
 
     🔸 571行: 添加
-        smtpd_banner = $myhostname ESMTP
+smtpd_banner = $myhostname ESMTP
 
-        # 添加到最后
-        # 规定邮件最大尺寸为10M
-        message_size_limit = 10485760
-        # 规定收件箱最大容量为1G
-        mailbox_size_limit = 1073741824
-        # SMTP认证
-        smtpd_sasl_type = dovecot
-        smtpd_sasl_path = private/auth
-        smtpd_sasl_auth_enable = yes
-        smtpd_sasl_security_options = noanonymous
-        smtpd_sasl_local_domain = $myhostname
-        smtpd_recipient_restrictions=permit_mynetworks,permit_auth_destination,permit_sasl_authenticated,reject
+# 添加到最后
+# 规定邮件最大尺寸为10M
+message_size_limit = 10485760
+# 规定收件箱最大容量为1G
+mailbox_size_limit = 1073741824
+# SMTP认证
+smtpd_sasl_type = dovecot
+smtpd_sasl_path = private/auth
+smtpd_sasl_auth_enable = yes
+smtpd_sasl_security_options = noanonymous
+smtpd_sasl_local_domain = $myhostname
+smtpd_recipient_restrictions=permit_mynetworks,permit_auth_destination,permit_sasl_authenticated,reject
 
 
 
@@ -282,18 +372,16 @@
 
 
   🔸 vi /etc/dovecot/dovecot.conf
-      protocols = imap pop3
-      listen = *
-      # 26行: 如果不使用IPv6，先去掉注释然后. 请修改为* .
-      # 协议用 pop3 和 imap 就可以了 .也要去掉注释.
-      指定可供用户访问邮件的协议。
-
+      protocols = imap pop3     # 24行 协议用 pop3 和 imap 就可以了 指定可供用户访问邮件的协议.去掉注释.
+      listen = *                # 30行: * 代表所有ipv4; :: 代表所有IPv6
+      
+    
 
   🔸 vi /etc/dovecot/conf.d/10-auth.conf
-      # 9行: 取消注释并修改
+      # 10行: 取消注释并修改
       disable_plaintext_auth = no
 
-      # 97行: 
+      # 100行: 
       auth_mechanisms = plain login
 
 
@@ -309,7 +397,7 @@
       #  mode = 0666
       #}
 
-      改成下面的:
+      95行 改成下面的:
       unix_listener /var/spool/postfix/private/auth {
                             mode = 0666 
                             user = postfix 
@@ -328,11 +416,14 @@
     MECH=shadow  #指定以本地系统用户名认证
 
 
-    vim /usr/lib64/sas12/smtpd.conf    //64位系统
-    vim /usr/lib/sas12/smtpd.conf       //32位系统
-      pwcheck_method: saslauthd
-      mech_list: PLAIN LOGIN
-      log_level:3
+    sudo vi /usr/lib64/sas12/smtpd.conf    
+    //64位系统 新建文件. 可能需要cd 到/usr/lib64/sas12/再创建.不然没权限.
+    sudo vim /usr/lib/sas12/smtpd.conf       
+    //32位系统 新建文件
+
+pwcheck_method: saslauthd
+mech_list: PLAIN LOGIN
+log_level:3
 
 
 
@@ -345,6 +436,10 @@
         service postfix start
         service dovecot start
         service saslauthd start
+
+/bin/systemctl start  postfix.service
+/bin/systemctl start  dovecot.service
+/bin/systemctl start  saslauthd.service
 
 
     停止 postfix ,dovecot ,saslauthd 服务
@@ -381,13 +476,13 @@
     // 注意服务器帐号 就是邮箱帐号!
     // 当然为了安全你可以让帐号只能使用邮箱,而不能登录服务器
 
-    添加账户 admin
-    🔅 useradd admin
+    添加账户 xujian
+    🔅 useradd xujian
 
-    为帐号 admin 创建密码
-    🔅 passwd admin
-
-    创建好后就有了 admin@0214.help 这个邮箱帐号了!!
+    为帐号 xujian 创建密码
+    🔅 passwd xujian
+        xujianpasswd
+    创建好后就有了 xujian@0214.help 这个邮箱帐号了!!
 
 
 
@@ -404,8 +499,158 @@
       注意你发出去的邮件 是不是到对方的垃圾邮件里就可以了.
 
 
+    ⦿ unibox 配置实例
+fullname xx 随便
+email address : xujian@0214.help
+
+➜ manual setup 
+    IMAP 设置:
+        hostname: mail.0214.help
+        username: xujian
+        password: xujianpass
+        connection : encryoted auto
+        auth method: login 
+        port:
+
+    SMTP 设置 
+
+        hostname: mail.0214.help
+        username: xujian
+        password: xujianpass
+        connection : unencrypted
+        auth method: login 
+        port:
+
+就成功了...
+设置 开启自启动,
 
 
+
+ 
+
+
+ 👹 端口更改
+
+
+🔸 vps 禁止 mail 
+
+    KiwiVM has detected an insecure SMTP relay on IP 23.105.192.96, which may result in large amounts of SPAM originating from your server.
+    To prevent this from happening, KiwiVM has blocked port 25 in your server by adding the following iptables rule:
+
+        iptables -I INPUT -p tcp --destination-port 25 -j DROP
+
+    You can fix this vulnerability by securing your SMTP daemon (or by removing it from your server).
+
+    Once this vulnerability is fixed, you may remove this iptables rule.
+
+
+    Yours truly,
+    KiwiVM vulnerability scanner
+
+    安全: 
+    对于发送大量垃圾邮件都是零容忍的，基本上vps会被封。
+    也有部分主机商直接屏蔽了25端口，需要开通需要提交一定金额的保证金等。
+    哪一天发现自己使用的vps被暂停使用，发现原因竟是发送垃圾邮件，如果自己并没有这样做，那估计是被黑了。
+
+
+🔸 解决方法
+    要么改端口. 要么关闭 mail 服务...
+    要么就修改服务器的 25端口.. 25 是 smtp端口.  发送邮件的.
+
+
+
+🔸 smtp 端口添加
+    发送邮件的是 postfix . 默认是25 端口. 但是一般vps都会封25端口.
+    那么我们就只能增加一个 2525端口.  这个端口有和25 一模一样的功能.
+
+
+⦿ vim /etc/postfix/master.cf
+    smtp      inet  n       -       n       -       -       smtpd  下添加一行
+    smtp2      inet  n       -       n       -       －     smtpd
+
+
+⦿ vim /etc/services
+    添加 55 56 两行
+
+   53 smtp            25/tcp          mail
+   54 smtp            25/udp          mail
+   55 smtp2           2525/tcp        mail2
+   56 smtp2           2525/udp        mail2
+
+
+
+
+保存后，reload不行，要restart postfix就应该能同时启动25和2626两个功能完全相同的端口。
+
+
+
+
+    ⦿ 重启postfix
+        service postfix restart
+        /bin/systemctl restart  postfix.service
+        systemctl status postfix.service
+
+    ⦿ 防火墙状态 
+        iptables -L
+        25被封无所谓. 2525 没封就行.
+
+
+    ⦿ Mac 客户端重新配置账户. smtp 那里填2525 就可以..
+
+    ⦿ 客户端收件测试
+        收不到啊...
+
+    ⦿ 客户端发件测试
+        发送.. 很慢!!  但是能收到..
+
+
+
+
+👹 邮箱 Debug 
+要么看服务器日志. 
+
+
+重启了 postfix 后，发现 /var/log/mail.info、/var/log/mail.err、/var/log/mail.warn 没有记录最新的postfix 日志
+
+邮件相关的日志主要有系统统一配置，而不管 smtp 是 postfix 还是 qmail 等，其他的客户端，都统统记录在上述3个文件中
+
+
+
+
+
+
+🔸 postfix 日志 
+cat /var/log/maillog
+发现这个文件权限是600 ..  我们用其他账户登录的邮箱. 当然没权限写日志了.
+chmod 664 /var/log/maillog
+
+
+没记录日志啊...  
+
+
+
+
+ 有命令的...
+
+
+
+
+👹 connection refused...
+
+服务器端口排除.
+
+nmap -p 25,110,143 127.0.0.1
+
+nmap -p 25,110,143 23.105.192.96
+
+
+netstat -antp |grep :25
+netstat -antp |grep :110
+
+
+
+ping mail.0214.help   
+居然到  vps2 去了...  域名解析有问题..
 
 ⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️
 
@@ -438,6 +683,8 @@
   🔵查看 25,110,143 是否开启
     
     🔸 客户端扫描服务器端口 25 smtp  110 pop3  143 imap 是否开启:
+
+nmap -p 25,110,143 127.0.0.1
 
       ✘✘∙𝒗 Desktop nmap -p 25,110,143 23.105.192.96
 

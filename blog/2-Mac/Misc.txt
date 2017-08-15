@@ -1,0 +1,18 @@
+🔸 显影桌面
+
+    ⦿ 方法一: 终端
+        隐: defaults write com.apple.finder CreateDesktop -bool FALSE; killall Finder
+        显: defaults write com.apple.finder CreateDesktop -bool true; killall Finder
+
+
+    ⦿ 方法二: alfred 
+        安装 Hide desktop 这个 workflow 
+        http://www.packal.org/workflow/hide-desktop
+        不适合 Mac 10.12
+
+
+    ⦿ 方法三: HiddenMe 软件
+        • HiddenMe Free 免费
+        • HiddenMe Pro  18￥
+            顶部 Menubar 会出现个小园点. 还能设置快捷键
+
