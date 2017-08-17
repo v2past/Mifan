@@ -1,3 +1,14 @@
+🔸 磁盘空间
+	df -h 查看磁盘各分区大小、已用空间等信息：
+	du -sh *    当前文件夹下大小...
+
+
+
+
+
+
+
+
 ⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️------⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛⬛️⬛️
 🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵 SSH  🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵
 ⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️------⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️
@@ -241,6 +252,12 @@ iptables -A OUTPUT -j ACCEPT
 iptables -A INPUT -p tcp --dport 22222 -j ACCEPT
 iptables -A INPUT -p tcp --dport 80 -j ACCEPT
 iptables -A INPUT -p tcp --dport 443 -j ACCEPT
+
+
+
+🔸 禁止
+iptables -A INPUT -p tcp --dport 25 -j DROP
+
 
 
 #如果有其他端口的话，规则也类似，稍微修改上述语句就行

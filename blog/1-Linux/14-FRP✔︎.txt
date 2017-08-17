@@ -60,27 +60,39 @@
     可以直接服务器上下载 解压, 也可以先下载到Mac 然后用FTP工具或者scp命令上传.
 
     这里示范服务器直接下载解压.
-    先去官网获取CentOS X86 对应的下载链接.
-    https://github.com/fatedier/frp/releases/download/v0.9.3/frp_0.9.3_linux_386.tar.gz
-
-    CentOS7_x64 选择下面的连接.
-    https://github.com/fatedier/frp/releases/download/v0.12.0/frp_0.12.0_linux_amd64.tar.gz
 
 
 
     SSH到服务器. 并利用 wget + 网址来下载文件
 
+🔸 下载
+    先去官网获取CentOS X86 对应的下载链接.
     wget https://github.com/fatedier/frp/releases/download/v0.9.3/frp_0.9.3_linux_386.tar.gz
 
+    CentOS7_x64 选择下面的连接.
+    wget https://github.com/fatedier/frp/releases/download/v0.12.0/frp_0.12.0_linux_amd64.tar.gz
+
+🔸 解压 
     然后解压. 解压很简单的 tar -xzf 加上压缩包名就可.
+    tar -xzf frp_0.12.0_linux_amd64.tar.gz && ls 
     tar -xzf frp_0.9.3_linux_386.tar.gz
 
-    保留 frps 及 frps.ini 两个文件. 其他删了吧.服务器清爽点好.
-    
-    frps 这个是主程序. 需要执行权限的. 没有就 chmod +x frps 来添加权限.
-    frps.ini 是配置文件. 一般都是修改这个文件的.
-        建议直接清空里面的内容 , 直接复制我的内容.
+🔸 重命名
+    mv frp_0.12.0_linux_amd64 frp && cd frp && ls 
+
+🔸 删除无关文件.
+
+    rm frpc* && rm LICENSE && ls
+
+        保留 frps 及 frps.ini 两个文件. 其他删了吧.服务器清爽点好.    
+        frps 这个是主程序. 需要执行权限的. 没有就 chmod +x frps 来添加权限.
+        frps.ini 是配置文件. 一般都是修改这个文件的.
+            建议直接清空里面的内容 , 直接复制我的内容.
+
+🔸 配置            
 ===============================================================================
+
+vi /root/frp/frps.ini
 
 [common]
 bind_port = 7000
@@ -146,15 +158,50 @@ custom_domains为要映射的域名，记得域名的A记录要解析到外网�
 
 
 
+🔸 启动服务.
+⦿ 测试启动
+    ./frps -c ./frps.ini
+    这个不会后台运行. 你关闭ssh就退出了.
 
-        然后保存
-        然后启动访问.
+⦿ 后台启动
+    nohup ./frps -c ./frps.ini &
+    ❗️ frps 是二进制文件. 不是 bash 文件!!  启用的话 直接用 frps 而不是 sh frps.
+    /root/frp/frps -c /root/frp/frps.ini 
 
-        ./frps -c ./frps.ini
-        这个不会后台运行. 你关闭ssh就退出了.
+🔸 frp 网页.
+    35.194.128.92:5500 admin/admin
 
 
-        nohup ./frps -c ./frps.ini &
+🔸 supervisor 进程守护设置
+    ⦿ 新建 frps 的 supervisor 配置文件
+        vi /etc/supervisor/frps.conf
+
+            [program:frp-server]
+            directory= /root/frp
+            command = /root/frp/frps -c /root/frp/frps.ini
+            autostart = true
+            startsecs = 5
+            autorestart = true
+            startretries = 10
+            user = root
+            redirect_stderr = true
+            stopasgroup=true
+
+
+    ⦿ 配置解析
+        startretries = 10  ➜ 每隔10秒重启.
+
+    ⦿ 重载配置文件
+      systemctl daemon-reload && systemctl reload supervisord.service && systemctl restart supervisord.service
+
+    ⦿ 测试 
+      nmap -p 5500 127.0.0.1
+
+    ⦿ supervisor 日志 
+        tail -f /var/log/supervisor/supervisord.log
+
+        👹 entered FATAL state, too many start retries too quickly
+
 
 
 

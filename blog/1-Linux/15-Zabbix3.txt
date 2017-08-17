@@ -905,8 +905,42 @@ Include=/etc/zabbix/zabbix_agentd.d/*.conf
 
 
 ⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️------⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️
-🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵  DDWRT 内网 路由器 ❌  🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵
+🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵  DDWRT 内网 路由器   🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵
 ⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️------⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️
+🔸 路由器监控
+    两种 zabbix-agent  或者 snmp. 
+    相对来说 zabbix_agentd 资源消耗较大.  当然对 6300 来说无所谓了..
+    snmp 需要路由器有外网IP
+    zabbix 不需要路由器有外网IP.
+
+
+🔸 DDWRT zabbix 设置流程
+
+    路由器 ➜ 服务 ➜ 勾选 zabbix agent ➜  填入服务器IP. ➜ save ➜ apply
+    路由器 ➜ 设置 ➜ 基础设置 ➜ Host name ➜ 填写 dd-wrt 
+
+    服务器 ➜ 导入模板 
+    服务器 ➜ 添加主机
+    服务器 ➜ 主机关联模板
+
+
+🔸 模板导入
+    模板有 xml 和 json 两种文件后缀.
+    模板先下载到本地 ➜ zabbix web ➜ 模板 ➜ 导入  就多了个模板. ➜ 模板关联路由器
+
+    http://svn.dd-wrt.com/export/31647/src/router/zabbix/config/zbx_template.xml
+    http://svn.dd-wrt.com/browser/src/router/zabbix/config/zbx_template.xml
+
+    有个链接都失效了...一个好的
+
+
+
+
+
+
+
+
+
 
 
 主机名(Host name)
@@ -970,6 +1004,16 @@ DNS
 
 
 🔸 zabbix DNS 
+
+
+
+
+🔸 dd-wrt zabbix template
+
+
+
+
+
 
 
 

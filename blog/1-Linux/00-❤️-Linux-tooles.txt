@@ -2,16 +2,6 @@
 🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵  Linux 神器  🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵
 ⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️------⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️
 
-❤️  vps 丢包严重 
-
-只能上vpn..
-
-
-
-
-
-
-
 ❤️ tldr
   man 替代品  
   man 里面那么长.  懒得看.  用 tldr : too long don't read 
@@ -326,7 +316,25 @@ netstat 将每隔一秒输出网络信息
 
 
 ❤️ nmon   综合监控，CPU，内存，磁盘IO，网络IO
+
+wget http://sourceforge.net/projects/nmon/files/nmon16e_mpginc.tar.gz
+tar -zxvf nmon16e_mpginc.tar.gz
+cp nmon_x86_64_centos7 /usr/local/bin/nmon && rm nmon* 
+chmod 777 /usr/local/bin/nmon
+nmon 
+
+
+
+
 ❤️ dstat  综合监控，CPU，内存，磁盘IO，网络IO
+
+
+
+
+
+
+
+
 
 
 ❤️ htop   进程监控
@@ -1230,6 +1238,16 @@ sudo yum install bmon -y
 
 使用 bmon 
 网络监控吧...
+
+
+
+
+
+
+🔵 sublime 打开两个相同文件.
+先开两列.   另外一列 ⌘ P 选择文件名 就可以了.
+
+
 
 
 
