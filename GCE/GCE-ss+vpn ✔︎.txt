@@ -178,10 +178,12 @@ set autoindent
 🔸 HTOP 2.0 
     最流行监控工具, 一般yum 安装的都是1+版本.如果要安装2+ 版本 需要配置源.
     下面是 centos7 x64 安装 HTOP2.0 的方法.
+    epel-release-7-10 可能会失效. 自己等网页查看最新版
 
-    wget http://dl.fedoraproject.org/pub/epel/7/x86_64/e/epel-release-7-9.noarch.rpm
-    rpm -ihv epel-release-7-9.noarch.rpm 
+    wget http://dl.fedoraproject.org/pub/epel/7/x86_64/e/epel-release-7-10.noarch.rpm
+    rpm -ihv epel-release-7-10.noarch.rpm 
     yum install htop -y
+
 
 
 
