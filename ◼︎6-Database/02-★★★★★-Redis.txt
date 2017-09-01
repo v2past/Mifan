@@ -1,71 +1,32 @@
-🔸 关系数据库SQL & 非关系数据库NoSQL
+⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️------⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️
+🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵 缓存 🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵
+⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️------⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️
 
-    • MySQL、MongoDB、PostgreSQL 是关系数据库. 数据在硬盘中.
-    • Redis、memcached 非关系数据库. 数据在内存中.然后再写入硬盘.
+🔸 redis 简介
 
+    redis:  提供缓存和存储, 一般只用到缓存功能!!!
 
-🔸 Redis vs Memcached 
-    一般 Redis 用的多.
+    Redis、Memcached  两个都可以当缓存. 一般 Redis 用的多.
 
+    Redis 是内存数据库. 所有读写操作都是在内存中进行的. 性能非常非常高.
 
-
-
-
-
-
-
-🔸 简介.
-
-    redis:  缓存和存储系统.
-
-虽然redis 也提供持久化存储. 但是这个更多用做 备份.
+    默认6379端口
 
 
-redis搭建，集群搭建，多属于运维知识，基本了解就可以。
-但是在项目如何让redis发挥它的特长就属于我们需要掌握和探索的。
-接下来讲解一下在项目中如何使用redis来做缓存的。
-
-适用场景
-什么样的情况才会用到缓存呢？？一个项目中有些数据长时间不会发生变动，但是用户又访问特别频繁。我觉得这样的情况会用到缓存。从我们项目的使用情况，我总结出来了这一点。
-我们项目的首页上会有一些大的广告位，而且大家都知道用户最先访问的都会是首页，所以访问特别频繁，广告更换也不会很频繁，所以我们觉得用在这里挺合适的。
-
-如何让数据从缓存中取到
-第一，我们首先会判断缓存中是否有该数据，如果没有就从数据库中获取，返回给前台的同时存入到缓存一份儿。如果缓存中有数据，则直接返回缓存中的数据。（只截取一段儿代码，主要给大家讲解思路）
-如何让数据从缓存中取到
-第一，我们首先会判断缓存中是否有该数据，如果没有就从数据库中获取，返回给前台的同时存入到缓存一份儿。如果缓存中有数据，则直接返回缓存中的数据。（只截取一段儿代码，主要给大家讲解思路）
+🔸 缓存适用场景
+    有些数据长时间不会发生变动，但是用户又访问特别频繁,我时候用缓存非常好.
+    比如网站的首页,访问特别频繁，广告更换也不会很频繁，所以缓存首页挺合适的
 
 
-如何让缓存中的数据与数据库中的保持同步
-刚开始接触的时候，我有一个疑问，不知道大家有没有，就是在项目中如果使用redis做缓存的话，如果数据有变化的时候怎么让redis中的数据与数据库中的保持同步。应该会有很多种方法，我们项目中用的是下面这种方法。
-
-redis的功能很强大，目前只接触到redis做缓存的功能，其它还在探索中。
-
-
+🔸 如何让数据从缓存中取到
+    首先判断缓存中是否有该数据，
+        如果缓存中有数据，则直接返回缓存中的数据.
+        如果没有就从数据库中获取，数据库在返回给前台的同时进行缓存.下次就可以用缓存了.
 
 
+🔸 如何让缓存中的数据与数据库中的保持同步
 
-
-
-    为了满足高性能，Redis 采用内存 (in-memory) 数据集 (dataset)。根据你的使用场景，你可以通过每隔一段时间转储数据集到磁盘，或者追加每条命令到日志来持久化。持久化也可以被禁用，如果你只是需要一个功能丰富，网络化的内存缓存。
-
-    Redis 还支持主从异步复制，非常快的非阻塞初次同步、网络断开时自动重连局部重同步。 其他特性包括：
-
-    我第一次使用Redis是在一家公司里面，这家公司需要对一个客户联系方式数据库进行搜索。搜索需要查找姓名、电子邮件地址、所在地和电话号码。这个系统是用SQL数据库编写的，在60 000个客户中进行查找匹配的一系列查询需要花费10~15秒的时间。在花了一周时间学习Redis的基础知识之后，我使用Redis构建了一个搜索引擎，能够对所有那些字段甚至更多字段进行过滤和排序，并且在50毫秒内返回响应。经过短短几个星期的努力测试，就使这个系统达到了生产级别，性能比原来的系统提高了200倍。阅读本书可以让你学到很多小技巧、小窍门以及一些众所周知的Redis曾经成功解决过的问题。
-
-    作用:
-        内存数据库. 性能非常非常高.
-
-    主要就是缓存...
-
-
-    配置:
-    redis.conf
-
-    默认6379端口. 可以改变端口.....
-    设置timeout 指定时间后断开客户端连接.
-
-
-
+    如果使用redis做缓存的话，如果数据有变化的时候怎么让redis中的数据与数据库中的保持同步!
 
 
 
@@ -73,7 +34,7 @@ redis的功能很强大，目前只接触到redis做缓存的功能，其它还�
 
 🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸 基础用法 🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸
 
-⦿ 安装:
+🔸 安装:
     源码编译安装 redis 4.0.1 (2017-07-29-14)
 
     wget http://download.redis.io/releases/redis-4.0.1.tar.gz
@@ -83,7 +44,7 @@ redis的功能很强大，目前只接触到redis做缓存的功能，其它还�
 
 
 
-⦿ 启动 redis: /root/redis-4.0.1/src/redis-server
+🔸 启动 redis: /root/redis-4.0.1/src/redis-server
     启动redis服务进程后，就可以使用测试客户端程序redis-cli和redis服务交互了。 比如：
 
             _.-``__ ''-._
@@ -104,12 +65,12 @@ redis的功能很强大，目前只接触到redis做缓存的功能，其它还�
                 `-.__.-'
 
 
-⦿ 关闭 redis：  
+🔸 关闭 redis：  
     /root/redis-4.0.1/src/redis-cli shutdown
     /root/redis-4.0.1/src/redis-cli -h 127.0.0.1 -p 6379 shutdown
 
 
-⦿ 进入客户端: /root/redis-4.0.1/src/redis-cli
+🔸 进入客户端: /root/redis-4.0.1/src/redis-cli
     127.0.0.1:6379> set foo bar
     OK
     127.0.0.1:6379> get foo
@@ -117,24 +78,20 @@ redis的功能很强大，目前只接触到redis做缓存的功能，其它还�
     127.0.0.1:6379>
 
 
+🔸 启动判断：ps -ef | grep redis
 
-⦿ 查看是否启动：ps -ef | grep redis
-    root     27793  8965  0 15:02 pts/3    00:00:00 src/redis-server *:6379  ➜  启动了.
-
-
-⦿ 开机启动配置：
+🔸 开机启动配置：
     echo "/usr/local/bin/redis-server /etc/redis.conf" >> /etc/rc.local
 
 
-⦿ 开放防火墙端口：
+🔸 开放防火墙端口：
     添加规则：iptables -I INPUT -p tcp -m tcp --dport 6379 -j ACCEPT
     保存规则：service iptables save
     重启：    service iptables restart
     查看规则  iptables -L | grep 6379
 
 
-
-⦿ 图形化Redis客户端管理软件
+🔸 图形化Redis客户端管理软件
     当然也有视图远程工具.Navicast 不支持redis的... 只能找别的软件了.
     Redis Desktop Manager 就用这个! 
     window 是免费使用的的, Mac/Linux 是收费的.
@@ -142,8 +99,7 @@ redis的功能很强大，目前只接触到redis做缓存的功能，其它还�
     2017-07-29-15 最新版本 0.8.8
 
 
-
-⦿ Mac 安装 Redis Desktop Manager
+🔸 Mac 安装 Redis Desktop Manager
 
     • Mac 终端代理
         最方便的方法是
@@ -158,7 +114,7 @@ redis的功能很强大，目前只接触到redis做缓存的功能，其它还�
         安装好后 mac app 程序里面就多了个 rdm的软件. 打开就能用了.
 
 
-⦿ redis 开启远程
+🔸 redis 开启远程
     Mac redis-cli 就可以远程服务器的redis:  redis-cli -h ip -p port
     用上面安装的 rdm 软件也能远程到服务器.
     前提是 redis 服务器开启远程访问功能,这个需要修改redis.conf 这个配置文件.
@@ -182,43 +138,22 @@ redis的功能很强大，目前只接触到redis做缓存的功能，其它还�
 
 🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸  Redis 配置文件  🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸
 
-redis 在没有配置文件的情况下会使用内置的默认配置，但这只适合于测试和开发阶段。
-产品使用，需要提供配置文件redis.conf，配置文件内容格式如下：
-keyword argument1 argument2 … argumentN
+vim /etc/redis.conf
 
+    daemonize      如果需要在后台运行，把该项改为yes
+    bind           绑定ip
+    port           监听端口，默认为6379 
+    timeout        设置客户端连接时的超时时间，单位为秒 
+    loglevel       日志等级:debug、verbose、notice、warning
 
+    Masteauth      主数据库连接需要的密码验证 
+    Requirepass    设置登陆时需要的使用的密码 
 
- 配置文件
-    vim /etc/redis.conf
+    Maxmemory      设置redis能够使用的最大内存 
 
+    vm-enabled     是否开启虚拟内存支持
+    vm-max-memory  设置redis使用的最大虚拟内存大小
 
-daemonize如果需要在后台运行，把该项改为yes
-pidfile配置多个pid的地质，默认在/var/ren/redis.pid
-bind绑定ip,设置后只接受来自该ip的请求
-port监听端口，默认为6379 
-timeout设置客户端连接时的超时时间，单位为秒 
-loglevel分为4级，debug、verbose、notice、warning
-logfile配置log文件地址 databases 设置数据库的个数，默认使用的数据库为0 
-save设置redis进行数据库镜像的频率 
-rdbcompression在进行镜像备份时，是否进行压缩
-Dbfilename镜像备份文件的文件名
-Dir数据库镜像备份的文件放置路径 
-Slaveof设置数据库为其他数据库的从数据库
-Masteauth主数据库连接需要的密码验证 
-Requirepass设置登陆时需要的使用的密码 
-Maxclients限制同时连接的客户数量
-Maxmemory设置redis能够使用的最大内存 
-Appendonly开启append only模式 
-Appendfsync设置对appendonly.aof文件同步的频率
-vm-enabled是否开启虚拟内存支持
-vm-swap-file设置虚拟内存的交换文件路径
-vm-max-memory设置redis使用的最大物理内存大小
-vm-page-size设置虚拟内存的页大小
-vm-pages设置交换文件的总的page数量
-vm-max-threads设置VMIO同时使用的线程数量
-Glueoutputbuf设置在向客户端应答时，是否把较小的包合并为一个包发送，默认为开启
-hash-max-zipmap-entries设置hash的临界值
-Activerehashing重置hash，默认为开启
 
 
 

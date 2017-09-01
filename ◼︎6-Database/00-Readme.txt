@@ -84,7 +84,6 @@
 
 🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸关系型数据库 ACID规则🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸
 
-
 🔸 ACID 
     事务在英文中是transaction，和现实世界中的交易很类似，它有如下四个特性：
 
@@ -151,7 +150,13 @@ CAP理论的核心是：
 🔸 数据库种类
 
     • 关系型数据库代表:  MySQL、MariaDB、PostgreSQL、SQL Server、Oracle
-    • 非关系数据库代表:  Redis、MongoDB...
+    • 非关系数据库代表:  Redis、MongoDB、Memcached
+
+    • 关系数据库. 数据在硬盘中.性能慢.
+    • 非关系数据库. 数据在内存中.然后再写入硬盘.性能极快
+
+
+
 
 
 🔸 RDBMS vs NoSQL 区别

@@ -1,0 +1,132 @@
+🔸 
+说到进度条，可能会让很多人挠头。
+
+这个也不难。插入一个1行*2列的表格，拖动表格中间的分割线到想要的位置，将表格左边填充颜色，右边写上百分数即可。有木有很简单。
+
+怎么样，想找到一份称心如意的好工作嘛~那就先做一份好简历吧！
+
+
+
+
+🔸 latex 在线简历
+
+    在线Latex 编辑器1  https://cn.sharelatex.com/
+    在线Latex 编辑器2  https://www.overleaf.com/
+
+
+
+    参考模板  https://github.com/billryan/resume/tree/zh_CN
+
+    ⦿ 模板使用: 
+        github 项目 下载 zip .
+        上传到 ShareLaTeX 在线编辑网站.
+        就会自动运行了.. 
+
+
+
+
+🔸 PDF 编辑器 
+
+    Indesign
+    Acrobat pro
+
+    所以你要在选择编辑软件的时候，最好知道编辑的目的是什么，另外，你的源文件是什么。
+    有源文件 就非常好编辑!!!  不然编辑 pdf 非常痛苦.
+
+    也不要折腾 latex 了 找个好看的模板非常不容易.!! 
+    有了模板 想要进行修改 也要学习很多东西!  
+
+
+    丫的.... 苹果系统 硬盘分区 如果是 大小写敏感的. 只能 重装系统.... fuck..
+
+    要么就用一个收费软件: ipartation.. 应该有破解版本的..
+    丫的... 设计硬盘的操作 绝对要小心!  
+    还是重装吧 . 要么就 虚拟机 win7 装  adobe 
+
+    我操 虚拟机也不能安装!! ...
+
+
+    还有个 比较麻烦的办法....
+    大概就是新建个.. 硬盘镜像.. 然后安装的时候指定位置. 
+
+    http://tzvetkoff.net/posts/2013/05/20/adobe-cs6-on-case-sensitive-drives.html
+    https://github.com/tzvetkoff/adobe_case_sensitive_volumes
+
+
+
+
+
+🔸 indesign 安装
+
+⦿ 新建新硬盘
+
+    在~/Stuff/Adobe 新建一个硬盘. 15G 的 sparsebundle格式. 
+    大小越大越好反正用多少占多少空间.  
+    格式是 Journaled HFS+, 而不是默认的 大小写敏感的.
+    可以手动创建. 也能用命令创建. 
+    
+    mkdir -p ~/Stuff/Adobe && cd ~/Stuff/Adobe
+
+    hdiutil create -size 15g -type SPARSEBUNDLE -nospotlight -volname 'Adobe CS6 SparseBundle' -fs 'Journaled HFS+' ~/Stuff/Adobe/Adobe_CS6_SparseBundle.sparsebundle
+
+
+⦿ 打开/挂载 新硬盘.
+
+    open ~/Stuff/Adobe/Adobe_CS6_SparseBundle.sparsebundle
+    mkdir -p /Volumes/Adobe\ CS6\ SparseBundle/Adobe
+    在新硬盘下创建一个 adobe 文件夹.
+
+
+⦿ 创建安装目录  mkdir -p /Applications/Adobe
+
+
+⦿ 下载
+
+国外网盘 不限速在线下载. 500+kb...
+    https://mega.nz/#!hZlRQIyI!kvEtye5v-g-rMPGQjk44-OO_wp2540KTlu36bYIaK2g
+
+⦿ 下载破解软件
+
+    cd ~/Stuff/Adobe
+    git clone git://github.com/tzvetkoff/adobe_case_sensitive_volumes.git
+    cd adobe_case_sensitive_volumes
+
+    先不make . 先修改文件.
+    不改这里会报错..要手动指定安装文件的位置.
+    adobe 软件解压出来是硬盘有路径的,
+    用 df 命令看  /dev/disk2s2    /Volumes/AdobeInDesign12.0-mul  这个就是路径
+
+    vi Makefile
+    CS6_INSTALLER_PATH=/Volumes/CS6*/*/Install.app/Contents/MacOS/Install
+    改成
+    CS6_INSTALLER_PATH=/Volumes/AdobeInDesign12.0-mul/Install.app/Contents/MacOS/Install
+
+    make
+    sudo make run
+    输入管理员密码! 
+
+
+    然后! 
+    rm -rf /Applications/Adobe
+    ln -s /Volumes/Adobe\ CS6\ SparseBundle/Adobe/ /Applications/Adobe
+
+
+改名..  CS66. 再新建个文件夹.
+
+
+
+先断网     再去安装..
+或者 ...
+    终于出来.... 界面了
+    怎么安装了..
+    会自动安装么....
+    安装要断网.  不然好像会报错...
+    👹 143 错误...
+    zip 包中的源文件路径不存在 下载内容似乎已损坏。请再次尝试下载。
+
+    要得 有些地方下载..  居然 900MB  有的地方只有700+  fuck..  有发 800+mb ...
+
+
+
+
+

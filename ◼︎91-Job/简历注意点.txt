@@ -1,149 +1,154 @@
-🔸 latex 在线简历
+🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸STAR🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸
 
-    在线Latex 编辑器1  https://cn.sharelatex.com/
-    在线Latex 编辑器2  https://www.overleaf.com/
 
+❤️ STAR法则:  Situation Task Action Result
+    • Situation    事情是在什么情况下发生
+    • Task：       你是如何明确你的任务的
+    • Action       针对这样的情况分析，你采用了什么行动方式
+    • Result：     结果怎样，在这样的情况下你学习到了什么
 
 
-    参考模板  https://github.com/billryan/resume/tree/zh_CN
+❗️❗️STAR法则 就是一种讲述自己故事的方式，一个清晰、条理的作文模板; ❗️❗️
+❗️❗️STAR法则 就是一种讲述自己故事的方式，一个清晰、条理的作文模板; ❗️❗️
+❗️❗️STAR法则 就是一种讲述自己故事的方式，一个清晰、条理的作文模板; ❗️❗️
 
-    ⦿ 模板使用: 
-        github 项目 下载 zip .
-        上传到 ShareLaTeX 在线编辑网站.
-        就会自动运行了.. 
+❗️❗️让面试者条理清晰、逻辑性强的描述自己, 让面试官在短时间内快速了解面试者.❗️❗️
+❗️❗️让面试者条理清晰、逻辑性强的描述自己, 让面试官在短时间内快速了解面试者.❗️❗️
+❗️❗️让面试者条理清晰、逻辑性强的描述自己, 让面试官在短时间内快速了解面试者.❗️❗️
 
+🔸 STAR 用处
+    你可以用在写简历工作经验/项目经验上.
 
+    也可以在回答面试官提问的时候.
 
+❗️❗️ 对于无法清晰的描述过往经历的人，通常会在简历上备注： 不推荐复试！❗️❗️
 
-🔸 PDF 编辑器 
 
-    Indesign
-    Acrobat pro
+🔸 STAR Misc
+    所以，写简历时就要准备好面试时的个人故事，以便应付各种千奇百怪的开放性问题。
 
-    所以你要在选择编辑软件的时候，最好知道编辑的目的是什么，另外，你的源文件是什么。
-    有源文件 就非常好编辑!!!  不然编辑 pdf 非常痛苦.
 
-    也不要折腾 latex 了 找个好看的模板非常不容易.!! 
-    有了模板 想要进行修改 也要学习很多东西!  
 
 
-    丫的.... 苹果系统 硬盘分区 如果是 大小写敏感的. 只能 重装系统.... fuck..
+🔸 挖掘闪光点
+    面试肯定有开放性问题.
+    其实每一个开放性问题都在考查自己的每一项能力，如领导能力，沟通能力，适应能力等等。
+    而挖掘闪光点就是在这些事件模块中找出你所能体现的这些能力，
+    比如你是怎么解决某个技术问题的.
+    解决问题的思路也是一种优点.
 
-    要么就用一个收费软件: ipartation.. 应该有破解版本的..
-    丫的... 设计硬盘的操作 绝对要小心!  
-    还是重装吧 . 要么就 虚拟机 win7 装  adobe 
 
-    我操 虚拟机也不能安装!! ...
 
 
-    还有个 比较麻烦的办法....
-    大概就是新建个.. 硬盘镜像.. 然后安装的时候指定位置. 
 
-    http://tzvetkoff.net/posts/2013/05/20/adobe-cs6-on-case-sensitive-drives.html
-    https://github.com/tzvetkoff/adobe_case_sensitive_volumes
+🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸ITIL🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸
 
 
 
 
 
-🔸 indesign 安装
 
-⦿ 新建新硬盘
+🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸
 
-    在~/Stuff/Adobe 新建一个硬盘. 15G 的 sparsebundle格式. 
-    大小越大越好反正用多少占多少空间.  
-    格式是 Journaled HFS+, 而不是默认的 大小写敏感的.
-    可以手动创建. 也能用命令创建. 
-    
-    mkdir -p ~/Stuff/Adobe && cd ~/Stuff/Adobe
+🔸 简历文件名 ✔︎
+    语法: 姓名+应聘职位 
+    如: 徐健 • DevOps.pdf
 
-    hdiutil create -size 15g -type SPARSEBUNDLE -nospotlight -volname 'Adobe CS6 SparseBundle' -fs 'Journaled HFS+' ~/Stuff/Adobe/Adobe_CS6_SparseBundle.sparsebundle
 
+🔸 简历格式 ✔︎
+    pdf 格式 > word 
 
-⦿ 打开/挂载 新硬盘.
 
-    open ~/Stuff/Adobe/Adobe_CS6_SparseBundle.sparsebundle
-    mkdir -p /Volumes/Adobe\ CS6\ SparseBundle/Adobe
-    在新硬盘下创建一个 adobe 文件夹.
+🔸 一页原则  ✔︎
+    一般6秒 会有个初步印象. 并决定是否提供面试机会.
 
 
-⦿ 创建安装目录  mkdir -p /Applications/Adobe
+🔸 字体、字号与字色 ✔︎
+    字体：雅黑
+    字号：标题12号，正文10 
+    字色：黑色
 
 
-⦿ 下载
+🔸 排版 ✔︎
+    简洁明了.逻辑结构清晰.
+    干净整洁、没废话
 
-国外网盘 不限速在线下载. 500+kb...
-    https://mega.nz/#!hZlRQIyI!kvEtye5v-g-rMPGQjk44-OO_wp2540KTlu36bYIaK2g
 
-⦿ 下载破解软件
+🔸 语法检测 ✔︎
+    HTML 是对的  html 是错的.
 
-    cd ~/Stuff/Adobe
-    git clone git://github.com/tzvetkoff/adobe_case_sensitive_volumes.git
-    cd adobe_case_sensitive_volumes
 
-    先不make . 先修改文件.
-    不改这里会报错..要手动指定安装文件的位置.
-    adobe 软件解压出来是硬盘有路径的,
-    用 df 命令看  /dev/disk2s2    /Volumes/AdobeInDesign12.0-mul  这个就是路径
 
-    vi Makefile
-    CS6_INSTALLER_PATH=/Volumes/CS6*/*/Install.app/Contents/MacOS/Install
-    改成
-    CS6_INSTALLER_PATH=/Volumes/AdobeInDesign12.0-mul/Install.app/Contents/MacOS/Install
 
-    make
-    sudo make run
-    输入管理员密码! 
+🔸 基本个人信息 ✔︎
+    姓名,性别,年龄,学校,专业. 邮箱电话
+    求职意向  必须有!
 
 
-    然后! 
-    rm -rf /Applications/Adobe
-    ln -s /Volumes/Adobe\ CS6\ SparseBundle/Adobe/ /Applications/Adobe
 
+🔸 自我介绍  ✔︎
+    职业规划
+    个人定位
+    个人优势
+    个人劣势
+    工作期望
+    离职原因
 
-改名..  CS66. 再新建个文件夹.
 
 
 
-先断网     再去安装..
-或者 ...
-    终于出来.... 界面了
-    怎么安装了..
-    会自动安装么....
-    安装要断网.  不然好像会报错...
-    👹 143 错误...
-    zip 包中的源文件路径不存在 下载内容似乎已损坏。请再次尝试下载。
+🔸 简历加法项 ★★★★★  ✔︎
+    • 你能胜任这份工作、你认真、你有上进心、
+    • 你没有毛病（强调一下，这条最重要）。
 
-    要得 有些地方下载..  居然 900MB  有的地方只有700+  fuck..  有发 800+mb ...
 
+🔸 简历加法项 ★★★★  ✔︎
+    博客里面有技术文章、
+    写博客会显得头脑非常清晰的知道自己在做什么。
 
 
 
 
+🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸todo🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸
 
+🔸 运维素质
+    沟通能力! 团队协作.精力旺盛.
 
 
 
-🔸 todo 
 
-jekins 搭建 ✔︎
-zabbix 搭建 ✔︎
-zabbix 使用 ✔︎
+🔸 工作经历 & 项目经历
+    做了什么.    解决了什么问题..
+    STAR 法则来写. 
 
-puppet 搭建 
 
-网站更新
-简历更新
-jekins 使用.
 
+🔸 项目经验
+    无关的不要写! 
+    三个左右差不多了! 容易分散重点! 提高面试官的提问范围.
 
 
 
+🔸 技术栈 
+    不要写太多无关技术.
+    面试的没事干会问你简历里的每一个内容! ...
 
 
 
 
 
+
+
+
+
+
+　
+
+
+
+
+
+🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸
 
 
 🔸 Devops 重点 
@@ -155,15 +160,9 @@ jekins 使用.
     持续:  jekins 
     自动化部署/配置管理 :  ★ puppet/ansible 
     监控: ★ zabbix 
-    容器:  openstack/docker 
-
 
 8. 熟悉nginx/HAProxy/MySQL/监控报警等的运维；
 
-
-2. 熟悉虚拟化平台（VMware，KVM）架构及工作原理，有OpenStack实施经验者;
-
-4. 数据库运维经验：MySQL集群、Redis、ElasticSearch；
 
 5. 有网络信息安全的实战经验;
 
@@ -174,23 +173,6 @@ jekins 使用.
 6. 有自动化部署/配置管理经验，如Ansible/Chef/Puppet;
 
 4.	熟悉zabbix监控管理工具,熟悉puppet/saltstack/ansible中的一种；
-8.	有虚拟化kvm经验优先,有阿里云等云平台使用经验者优先；
-
-
-1. 承担运维团队SRE工程师职责，负责运维工具开发，提升运维质量和效率；
-2. 学习研究互联网运维相关技术并应用推广；
-3. 善于发现问题，提升系统的可用性、扩展性、伸缩性、性能、运维自动化；
-4. 带领实习生团队快速完成开发目标。
-任职要求：
-1. 全日制本科及以上学历，计算机相关专业； 
-2. 熟悉主流开源框架，精通python语言及语言对应的Restful框架，并具有优秀的开发能力，能快速完成原型的开发；
-3. 精通linux操作系统命令，会使用shell脚本完成日常的运维工作；
-4. 熟悉主流云平台提供的各类服务，如计算、对象存储、镜像、身份、网络、块存储等； 
-5. 工作有计划性，责任心和执行能力强，具备高度的责任心、诚信的工作作风、优秀沟通能力及团队精神； 
-6. 具有良好的语言表达和文档撰写能力；良好的自学能力，可以快速学习和掌握新的方法和技术。
-
-
-
 
 
 
