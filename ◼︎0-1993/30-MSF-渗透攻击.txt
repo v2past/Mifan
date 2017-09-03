@@ -613,3 +613,80 @@ https://lists.apple.com/archives/security-announce/2016/Oct/msg00005.html
 
 
 
+
+
+# 工具: Metasploit
+
+mac 就别折腾这个了  kali自带的.用kali吧.
+
+1. 启动 Metasploit
+程序 → Metasploit frame → 自动打开一个终端. 
+会自动 启动 postgreSQL. 自动创建用户和数据库.
+
+
+2. 启动 Armitage 
+会弹出一个 concect 框. 点击连接就可以了.. 后续选是 . 就进去了
+
+
+
+## Armitage
+分三区域. A 左上;  B: 右上. C 下方.
+
+B: 活跃目标系统. 可以进行攻击.
+
+
+
+
+
+1. 先开始扫描:
+hosts → nmap scan → quick scan → 输入网段. 10.1.182.0/24 上图wifi
+这个就占CPU了....  慢慢等吧...
+
+
+活跃主机 右键 会看到 attack 菜单
+
+
+
+
+2. attack 菜单
+
+从该界面可以看到在目标主机的菜单中出现了Attack选项，在该菜单中共有五个选项。在没有运行Find Attacks命令前，只要Services、Scan和Host三个选项。
+
+
+3. 扫描操作系统
+
+nmap 扫描到的主机屏幕都是黑色，这是因为还没有识别出操作系统的类型。
+Hosts|Nmap Scan|Quick Scan（OS detect）命令，扫描操作系统类型。
+
+4. 选择模块进行渗透攻击
+
+如 浏览器渗透
+'' exploit|windows|browser|adobe_cooltype_sing模块，双击该模块修改默认值，
+
+
+
+
+
+
+
+
+
+## MSF 终端
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

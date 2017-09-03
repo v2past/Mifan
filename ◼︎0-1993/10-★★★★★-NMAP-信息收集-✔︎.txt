@@ -1,22 +1,47 @@
+🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸精简速查🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸
+
+本机   ➜   nmap 127.0.0.1
+某IP   ➜   nmap 101.92.192.10
+网段   ➜   nmap 101.92.192.10
+某端口 ➜   nmap -p 80,443 101.92.192.10
+
+
+
+
+
+
+
+
 ⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️------⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️
 🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵 Nmap 🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵🔵
 ⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️------⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️⬛️
 
+🔸 参考
+
+		脚本参考    https://klionsec.github.io/2017/05/18/nmap-script/
+
+
+
+
 🔸 Nmap 简介
-	Network Mapper,
-	Linux下的网络扫描和嗅探工具包。 
-	最好最强大的扫描工具. 网络安全/渗透测试必备工具.
+		最好最强大的网络扫描和嗅探工具, 网络安全/渗透测试必备.
+		❗️❗️ nmap 有很多现成的脚本! 可以实现各种强大的功能 比如暴力破解数据库... ❗️❗️
+		脚本官网下载 https://nmap.org/nsedoc/scripts/mysql-info.html
 
 
 🔸 Nmap 作用
-	• 主机发现
-	• 端口扫描
-	• 版本侦测
-	•  OS 侦测
+		• 主机发现 ➜  准确判断对方是否开机
+		• 端口扫描 ➜  判断端口是否开启、还是被防火墙过滤了.
+		•  OS 侦测 ➜  判断对方的操作系统: Win7/XP 、Mac 、CentOS/Debian...、DD-Wrt... 
+
+
+🔸 Nmap 脚本作用
+		一般都是先用 Nmap 进行扫描,然后用 Metasploit 进行漏洞利用.
+		但是配置 MSF 比较麻烦, 其实用 Nmap 脚本就可以实现MSF 的某些功能.
 
 
 
-🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸命令 ★★★★★ 🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸
+🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸常用命令 ★★★★★ 🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸
 
 🔸 常规扫描 ★★★★
 
@@ -40,27 +65,25 @@
 
 
 
-
-
-🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸命令 ★★★★ 🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸
+🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸常用命令 ★★★★ 🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸
 
 🔸 主机发现:    nmap -sP + IP 
 		• nmap -sP 35.194.128.92
 			如果服务器开机的话 有个 host is up.
 
-	⦿ 注释
-		一般服务器都会进行防ping 处理, 不然的话在公网上是非常不安全的.
-		有些路由器也会阻止 WAN 口的 ping, 只允许 LAN 口进行本地 ping.
-		Ping 用的是 icmp 协议. icmp 是协议 而不是某个端口.
-		
-		CentOS 进行 ping 设置非常容易. 
-			• Ping 禁止    echo 1 > /proc/sys/net/ipv4/icmp_echo_ignore_all
-			• Ping 允许    echo 0 > /proc/sys/net/ipv4/icmp_echo_ignore_all
-				
-		如果服务器禁止 ping了. 那么怎么判断服务器到底是死机了 还是正在运行呢.
-		这时候就要用 nmap -sP 命令了.
+		⦿ 注释
+			一般服务器都会进行防ping 处理, 不然的话在公网上是非常不安全的.
+			有些路由器也会阻止 WAN 口的 ping, 只允许 LAN 口进行本地 ping.
+			Ping 用的是 icmp 协议. icmp 是协议 而不是某个端口.
+			
+			CentOS 进行 ping 设置非常容易. 
+				• Ping 禁止    echo 1 > /proc/sys/net/ipv4/icmp_echo_ignore_all
+				• Ping 允许    echo 0 > /proc/sys/net/ipv4/icmp_echo_ignore_all
+					
+			如果服务器禁止 ping了. 那么怎么判断服务器到底是死机了 还是正在运行呢.
+			这时候就要用 nmap -sP 命令了.
 
-	⦿ 参数解析 -sP 	 
+		⦿ 参数解析 -sP 	 
 
 
 🔸 快速扫描       nmap -F 35.194.128.92    # 扫描最常见的100个端口
@@ -74,7 +97,7 @@
 
 
 
-🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸命令 ★★ 🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸
+🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸常用命令 ★★ 🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸
 
 🔸 操作系统扫描.
 	sudo nmap -O 127.0.0.1
@@ -102,6 +125,55 @@
 	• 服务探测
 
 
+
+
+
+
+🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸Nmap 脚本🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸
+
+🔸 nmap 脚本分类
+		nmap脚本，在内网渗透的时候尤其好用, 主要分为以下几类
+
+		1.	auth:        负责处理鉴权证书（绕开鉴权）的脚本  
+		2.	broadcast:   在局域网内探查更多服务开启状况，如dhcp/dns/sqlserver等服务  
+		3.	brute:       提供暴力破解方式，针对常见的应用如http/snmp等  
+		4.	default:     使用-sC或-A选项扫描时候默认的脚本，提供基本脚本扫描能力  
+		5.	discovery:   对网络进行更多的信息，如SMB枚举、SNMP查询等  
+		6.	dos:         用于进行拒绝服务攻击  
+		7.	exploit:     利用已知的漏洞入侵系统  
+		8.	external:    利用第三方的数据库或资源，例如进行whois解析  
+		9.	fuzzer:      模糊测试的脚本，发送异常的包到目标机，探测出潜在漏洞 intrusive: 入侵性的脚本
+		10.	malware:     探测目标机是否感染了病毒、开启了后门等信息  
+		11.	safe:        此类与intrusive相反，属于安全性脚本  
+		12.	version:     负责增强服务与版本扫描（Version Detection）功能的脚本  
+		13.	vuln:        负责检查目标机是否有常见的漏洞（Vulnerability），如是否有MS08067
+
+
+🔸 例:    nmap --script=brute 127.0.0.1
+		提供暴力破解的方式  可对数据库，smb，snmp等进行简单密码的暴力猜解
+		不需要额外下载脚本. 直接可以使用的....
+
+
+🔸 例:    nmap --script=vuln 192.168.137.*    
+		检查是否存在常见漏洞
+
+
+🔸 例:    nmap -n -p445 --script=broadcast 192.168.137.4
+		在局域网内探查更多服务开启状况
+
+
+
+🔸 脚本自定义
+		nmap中脚本并不难看懂，也可以修改其中的某些参数方便自己使用。
+		
+			nmap --script=broadcast-netbios-master-browser 192.168.137.4                           发现网关  
+			nmap -p 873 --script rsync-brute --script-args 'rsync-brute.module=www' 192.168.137.4  破解rsync  
+			nmap --script informix-brute -p 9088 192.168.137.4                                     informix数据库破解  
+			nmap -p 5432 --script pgsql-brute 192.168.137.4                                        pgsql破解  
+			nmap -sU --script snmp-brute 192.168.137.4                                             snmp破解  
+			nmap -sV --script=telnet-brute 192.168.137.4                                           telnet破解  
+			nmap --script http-slowloris --max-parallelism 400 192.168.137.4                       dos小规模攻击 
+			nmap --script=samba-vuln-cve-2012-1182  -p 139 192.168.137.4
 
 
 

@@ -1,0 +1,229 @@
+
+❤️ CentOS7 虚拟机网络配置
+	虚拟机搭建好后,一般来说网络是没有启动的.需要自己设置
+
+	🔸 相关目录:
+		/etc/sysconfig/network                   # 包括主机基本网络信息，用于系统启动
+		/etc/sysconfig/network-script/           # 此目录下是系统启动最初始化网络的信息
+		/etc/sysconfig/network-script/ifcfg-em1  # 网络配置信息，每个人的配置名字不一样通过命令查看
+		/etc/xinetd.conf                         # 定义了由超级进程XINETD启动的网络服务
+		/etc/protocols                           # 设定了主机使用的协议以及各个协议的协议号
+		/etc/services                            # 设定了主机的不同端口的网络服务
+
+
+	🔸 IP 命令
+		ip link show                                        # 显示网络接口信息
+		ip link set eth0 up                                 # 开启网卡
+		ip link set eth0 down                               # 关闭网卡
+		ip addr show                                        # 显示网卡IP信息
+		ip addr add 192.168.0.1/24 dev eth0                 # 设置eth0网卡IP地址192.168.0.1
+		ip addr del 192.168.0.1/24 dev eth0                 # 删除eth0网卡IP地址
+		ip route list                                       # 查看路由信息
+		ip route add default via  192.168.0.254  dev eth0   # 设置默认网关为192.168.0.254
+
+
+	🔸 IP配置文件:
+		ip addr 查看网卡信息.肯定有个lo的网卡配置. 
+		还有个 status 是 up的. 一般就是你要设置的网卡.这里是 ens33.
+		对应的配置文件是 /etc/sysconfig/network-script/ifcfg-ens33
+		修改这个文件. 把 onboot 设置成yes. 开机启动就可以了.
+
+		# TYPE：配置文件接口类型。在/etc/sysconfig/network-scripts/目录有多种网络配置文件，有Ethernet 、IPsec等类型，网络接口类型为Ethernet。
+		TYPE=Ethernet    
+
+		BOOTPROTO=dhcp     # 自动获取IP
+		# BOOTPROTO=none   # 静态配置，若该值为“dhcp”则为动态获得，另外 static也是表示静态ip地址
+		DEFROUTE=yes
+		PEERDNS=yes
+		PEERROUTES=yes
+		IPV4_FAILURE_FATAL=no
+		IPV6INIT=yes        # 是否执行IPv6。yes：支持IPv6。no：不支持IPv6。
+		IPV6_AUTOCONF=yes
+		IPV6_DEFROUTE=yes
+		IPV6_PEERDNS=yes
+		IPV6_PEERROUTES=yes
+		IPV6_FAILURE_FATAL=no
+		NAME=em1                # 网卡名称
+		UUID=99-6217--a******   # UUID号，没事不要动它，否则你会后悔的
+		DEVICE=em1              # 接口名称
+		ONBOOT=yes              # 设置网络开机自动启动
+		IPADDR0=192.168.21.128  # 设置IP地址
+		PREFIXO0=24             # 设置子网掩码
+		GATEWAY0=192.168.21.2   # 设置网关
+		DNS1=8.8.8.8            # 设置主DNS
+		DNS2=8.8.4.4            # 设置备DNS
+
+
+
+	🔸 网卡开机自动启动
+		vi /etc/sysconfig/network-scripts/ifcfg-ens33
+		修改对应的配置文件  ➜  ONBOOT=yes
+
+	🔸 设置静态IP地址:
+		vi /etc/sysconfig/network-scripts/ifcfg-ens33
+		  BOOTPROTO=static
+		  IPADDR0=192.168.21.128  # 设置IP地址
+		  PREFIXO0=24             # 设置子网掩码
+		  GATEWAY0=192.168.21.2   # 设置网关
+		  DNS1=8.8.8.8            # 设置主DNS
+		  DNS2=8.8.4.4            # 设置备DNS
+
+
+	🔸 重启/停止/查看网络
+		  service network start    # 启动网络服务
+		  service network stop     # 停止网络服务
+		  service network restart  # 重启网络服务
+		  service network status   # 查看网络服务状态
+		  nmcli dev status         # 检查受网络管理器管理的网络接口
+		  systemctl status NetworkManager.service # 验证网络管理器服务的状态
+
+
+	🔸 其它名词解释
+		  wlan0        表示第一块无线以太网卡
+		  Link encap   表示该网卡位于OSI物理层(Physical Layer）的名称
+		  HWaddr       表示网卡的MAC地址（Hardware Address）
+		  inet addr    表示该网卡在TCP/IP网络中的IP地址
+		  Bcast        表示广播地址（Broad Address）
+		  Mask         表示子网掩码（Subnet Mask）
+		  MTU          表示最大传送单元，MTU的默认设置是1500个字节
+		  Metric       表示度量值，通常用于计算路由成本
+		  RX           表示接收的数据包
+		  TX           表示发送的数据包
+		  collisions   表示数据包冲突的次数
+		  txqueuelen   表示传送列队（Transfer Queue）长度
+		  interrupt    表示该网卡的IRQ中断号
+		  Base address 表示I/O地址
+
+
+
+
+	🔸 启动/关闭网卡:
+		ifup <设备名>    # 激活网卡 {网卡名字}   如: ifup em1
+		ifdown <设备名>  # 关闭网卡
+
+	🔸 再次查看网卡状态: 
+		网卡被启动后.就可以看到获取到的 IP地址了.就可以 SSH了.
+		最好设置下 静态IP.
+
+		查看网卡状态: ➜  ip addr ➜  有status UP、status DOWN的.
+		UP 就说明网卡开启了.
+		Down 就说明网卡没开启.
+
+	🔸 开启ssh远程(默认自带ssh服务的)!!! 
+		service sshd status  ➜  正常应该是运行的.
+		service listening on 0.0.0.0 port 22 ➜  说明 CentOS 是允许所有电脑进行远程的.
+
+	🔸 免密码SSH
+
+		客户端: 🔅 cd /Users/v/.ssh/
+		服务器: 🔅 mkdir ~/.ssh
+		客户端: 🔅 scp -r id_rsa.pub root@192.168.169.111:~/.ssh/            
+		服务器: 🔅 cat ~/.ssh/id_rsa.pub >> ~/.ssh/authorized_keys
+
+
+🔵 外网开启
+网络是在 安装虚拟机的时候设置的 操...
+
+
+
+	首先 虚拟机网络设置中 选择NAT方式.
+	上面的只是开启了内网.... 外网死活上不去...
+
+ip addr 你会发现有个 virbr0 网卡.
+这个网卡默认使用 192.168.122.0/24 这个网段.
+这个网卡 是给 开启NAT上网方式的人用的.
+
+
+
+
+
+
+
+
+
+
+
+	🔸 虚拟机设置快照来备份
+		选择虚拟机 ➜  右键 ➜  snapshot ➜  take ..
+
+
+
+
+
+
+
+
+
+
+
+
+🔸 kali 换源
+自己动手换中科大的源
+vim /etc/apt/sources.list
+把原来kali的官方源注释掉，粘贴以下四行进去
+
+deb http://mirrors.ustc.edu.cn/kali sana main non-free contrib deb-src http://mirrors.ustc.edu.cn/kali sana main non-free contrib deb http://mirrors.ustc.edu.cn/kali-security/ sana/updates main contrib non-free deb-src http://mirrors.ustc.edu.cn/kali-security/ sana/updates main contrib non-free 
+之后
+
+apt-get update 
+就可以了。
+
+默认不带中文的！   要手动装 先换 好点的源  然后 在 2.kali-linux安装中文输入法（以下任意选择一种安装）：
+　　apt-get install fcitx-table-wbpy ttf-wqy-microhei ttf-wqy-zenhei #拼音五笔
+　　apt-get install ibus ibus-pinyin #经典的ibus
+　　apt-get install fcitx fcitx-googlepinyin #fcitx拼音
+
+
+
+
+
+
+
+
+
+
+
+
+
+Linux 新文件默认权限.
+
+
+
+系统不允许你在创建一个文本文件时就赋予它执行权限，必须在创建后用chmod命令增加这一权限。但是文件夹可以.
+
+
+
+
+默认情况下的umask值是022(可以用umask命令查看）
+此时你建立的文件默认权限是644(6-0,6-2,6-2)，
+建立的目录的默认权限是755(7-0,7-2,7-2)，
+
+
+## 修改 umask
+
+
+
+
+
+
+
+umask 和 chmod 效果相反
+chmod 是给予权限.
+ummask 是去除权限
+
+我们只要记住u m a s k是从权限中“拿走”相应的位即可。
+如：umask值为022，则默认目录权限为755，默认文件权限为644。
+
+
+
+
+
+
+
+
+
+
+
+
+
+
