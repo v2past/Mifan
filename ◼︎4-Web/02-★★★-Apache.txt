@@ -1,14 +1,5 @@
-@: 1986-06-08-Apache✔︎
----
-layout: post
-title: Apache✔︎ tags: LAMP
-categories: Tooles
----
+🔸 Apache - Web Server
 
-
-
-## Apache - Web Server
-官网:   [ http://httpd.apache.org/download.cgi ]
 
 Apache 版本信息
 '' sudo apachectl -v      
