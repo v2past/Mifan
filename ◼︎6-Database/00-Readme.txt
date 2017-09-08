@@ -1,3 +1,48 @@
+🔸 数据库种类
+
+    • 关系型数据库代表:  MySQL、MariaDB、PostgreSQL、SQL Server、Oracle
+    • 非关系数据库代表:  Redis、MongoDB、Memcached
+
+    • 关系数据库. 数据在硬盘中.性能慢.
+    • 非关系数据库. 数据在内存中.然后再写入硬盘.性能极快
+
+
+
+🔸 2017.6 国内数据库排行榜
+
+    1.  MySQL 
+    2.  Oracle 
+    3.  Microsoft SQL Server
+    4.  Redis	
+    5.  SparkSQL	
+    6.  MongoDB	
+    ...
+    11.	SQLite
+    12.	PostgreSQL
+    ...
+    17.	Memcached
+    ...
+    20.	MariaDB
+
+
+
+
+🔸 PostgreSQL 简介 
+    开源的关系型数据库 . 类似 mysql
+    自从MySQL 被Oracle 收购后. PostgreSQL 逐渐成为开源关系型数据库的首选..
+    PostgreSQL 的使用和 mysql 区别较大!  要重新学习..
+    另外 PostgreSQL 也不是那么流行.
+    虽然不少方面 比 MySQL 优秀. 如: PostgreSQL 自带全文搜索功能 (不用费劲再装一个 elasticsearch 咯):
+    但是... 还不足以替代 mysql
+
+
+
+
+
+
+
+
+
 🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸MySQL 发展🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸
 
 🔸 简介
@@ -145,15 +190,6 @@ CAP理论的核心是：
     NoSQL 是新一代的数据库! 主要解决几个要点：非关系型的、分布式的、开源的、水平可扩展的。
 
     NoSQL用于超大规模数据的存储,例如谷歌或Facebook等等
-
-
-🔸 数据库种类
-
-    • 关系型数据库代表:  MySQL、MariaDB、PostgreSQL、SQL Server、Oracle
-    • 非关系数据库代表:  Redis、MongoDB、Memcached
-
-    • 关系数据库. 数据在硬盘中.性能慢.
-    • 非关系数据库. 数据在内存中.然后再写入硬盘.性能极快
 
 
 

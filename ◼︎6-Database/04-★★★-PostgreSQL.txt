@@ -1,12 +1,2 @@
-🔸 简介 
-  开源的关系型数据库 . 类似 mysql
-  自从MySQL 被Oracle 收购后. PostgreSQL 逐渐成为开源关系型数据库的首选..
-  PostgreSQL 的使用和 mysql 区别较大!  要重新学习..
-  另外 PostgreSQL 也不是那么流行.
-  虽然不少方面 比 MySQL 优秀. 如: PostgreSQL 自带全文搜索功能 (不用费劲再装一个 elasticsearch 咯):
-  但是... 还不足以替代 mysql
 
 
-
-
-  
