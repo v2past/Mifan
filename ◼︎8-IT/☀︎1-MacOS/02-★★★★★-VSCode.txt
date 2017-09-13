@@ -1,13 +1,5 @@
-🔸 git 插件.
-
-..
-
 🔸 Project Manager
 在多个项目之前快速切换的工具
-
-
-Path Intellisense
-自动路劲补全，默认不带这个功能的，赶紧装
 
 
 🔸 Open-In-Browser
@@ -25,27 +17,15 @@ html 文件直接用浏览器打开. 就可以预览了....
 
 
 
-
-
 🔸 HTMLSnippets
 不需要输入< 就能有html标签提示
 
-
-
-🔸 Path Intellisense
-路径提示 你有 images css js 文件这个插件是一个不错的选择
 
 
 
 🔸 AutoFileName
 
 这个插件使得开发者在 require 本地文件时支持基于输入的文件路径的智能补全。
-
-
-
-🔸 Git History
-
-可视化查看 Git 历史记录的插件。
 
 
 
@@ -76,67 +56,14 @@ html 文件直接用浏览器打开. 就可以预览了....
 
 
 
-
-
 VSC 插件
 
 3. 垂直对齐线  Guides
 
-
-
-
-- 自动路径补全
-    
-Path Autocomplete
-
-使用方法:
-双引号内  输入/ 就会列出当前目录文件
-
-
-
-
-
-jquery支持
-
-
-.js 文件里要用 $ 符号的话 . 需要用到 jquery....
-
-
-
-
-字段 cd项目目录
-npm install --save @types/jquery.
-
-有可能 minimatch 太旧了 那就更新minimatch
-
-
-~~~
-➜  2017 git:(master) ✗ npm install minimatch
-/Users/v/Desktop/2017
-└─┬ minimatch@3.0.3
-  └─┬ brace-expansion@1.1.6
-    ├── balanced-match@0.4.2
-    └── concat-map@0.0.1
-~~~
-{: .language-ruby}
-
-
-
-查看 minimatch 版本
-npm minimatch -v
-
-
-
-
-You can also place the file anywhere else and name it differently. But if you do so, you will also need to reference it in every *.js file where you want to use jQuery code suggestions:
-/// <reference path="jquery.d.ts" />
-
-
 jquery补全
 jQuery Code Snippets
-
-
 输入 jq 开头 就出现所有的jq命令 .
+
 
 
 JS(ES6)补全
@@ -144,33 +71,18 @@ JavaScript (ES6) snippets
 
 
 
-Path Intellisense（文件路径提示）
-
-
-
-
 🔸 基本使用:
-安装插件:  ⌘ ⇧ x 
-
-
 
 Auto Close Tag : 匹配标签，关闭对应的标签。很实用【HTML/XML】
 
 colorize : 会给颜色代码增加一个当前匹配代码颜色的背景，非常好
 
-Git History : 不得不赞的插件，谁用谁知道，功能很赞
 HTML CSS Support : 这个也是必备插件之一
-
-Path Autocomplete : 路径智能补全
-Path Intellisense ： 路径智能提示.
-
 
 Output Colorizer : 可以终端日志输出着色，实用
 
-
-、Visual Studio Keymap
+Visual Studio Keymap
 快捷键不仅可以节省时间，而且能让你在编码时保持心情舒畅。它们非常受 Visual Studio 用户的欢迎，而这个扩展则可以让你在 VS Code 中使用自己最喜爱的 VS 快捷键。
-
 
 5、HTML CSS Class Completion
 它跟 CSS 一样令人折服, 很难去记忆所有的CSS类。这个扩展可以根据工作区中的 CSS 文件自动补全你输入的 CSS 类名。
