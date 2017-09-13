@@ -1,24 +1,3 @@
-
-插件下载..
-http://alfredworkflow.com/
-
-
-🔸 
-有道翻译+wordbook」的workflow 做得比其他好一些。  翻译..
-
-
-
-🔸 dash ... 
-
-🔸  官网 
-https://www.alfredapp.com/workflows/
-
-
-
-
-
-
-
 高级功能:
 
 • wifi信息查看                           wifi    显示当前连接的wifi信息(本机/ip地址)
@@ -27,34 +6,11 @@ https://www.alfredapp.com/workflows/
 • 浏览器互换                               tochrome/tosafari    当前页用谷歌或者safari 打开
 • Ping                                              ping  网站
 • Pocket 稍后阅读                       首先 要神器里面登陆pocket 会有个授权的 同意之后就正常用了
-• Airdrop                                        airdrop 打开airdrop功能
-• 新建文件/文本                          nf xujian.txt       建立文本文件
-• 杀进程                                         kill 进程名字/软件名字
-• 剪贴板                                        花键 双击          或者输入cb             查看之前复制的内容
                                                             Snippets 里面可以添加经常用的东西!!
-
-• 常用文件夹            find文件夹先 再右箭头 加入到收藏夹  然后faves(自定义wjj) 下面就会显示出来了
-
-
-
-Alfred2 框框 里输入文字  后 按下 ⌘+L  就会放大文字到全屏 
-
-Features → Clipboard → snippets :自定义输入 →  自定义输出   常用的代码什么的.
-
-Merging选项：
-
-这是一个神奇的功能：可以多次复制 不连续的内容.
-一篇文章  你要复制 随机的几段  只需: 第一次:选中内容 ⌘ c 第二次:选中内容 ⌘ 双击 c
-第三次:选中内容 ⌘ 双击 c
-然后一次性的 ⌘ + v  就会吧 三次的复制内容一起粘帖进去了 
-
-并且可以设置是使用空格、回车来分割不同的片段。
 
 
 
 经典教程 (http://wellsnake.com/jekyll/update/2014/06/15/001/)
-
-
 
 
 Alfred杀手级功能:WorkFlows
