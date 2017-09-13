@@ -1,12 +1,23 @@
-启动神器      快捷键: ⌘ + 空格
-- 软件启动 / 高级筛选器
-基本功能:    * 启动程序: imessage
-简单查找文件: 空格+文件名    * 复杂查找/打开文件: find/open/in + 文件名  回车 → 打开文件   com+回车 → 打开文件所在的文件夹
-- 输入网址:打开网页      输入搜索关键字 → 谷歌搜索;    wiki + 内容 → wiki 搜索   
-- 开/关/锁定/屏保 :  lock / sleep / shutdown / restart / screensaver
-- 垃圾桶 / 计算器   trash / emptytrash ;    直接运行 shell 命令.
-- 隐藏程序(最小化)   hide * • 退出程序      quit + 选择程序    退出所有 quitall
-- 打开 历史剪切板记录
+
+插件下载..
+http://alfredworkflow.com/
+
+
+🔸 
+有道翻译+wordbook」的workflow 做得比其他好一些。  翻译..
+
+
+
+🔸 dash ... 
+
+🔸  官网 
+https://www.alfredapp.com/workflows/
+
+
+
+
+
+
 
 高级功能:
 
@@ -95,7 +106,6 @@ URL : 自定义查询网站+{query}  组成
 
 
 Browser: 浏览器选择
-
 
 
 

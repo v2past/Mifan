@@ -1,79 +1,3 @@
-@: 1986-04-01-00‼️Alfred✔︎
----
-layout: post
-title: ‼️Alfred
-tags: -APP
-categories: Tooles
----
-
-##  Alfred 3
-> 快捷键: ⌘ + 空格 
-## 搜索排除文件夹
-
-
-## 基本功能:
-
-*启动程序:* 关键字
- qq、qqmusic、vi、xcode ……
-
-*锁定 / 重启 / 屏保:*
-lock、restart、screensaver
-
-*Shell 命令:* . + 命令 (手动开启)
-.ping 192.168.1.1
-
-
-- 计算器: 直接输入
-	// 2+3+5
-
-- 打开文件: 空格 + 关键词
-
-- 查找文件 / 内容搜索: f/in + 关键词
-
-- 查找 通讯录
-	// Mzyy qw
-
-- 发邮件:
-	 // email xujian0219@126.co 
-
-- 标签搜索:
-	// tag 红色   可以把配置文件都加个标记. 方便使用.
-
-
-
-- 显示/清空垃圾桶 :   trash、emptytrash
-
-
-- 隐藏/退出程序:   hide / quit + 相应程序  退出所有 quitall
-
-- 文件夹浏览  com + / // Navigation ; 设置一个默认文件夹 ; 左右键 上下级 文件夹.  回车 打开文件夹.
-
-- 全屏放大文字
-	//  Com + L
-
-
-## Web Search
-
-- gg - - - - - -→ 谷歌搜索
-- image - - - -→ 谷歌图片
-- Map - - - - -→ 谷歌地图
-- Gmail  - - - -→ 网页 Gmail
-- Wiki - - - - - → 搜索 wiki
-- Bing - - - - -→ Bing 搜索
-- taobao - - - -→  淘宝搜索
-- jd - - - - - - - →京东搜索
-- amcn - - - - →中国亚马逊搜索
-- amuk - - - - → 英国亚马逊搜索
-- amde - - - - → 德国亚马逊搜索
-
-#### 1Password
-直接 打开网站(不用输入登录密码!!!!)
-// 1Password 必须高级设置 启用 整合第三方 APP 功能.
-
-
-## WorkFlows
-'' 这个功能才是Alfred的核心功能，有了这个其它那些免费功能只能打打酱油了.
-
 ### WorkFlows的四个基本对象：trigger、keyword、action、output。
 
 Alfred通过将这四个基本对象合理connect便能实现各种高级功能。 就好像乐高玩具，我们可以通过各种零件组合在一起组装成各种有趣的形状。 可以夸张的说WorkFlows没有什么做不到只有你想不到的。
@@ -126,18 +50,8 @@ Google Suggest:
 高级功能:
 [https://github.com/zhaocai/alfred2-top-workflow]
 
-
-
-
 关于 程序名字  可以自己在 mac 的应用程序文件夹 直接改你喜欢的名字 
 
-
-
-##### Buffer
-
-可以将找到的文件 暂时储存在 alfred. 然后进行批量操作 复制 移动...等等 也就是鼠标 右键的功能
-
-alt + 上下键 来加入.
 
 
 ##### 自定义Web Search 举例.
@@ -179,69 +93,4 @@ alt + 上下键 来加入.
 	http://www.amazon.de/s/ref=nb\_sb\_noss\_2/277-6888912-6702366?\_\_mk\_de\_DE=%C3%85M%C3%85%C5%BD%C3%95%C3%91&url=search-alias%3Daps&field-keywords=nokia
 →
 '' http://www.amazon.de/s/field-keywords="{query}"
-
-
-#### Clipboard  粘帖记录板
-- ⌥ + B  直接打开 粘帖历史记录
-
-- snip 自定义片段
-手动添加一遍  然后打开 alfred 输入 snip+ 关键词 回车就直接输入内容.
- 
-- Merging 融合
-- 复制多段 内容   自动把你合成一段内容  直接粘帖.
- 先 ⌘+CC 再 ⌘+V 会发出声音.
-// 不建议开启  好像 复制时候 会出错——— 
-
-
-
-## 高级功能:
- 
-'' • Airdrop                                        airdrop 打开airdrop功能
-'' 
-'' • 新建文件/文本                          nf xujian.txt       建立文本文件
-'' 
-'' • 杀进程                                         kill 进程名字/软件名字
-'' 
-'' • 剪贴板                                        花键 双击          或者输入cb             查看之前复制的内容
-''                                                             Snippets 里面可以添加经常用的东西!!
-'' 
-'' • 常用文件夹            find文件夹先 再右箭头 加入到收藏夹  然后faves(自定义wjj) 下面就会显示出来了
-
-Features → Clipboard → snippets :自定义输入 →  自定义输出   常用的代码什么的.
-
-Merging选项：
-
-这是一个神奇的功能：可以多次复制 不连续的内容.
-一篇文章  你要复制 随机的几段  只需: 第一次:选中内容 ⌘ c 第二次:选中内容 ⌘ 双击 c
-第三次:选中内容 ⌘ 双击 c
-然后一次性的 ⌘ + v  就会吧 三次的复制内容一起粘帖进去了 
-
-并且可以设置是使用空格、回车来分割不同的片段。
-
-[经典教程]
-
-
-
-
-#### 有道翻译神器: 可用  可同步生词本!!!
-[https://github.com/kaiye/workflows-youdao/]
-
-使用方法，选中需要翻译的文本，按两下 command 键即可。
-选中结果后，配合以下功能键可实现不同功能：
-• enter 同步单词到有道在线单词本（若未配置有道账号则保存至本地单词本）
-• alt + enter 翻译至剪切板
-• shift + enter 直接发音
-• control + enter 打开有道翻译页面
-• command + enter 直接在光标处打出翻译结果
-
-
-
-
-
-
-## 实用自定义 终端
-[https://github.com/stuartcryan/custom-iterm-applescripts-for-alfred]
-
-把里面的代码 复制到 alfred 设置 → 终端设置下. 就可以了....
-
 

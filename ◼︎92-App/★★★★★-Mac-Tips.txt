@@ -29,18 +29,6 @@ opt  ⌘ i        多个文件在一个地方显示简介.
 
 
 
-
-
-
-
-
-@: Mac 技巧
-
-- MAC 升级检测专用代码
-
-sudo defaults write /Library/Preferences/com.apple.SoftwareUpdate CatalogURL  https://swscan.apple.com/content/catalogs/others/index-10.11seed-10.11-10.10-10.9-mountainlion-lion-snowleopard-leopard.merged-1.sucatalog.gz
-
-- Mac 慢?        磁盘工具 修复磁盘权限很重要
  
  
 - Mac finder 窗口技巧
@@ -64,8 +52,9 @@ Hua opt t  显示/隐藏   finder  工具栏
 快速定位文件          finder里面  按下文件的 第一个字母  
  
 Opt + 拖动是复制文件 
+
  
- ⌘＋shift＋A，快速進入「應用程式」檔案夾。（英文是「ApplicationsFolder」，所以熱鍵是 A）
+⌘＋shift＋A，快速進入「應用程式」檔案夾。（英文是「ApplicationsFolder」，所以熱鍵是 A）
 
 ⌘＋shift＋U，快速進入「工具程式」檔案夾。（就是有裝終端機、活動監視器..的檔案夾，英文叫「UtilitiesFolder」，所以熱鍵是 U）
 ⌘＋shift＋D，快速進入「桌面」檔案夾。沒錯，Mac 的桌面其實有個檔案夾，每當你把東西扔在桌面上，也等於扔進這個檔案夾中。（英文是「DesktopFolder」，所以熱鍵是 D）
@@ -201,59 +190,12 @@ defaults write com.apple.FaceTime AutoAcceptInvitesFrom -array-add xujian/+86137
  
  
  
-Facebook  去广告浏览器插件        推荐  一般方法好像去不掉这个广告   Cleaner Facebook 
  
 - Mac 更改系统字体?
  
 查看路径            文件直接拖到浏览器就能复制路径了 .
 
-Cmd 向上       文件夹上一层
-Cmd 下           进入文件夹
- 
-Ctrl  com  空格   显示emoji表情
- 
-Ctrl + 空格   spotlight 支持 货币汇率了.
+查看路径
+
  
 Siri  能投硬币了额
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
