@@ -1233,4 +1233,10 @@ vps1 上的 ss数据库需要迁移到 gce 里面.
 
 
 
+👹  如果多个节点连到一个服务器上, 可能会连接数据库失败.
+👹
+InternalError: (1129, u"Host 'mail.0214.help' is blocked because of many connection errors; unblock with 'mysqladmin flush-hosts'")
+
+直接登录数据库 执行下面命令就可以.
+flush hosts;
 
