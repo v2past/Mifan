@@ -5,8 +5,6 @@ categories: IT-Admin
 ---
 
 
-
-
 Remote Administrator
 
 把Radmin的密码，选项和安装服务设置好，并且在hide那里打上“勾”（如果不打“勾”的话，到时候入侵的时候，目标的任务栏会出现一个小托盘，这样我们就容易暴露了）
