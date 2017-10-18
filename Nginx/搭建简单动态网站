@@ -26,14 +26,32 @@
 
 
 
+🔸 用 Python 写网页
+
+    先从django入门，它的文档可以说是开源框架中最好的，循序渐进，适合新手。
+    orm，mvc，url匹配，signal，http请求，session，cookie，缓存，web安全等概念都讲的很清晰，
+    甚至在不怎么了解python的情况下也能硬着头皮把小项目做出来。
+    想做成大网站，一个框架是远远不够的，要学的东西太多了
+    django一个框架把web开发的大多数功能都搞定了，但也造成了框架本身比较重。
+    如果对web开发有一定经验了，又需要一定的灵活性，可以看看flask。这是一个更新的生态系统。
+    新的框架往往会取精华去糟粕，也意味着社区和配套的成熟度会逊色一些。
+    其他的python web也有很多，不过没怎么深入用过。
+
+
+
+
 
 🔸 Python 框架 
 
-    Python 框架: Django、Flash、Bottle、Tornado......
+    Python 框架: Django、Flash、Sanic......
 
     为什么会有那么多Python 框架!? 因为写一个实在太简单了. 不要1000行!....
 
     用Python 也可以搭建网站!  而且搭建速度非常快!! (几乎任何语言都可以建站. )
+
+    Django 大而全 . 适合大项目
+    Flask  小而轻 . 适合小项目
+    Sanic  类似Flacsk, 但是速度很快, 几乎是Flask的10倍了.
 
 
 
