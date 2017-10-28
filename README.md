@@ -52,6 +52,157 @@
 
 
 
+🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸 防火墙 🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸
+
+防火墙 面试
+
+iptables vs firewall
+iptables 也不是不能用。。。  
+看你需求了。无法就是没有 动态生效都特性。。。 用不着就用 iptables。
+it 么 一个东西没坏 为什么要去修呢。。。
+
+
+
+💗 四个表 
+
+Nat 表
+Mangle 表
+Filter 表
+Raw 表
+
+
+
+💗 目标值 
+
+ACCEPT : 接受包
+DROP : 丢弃包
+
+QUEUE : 将包传递到用户空间 (应用程序和驱动所在的地方)
+RETURN : 将控制权交回调用的链并且为当前链中的包停止执行下一调用规则
+
+
+
+
+
+
+
+
+
+
+
+💗 作用
+保护核心服务。  网络记录。。。
+
+
+
+ping：  内部向外ping   外部向内ping
+
+
+比如 mysql 允许某个IP 访问。。。
+
+
+
+💗 iptables －F 清空防火墙  
+💗 iptables －L 查看防火墙
+
+
+
+
+
+
+💗 设置默认时允许还是禁止。 
+
+
+💗 静止的话 允许特定的端口访问
+iptables -A INPUT -p tcp --dport 22 -j ACCEPT
+iptables -A INPUT -p tcp --dport 80 -j ACCEPT
+iptables -A INPUT -p tcp --dport 21 -j ACCEPT
+
+
+💗 接受某IP所有某个包。。。 
+# iptables -A INPUT -s 192.168.0.7 -j ACCEPT 
+
+
+
+
+
+
+💗 几个表 几个链
+
+
+
+
+
+
+💗 增加减少端口   tcp／udp 有点区别而已。。。。
+
+💗 还能屏蔽 IP。 
+iptables -I INPUT -s 123.45.6.7 -j DROP
+
+💗 保存防火墙： service iptables save
+💗 重启防火墙： service iptables restart
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+iptables  firewall
+
+在CentOS7.0中默认使用firewall代替了iptables 
+service。虽然继续保留了iptables命令，但已经仅是名称相同而已。
+firewall是centos7的一大特性，最大的好处有两个：
+
+支持动态更新
+不用重启服务；
+
+
+
+
+
+
+常用命令
+iptables －F
+
+iptables －L  
+
+
+
+
+
+
+
+最常用命令
+
+
+
+防火墙作用：
+
+允许内网某些服务。  如  samba 。。。 pop3 。。。
+禁止 DDOS 
+禁止 ping 
+
+端口转发。  比如 ssh 可以转发的！ 
+可以不用登陆堡垒机 直接到内网。。。
+
+
+
+
+
+
+
+
 
 
 
