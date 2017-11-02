@@ -417,8 +417,7 @@ GCE  前端＋后端（节点3）＋数据库
         如果你要更改 默认的加密方法. 最好在这里修改.
         不然等你安装好数据库. 再要修改数据表中某个字段的默认值 就要你有点mysql基础了.
         
-        `method` varchar(64) NOT NULL DEFAULT 'rc4-md5',  113行改成下面的
-        `method` varchar(64) NOT NULL DEFAULT 'chacha20',
+ 
 
     ⦿ 导入数据表: db.sql
         Mac 用 navicat 软件导入就可以. 很方便的
