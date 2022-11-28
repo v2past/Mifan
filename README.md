@@ -3,10 +3,6 @@
     本人运维 • 所有笔记亲测有效 •  只需 macOS + vps (CentOS_7) 
 
 
-## 个人网站: www.0214.live
-
-
-
 ## 项目结构:
 
      ◼︎0-1993 ------- 安全技术: Wireshark、Nmap、Nessus、MSF、暗网、暴破 ... 
